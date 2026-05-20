@@ -14,9 +14,10 @@ export async function middleware(request: NextRequest) {
   const isAuthApi = pathname.startsWith('/api/auth')
   const isUploadApi = pathname.startsWith('/api/upload')
   const isDbApi = pathname.startsWith('/api/db')
+  const isHealthApi = pathname.startsWith('/api/health')
 
   // Allow API routes to be reached directly
-  if (isAuthApi || isUploadApi || isDbApi) {
+  if (isAuthApi || isUploadApi || isDbApi || isHealthApi) {
     return NextResponse.next()
   }
 
