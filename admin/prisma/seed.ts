@@ -1,17 +1,26 @@
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1. Create a default Author
+  // Hash default admin password: admin@almada
+  const passwordHash = await bcrypt.hash('admin@almada', 10);
+
+  // 1. Create a default Author with Al-Mada branding and password
   const author = await prisma.user.upsert({
-    where: { email: 'admin@injaz.com' },
-    update: {},
+    where: { email: 'admin@almada.com' },
+    update: {
+      password_hash: passwordHash,
+    },
     create: {
-      email: 'admin@injaz.com',
+      email: 'admin@almada.com',
       name: 'رئيس التحرير',
       role: 'SUPER_ADMIN',
+      password_hash: passwordHash,
     },
   });
+
+  console.log(`Default admin created: admin@almada.com / admin@almada`);
 
   // 2. Create Categories
   const categories = [
