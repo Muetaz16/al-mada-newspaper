@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  avatar_url    String?
+  role          Role      @default(USER)
+  password_hash String?   // Added for self-hosted credentials
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
+  comments      Comment[]
+  news          News[]    @relation("AuthorNews")
+
+  @@map("users")
+}
+
+model Category {
+  id         String     @id @default(uuid())
+  name_ar    String
+  name_en    String?
+  slug       String     @unique
+  parent_id  String?
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+  parent     Category?  @relation("SubCategories", fields: [parent_id], references: [id])
+  children   Category[] @relation("SubCategories")
+  news       News[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id         String    @id @default(uuid())
+  name       String    @unique
+  slug       String    @unique
+  created_at DateTime  @default(now())
+  news       NewsTag[]
+
+  @@map("tags")
+}
+
+model News {
+  id              String     @id @default(uuid())
+  title           String
+  subtitle        String?
+  slug            String     @unique
+  content         Json
+  featured_image  String?
+  gallery         Json?
+  status          NewsStatus @default(DRAFT)
+  publish_date    DateTime?
+  reading_time    Int?
+  is_breaking     Boolean    @default(false)
+  view_count      Int        @default(0)
+  seo_title       String?
+  seo_description String?
+  author_id       String
+  category_id     String
+  created_at      DateTime   @default(now())
+  updated_at      DateTime   @updatedAt
+  image_url       String?
+  comments        Comment[]
+  author          User       @relation("AuthorNews", fields: [author_id], references: [id])
+  category        Category   @relation(fields: [category_id], references: [id])
+  tags            NewsTag[]
+  views           View[]
+
+  @@map("news")
+}
+
+model NewsTag {
+  news_id String
+  tag_id  String
+  news    News   @relation(fields: [news_id], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tag_id], references: [id], onDelete: Cascade)
+
+  @@id([news_id, tag_id])
+  @@map("news_tags")
+}
+
+model Media {
+  id         String   @id @default(uuid())
+  title      String
+  url        String
+  type       String
+  size       Int?
+  created_at DateTime @default(now())
+
+  @@map("media")
+}
+
+model Video {
+  id            String   @id @default(uuid())
+  title         String
+  url           String
+  thumbnail     String?
+  duration      Int?
+  created_at    DateTime @default(now())
+  status        String?  @default("PUBLISHED")
+  thumbnail_url String?
+  type          String?  @default("VIDEO")
+
+  @@map("videos")
+}
+
+model Reel {
+  id         String   @id @default(uuid())
+  title      String
+  video_url  String
+  thumbnail  String?
+  views      Int      @default(0)
+  likes      Int      @default(0)
+  created_at DateTime @default(now())
+
+  @@map("reels")
+}
+
+model AudioRecording {
+  id            String   @id @default(uuid())
+  title         String
+  audio_url     String
+  cover_url     String?
+  waveform_data Json?
+  duration      Int?
+  created_at    DateTime @default(now())
+
+  @@map("audio_recordings")
+}
+
+model Infographic {
+  id          String   @id @default(uuid())
+  title       String
+  svg_content String?
+  image_url   String
+  created_at  DateTime @default(now())
+
+  @@map("infographics")
+}
+
+model Poll {
+  id         String       @id @default(dbgenerated("uuid_generate_v4()"))
+  question   String
+  status     String       @default("ACTIVE")
+  expires_at DateTime?
+  created_at DateTime     @default(now())
+  options    PollOption[]
+  votes      PollVote[]
+
+  @@map("polls")
+}
+
+model PollOption {
+  id          String     @id @default(dbgenerated("uuid_generate_v4()"))
+  poll_id     String
+  text        String
+  votes_count Int        @default(0)
+  poll        Poll       @relation(fields: [poll_id], references: [id], onDelete: Cascade)
+  votes       PollVote[]
+
+  @@map("poll_options")
+}
+
+model PollVote {
+  id         String     @id @default(uuid())
+  poll_id    String
+  option_id  String
+  user_id    String?
+  ip_address String?
+  created_at DateTime   @default(now())
+  option     PollOption @relation(fields: [option_id], references: [id], onDelete: Cascade)
+  poll       Poll       @relation(fields: [poll_id], references: [id], onDelete: Cascade)
+
+  @@map("poll_votes")
+}
+
+model LiveStream {
+  id           String   @id @default(uuid())
+  title        String
+  stream_url   String
+  status       String   @default("OFFLINE")
+  viewer_count Int      @default(0)
+  created_at   DateTime @default(now())
+
+  @@map("live_streams")
+}
+
+model Comment {
+  id         String    @id @default(uuid())
+  content    String
+  status     String    @default("PENDING")
+  news_id    String
+  user_id    String?
+  parent_id  String?
+  created_at DateTime  @default(now())
+  news       News      @relation(fields: [news_id], references: [id], onDelete: Cascade)
+  parent     Comment?  @relation("CommentThread", fields: [parent_id], references: [id])
+  replies    Comment[] @relation("CommentThread")
+  user       User?     @relation(fields: [user_id], references: [id])
+
+  @@map("comments")
+}
+
+model View {
+  id         String   @id @default(uuid())
+  news_id    String
+  ip_address String?
+  user_agent String?
+  created_at DateTime @default(now())
+  news       News     @relation(fields: [news_id], references: [id], onDelete: Cascade)
+
+  @@map("views")
+}
+
+model Setting {
+  id         String   @id @default(uuid())
+  key        String   @unique
+  value      Json
+  updated_at DateTime @updatedAt
+
+  @@map("settings")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model breaking_news {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  text       String
+  active     Boolean? @default(true)
+  created_at DateTime @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamptz(6)
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  JOURNALIST
+  MEDIA_MANAGER
+  USER
+}
+
+enum NewsStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+model PulseOfLife {
+  id         String   @id @default(uuid())
+  question   String
+  answer     String   @db.Text
+  category   String?
+  image_url  String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("pulse_of_life")
+}
