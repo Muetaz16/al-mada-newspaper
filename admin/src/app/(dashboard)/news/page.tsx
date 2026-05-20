@@ -23,6 +23,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { NewsActions } from '@/components/news-actions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function NewsPage() {
   const newsItems = await prisma.news.findMany({
     include: {

@@ -15,6 +15,8 @@ import { Button } from '@/components/ui/button';
 import { prisma } from '@/utils/prisma';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   // Parallel fetching for maximum speed directly via Prisma Client!
   const [newsCount, viewsResult, usersCount, categoriesCount, recentNews, allNewsDates] = await Promise.all([
