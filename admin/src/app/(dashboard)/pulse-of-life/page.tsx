@@ -23,6 +23,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { PulseActions } from '@/components/pulse-actions';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PulseOfLifePage() {
   const items = await prisma.pulseOfLife.findMany({
     orderBy: {

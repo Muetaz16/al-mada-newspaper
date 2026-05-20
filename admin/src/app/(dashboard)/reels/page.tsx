@@ -23,6 +23,8 @@ import { Input } from '@/components/ui/input';
 import { ReelActions } from '@/components/reel-actions';
 import Image from 'next/image';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ReelsPage() {
   const reels = await prisma.reel.findMany({
     orderBy: {

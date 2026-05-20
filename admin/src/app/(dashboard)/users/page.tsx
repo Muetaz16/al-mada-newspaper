@@ -26,6 +26,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { getRoleLabel } from '@/utils/permissions';
 import DeleteUserButton from './delete-button';
 
+export const dynamic = 'force-dynamic';
+
 export default async function UsersPage() {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get('session');
