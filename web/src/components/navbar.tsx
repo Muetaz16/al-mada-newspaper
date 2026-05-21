@@ -44,22 +44,39 @@ export function Navbar() {
         }}
       />
 
-      {/* Top Bar: Editorial Info (Cinematic Style) */}
-      <div className="relative bg-slate-950 text-white/90 py-2 px-6 text-[10px] font-black uppercase tracking-[0.4em] border-b border-white/5">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-8">
-            <span className="text-white">العدد الرقمي: 2026</span>
+      {/* Top Bar: Site title with logo on black background */}
+      <div className="relative bg-black text-white/90 py-2.5 px-4 sm:px-6 border-b border-white/5">
+        <div className="container mx-auto flex items-center justify-between gap-4 min-h-12">
+          <div className="hidden sm:flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.35em] shrink-0">
+            <span>العدد الرقمي: 2026</span>
             <div className="w-px h-3 bg-white/20" />
             <span className="flex items-center gap-2 text-slate-300">
               <Globe className="w-3 h-3 text-primary" />
               {new Date().toLocaleDateString('en-GB')}
             </span>
           </div>
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/live" className="text-white hover:text-primary transition-all flex items-center gap-2 group">
+
+          <Link
+            href="/"
+            className="relative z-20 flex items-center justify-center group shrink-0 mx-auto sm:mx-0 sm:absolute sm:left-1/2 sm:-translate-x-1/2"
+          >
+            <div className="relative h-9 w-36 sm:h-11 sm:w-52 md:h-12 md:w-60">
+              <Image
+                src="/logo.png"
+                alt="المدى — نحو الخبر اليقين"
+                fill
+                priority
+                sizes="(max-width: 640px) 160px, 240px"
+                className="object-contain object-center transition-transform duration-200 group-hover:scale-105"
+              />
+            </div>
+          </Link>
+
+          <div className="flex items-center gap-4 shrink-0 ms-auto sm:ms-0">
+            <Link href="/live" className="text-white hover:text-primary transition-all flex items-center gap-2 group text-[10px] font-black uppercase tracking-[0.35em]">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
               <span className="group-hover:tracking-widest transition-all">بث مباشر</span>
             </Link>
@@ -68,23 +85,9 @@ export function Navbar() {
       </div>
 
       <div className="relative z-10 container mx-auto px-6 py-2.5">
-        <div className="flex items-center justify-between gap-12">
-          {/* Logo Section - Editorial Masterpiece */}
-          <Link href="/" className="relative z-20 flex items-center gap-6 group shrink-0 mr-4 sm:mr-8">
-            <div className="relative h-10 w-44 sm:h-14 sm:w-64 md:h-18 md:w-[30rem] lg:h-20 lg:w-[36rem] flex items-center justify-start">
-              <Image
-                src="/logo.png"
-                alt="صحيفة المدى"
-                fill
-                priority
-                sizes="(max-width: 768px) 200px, 500px"
-                className="object-contain object-right transition-transform duration-200 group-hover:scale-115 p-0"
-              />
-            </div>
-          </Link>
-
+        <div className="flex items-center justify-center gap-12">
           {/* Main Navigation - Integrated Capsule Design */}
-          <nav className="flex-1 hidden xl:flex items-center justify-center">
+          <nav className="flex-1 hidden xl:flex items-center justify-center max-w-5xl">
             <div className="flex items-center gap-2 p-1 bg-slate-950/5 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]">
               <Link
                 href="/"
@@ -127,7 +130,7 @@ export function Navbar() {
             initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
             animate={{ opacity: 1, backdropFilter: "blur(40px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="xl:hidden fixed inset-0 top-[84px] sm:top-[100px] md:top-[110px] bg-white/90 z-[100] p-12 overflow-y-auto"
+            className="xl:hidden fixed inset-0 top-[7.5rem] sm:top-[8rem] bg-white/90 z-[100] p-12 overflow-y-auto"
           >
             <div className="space-y-16">
               <div className="grid grid-cols-1 gap-10 font-black text-4xl text-start">
