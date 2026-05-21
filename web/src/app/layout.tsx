@@ -11,10 +11,6 @@ const cairo = Cairo({ subsets: ["arabic"], variable: "--font-cairo" });
 export const metadata: Metadata = {
   title: "صحيفة المدى الرقمية | Al-Mada Digital Newspaper",
   description: "منصة إخبارية عربية متكاملة تقدم أحدث الأخبار والتقارير.",
-  icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
-  },
 };
 
 export default function RootLayout({
