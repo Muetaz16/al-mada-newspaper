@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Globe, Menu, X } from 'lucide-react';
+import { Globe, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
@@ -12,7 +12,14 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
+  const [expandedMobileCats, setExpandedMobileCats] = useState<string[]>([]);
   const supabase = createClient();
+
+  const toggleMobileSub = (catId: string) => {
+    setExpandedMobileCats(prev => 
+      prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
+    );
+  };
 
   useEffect(() => {
     async function fetchCategories() {
@@ -240,30 +247,49 @@ export function Navbar() {
                       transition={{ delay: idx * 0.05 }}
                       className="space-y-3"
                     >
-                      <Link 
-                        href={`/category/${cat.slug || cat.name_ar}`} 
-                        onClick={() => setIsOpen(false)} 
-                        className="group flex items-baseline gap-4 hover:text-primary transition-all text-2xl sm:text-3xl"
-                      >
-                        <span className="text-primary/40 font-serif italic text-sm">0{idx + 1}</span>
-                        <span className="text-white group-hover:text-primary transition-colors leading-none">{cat.name_ar}</span>
-                      </Link>
+                      <div className="flex items-center justify-between w-full">
+                        <Link 
+                          href={`/category/${cat.slug || cat.name_ar}`} 
+                          onClick={() => setIsOpen(false)} 
+                          className="group flex items-baseline gap-4 hover:text-primary transition-all text-2xl sm:text-3xl"
+                        >
+                          <span className="text-primary/40 font-serif italic text-sm">0{idx + 1}</span>
+                          <span className="text-white group-hover:text-primary transition-colors leading-none">{cat.name_ar}</span>
+                        </Link>
 
-                      {hasSubs && (
-                        <div className="pr-6 mr-1.5 border-r border-white/10 space-y-2.5 flex flex-col pt-0.5 pb-2">
-                          {subs.map((sub: any) => (
-                            <Link 
-                              key={sub.slug || sub.name_ar}
-                              href={`/category/${sub.slug || sub.name_ar}`} 
-                              onClick={() => setIsOpen(false)} 
-                              className="text-base font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
-                            >
-                              <span className="text-[10px] text-primary/60">↳</span>
-                              {sub.name_ar}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
+                        {hasSubs && (
+                          <button
+                            onClick={() => toggleMobileSub(cat.id)}
+                            className="p-2 text-white/50 hover:text-primary bg-white/5 hover:bg-white/10 rounded-xl transition-all"
+                          >
+                            <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${expandedMobileCats.includes(cat.id) ? 'rotate-180 text-primary' : ''}`} />
+                          </button>
+                        )}
+                      </div>
+
+                      <AnimatePresence initial={false}>
+                        {hasSubs && expandedMobileCats.includes(cat.id) && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2, ease: 'easeInOut' }}
+                            className="pr-6 mr-1.5 border-r border-white/10 space-y-2.5 flex flex-col pt-0.5 pb-2 overflow-hidden"
+                          >
+                            {subs.map((sub: any) => (
+                              <Link 
+                                key={sub.slug || sub.name_ar}
+                                href={`/category/${sub.slug || sub.name_ar}`} 
+                                onClick={() => setIsOpen(false)} 
+                                className="text-base font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
+                              >
+                                <span className="text-[10px] text-primary/60">↳</span>
+                                {sub.name_ar}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </motion.div>
                   );
                 })}
