@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+    const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
 
     const res = await fetch(`${adminUrl}/api/db`, {
       method: 'POST',

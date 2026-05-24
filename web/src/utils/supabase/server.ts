@@ -46,7 +46,7 @@ export const createClient = async () => {
         },
         async then(onfulfilled?: (value: any) => any) {
           try {
-            const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+            const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
             const res = await fetch(`${adminUrl}/api/db`, {
               method: 'POST',
               headers: { 
@@ -72,7 +72,7 @@ export const createClient = async () => {
         },
         async insert(data: any) {
           try {
-            const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+            const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
             const res = await fetch(`${adminUrl}/api/db`, {
               method: 'POST',
               headers: { 
@@ -95,7 +95,7 @@ export const createClient = async () => {
             async eq(column: string, value: any) {
               filters[column] = value;
               try {
-                const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+                const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
                 const res = await fetch(`${adminUrl}/api/db`, {
                   method: 'POST',
                   headers: { 
@@ -121,7 +121,7 @@ export const createClient = async () => {
             async eq(column: string, value: any) {
               filters[column] = value;
               try {
-                const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+                const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
                 const res = await fetch(`${adminUrl}/api/db`, {
                   method: 'POST',
                   headers: { 

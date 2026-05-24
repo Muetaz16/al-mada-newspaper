@@ -70,7 +70,7 @@ function createMockClient(isServerSide: boolean) {
             };
 
             if (isServerSide) {
-              const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+              const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
               const res = await fetch(`${adminUrl}/api/db`, {
                 method: 'POST',
                 headers: { 
@@ -106,7 +106,7 @@ function createMockClient(isServerSide: boolean) {
             };
 
             if (isServerSide) {
-              const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+              const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
               const res = await fetch(`${adminUrl}/api/db`, {
                 method: 'POST',
                 headers: { 
@@ -143,7 +143,7 @@ function createMockClient(isServerSide: boolean) {
                 };
 
                 if (isServerSide) {
-                  const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+                  const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
                   const res = await fetch(`${adminUrl}/api/db`, {
                     method: 'POST',
                     headers: { 
@@ -181,7 +181,7 @@ function createMockClient(isServerSide: boolean) {
                 };
 
                 if (isServerSide) {
-                  const adminUrl = process.env.ADMIN_API_URL || 'http://127.0.0.1:3000';
+                  const adminUrl = process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app';
                   const res = await fetch(`${adminUrl}/api/db`, {
                     method: 'POST',
                     headers: { 
