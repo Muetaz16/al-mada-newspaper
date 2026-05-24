@@ -153,6 +153,19 @@ export default function CategoriesPage() {
         </Button>
       </div>
 
+      {/* Help Alert Banner */}
+      <div className="bg-slate-50 border border-slate-100 p-6 rounded-[2rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-start">
+        <div className="space-y-1">
+          <h4 className="font-black text-slate-900 text-sm flex items-center gap-2">
+            💡 كيف تبني بنية شريط الموقع والقوائم المنسدلة؟
+          </h4>
+          <p className="text-xs text-slate-500 font-bold leading-relaxed">
+            - الأقسام المحددة كـ <span className="text-primary font-black">قسم رئيسي</span> تظهر مباشرة في الشريط العلوي للموقع الإلكتروني.<br />
+            - الأقسام المحددة بـ <span className="text-primary font-black">قسم رئيسي (أب) معين</span> ستظهر تلقائياً كقائمة منسدلة (Dropdown) تحت هذا القسم الرئيسي في شريط الموقع!
+          </p>
+        </div>
+      </div>
+
       <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
         <CardContent className="p-0">
           <div className="p-6 border-b border-muted/30 flex flex-col md:flex-row gap-4 items-center justify-between bg-slate-50/50">
@@ -238,64 +251,100 @@ export default function CategoriesPage() {
       </Card>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-[2rem] border-none shadow-2xl sm:max-w-[425px]" dir="rtl">
-          <DialogHeader className="text-start">
-            <DialogTitle className="text-2xl font-black">{editingCategory ? 'تعديل القسم' : 'إضافة قسم جديد'}</DialogTitle>
+        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl sm:max-w-[450px] p-8 bg-white overflow-hidden" dir="rtl">
+          {/* Top Decorative bar */}
+          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-l from-primary to-primary/40" />
+
+          <DialogHeader className="text-start pb-4 border-b border-slate-100">
+            <DialogTitle className="text-2xl font-black flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <Tag className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-xl font-black text-slate-900 leading-tight">
+                  {editingCategory ? 'تعديل القسم / القائمة' : 'إضافة قسم جديد'}
+                </h3>
+                <p className="text-xs text-slate-400 font-bold mt-1">تحديد تصنيفات الأخبار وبنية شريط تنقل الموقع</p>
+              </div>
+            </DialogTitle>
           </DialogHeader>
-          <div className="grid gap-6 py-4">
+
+          <div className="space-y-6 py-6">
             <div className="space-y-2 text-start">
-              <label className="text-sm font-black text-slate-700">اسم القسم / القائمة (بالعربية)</label>
+              <label className="text-xs font-black text-slate-500 uppercase tracking-wider">اسم القسم / القائمة (بالعربية)</label>
               <Input 
                 value={nameAr} 
                 onChange={(e) => {
                   setNameAr(e.target.value);
                   if (!editingCategory) {
-                    setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'));
+                    setSlug(e.target.value.toLowerCase().replace(/[^\u0600-\u06FF\w\s-]/g, '').replace(/\s+/g, '-'));
                   }
                 }}
-                placeholder="أدخل اسم القسم..." 
-                className="h-12 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold"
+                placeholder="مثلاً: الأخبار المحلية، اقتصاد، منوعات..." 
+                className="h-13 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold px-4 text-slate-800 text-base"
               />
+              <p className="text-[10px] text-slate-400 font-bold">الاسم الذي يظهر للقراء في شريط التنقل العلوي للموقع.</p>
             </div>
             
             <div className="space-y-2 text-start">
-              <label className="text-sm font-black text-slate-700">القسم الرئيسي (اختياري - لجعله قائمة فرعية)</label>
+              <div className="flex justify-between items-center">
+                <label className="text-xs font-black text-slate-500 uppercase tracking-wider">القسم الرئيسي (التبعية)</label>
+                {!parentId && (
+                  <span className="text-[10px] bg-emerald-50 text-emerald-600 font-black px-2 py-0.5 rounded-md border border-emerald-100">قسم رئيسي</span>
+                )}
+                {parentId && (
+                  <span className="text-[10px] bg-primary/5 text-primary font-black px-2 py-0.5 rounded-md border border-primary/10">قائمة فرعية</span>
+                )}
+              </div>
               <Select 
                 onValueChange={(val) => setParentId(val === 'none' ? null : val)} 
                 value={parentId || 'none'}
               >
-                <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold">
+                <SelectTrigger className="h-13 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold px-4 text-slate-700">
                   <SelectValue placeholder="اختر قسماً رئيسياً" />
                 </SelectTrigger>
-                <SelectContent className="rounded-xl border-none shadow-2xl">
-                  <SelectItem value="none" className="font-bold rounded-lg py-3">بدون (قسم رئيسي / أعلى مستوى)</SelectItem>
+                <SelectContent className="rounded-2xl border-none shadow-2xl max-h-[250px]">
+                  <SelectItem value="none" className="font-bold rounded-xl py-3 cursor-pointer text-slate-900 hover:bg-slate-100">
+                    📂 بدون (قسم رئيسي / أعلى مستوى في شريط الموقع)
+                  </SelectItem>
+                  <div className="h-px bg-slate-100 my-1" />
                   {categories
                     .filter(c => !c.parent_id && c.id !== editingCategory?.id)
                     .map(c => (
-                      <SelectItem key={c.id} value={c.id} className="font-bold rounded-lg py-3">
-                        {c.name_ar}
+                      <SelectItem key={c.id} value={c.id} className="font-bold rounded-xl py-3 cursor-pointer hover:bg-slate-100">
+                        📄 {c.name_ar}
                       </SelectItem>
                     ))
                   }
                 </SelectContent>
               </Select>
+              <p className="text-[10px] text-slate-400 font-bold leading-normal">
+                اختر قسماً رئيسياً لكي يظهر هذا القسم كقائمة منسدلة تحته، أو اتركه كقسم رئيسي ليظهر مباشرة في شريط التنقل.
+              </p>
             </div>
 
             <div className="space-y-2 text-start">
-              <label className="text-sm font-black text-slate-700">الرابط (Slug)</label>
+              <label className="text-xs font-black text-slate-500 uppercase tracking-wider">رابط القسم الفرعي (Slug)</label>
               <Input 
                 value={slug} 
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="slug-name" 
+                onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
+                placeholder="politics-news" 
                 dir="ltr"
-                className="h-12 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-mono text-sm"
+                className="h-13 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-mono text-sm px-4 text-slate-800"
               />
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100/50 flex flex-col gap-1">
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider">معاينة رابط التصفح:</span>
+                <span className="text-[10px] font-mono text-slate-500 overflow-hidden text-ellipsis whitespace-nowrap" dir="ltr">
+                  https://almada.com/category/<span className="text-primary font-bold">{slug || 'slug'}</span>
+                </span>
+              </div>
             </div>
           </div>
-          <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-xl font-bold h-11 px-6">إلغاء</Button>
-            <Button onClick={saveCategory} disabled={saving} className="rounded-xl font-black h-11 px-8 shadow-lg shadow-primary/20">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'حفظ القسم'}
+
+          <DialogFooter className="gap-2 pt-4 border-t border-slate-100 flex flex-row justify-end">
+            <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-xl font-bold h-11 px-6 text-slate-500 hover:bg-slate-50">إلغاء</Button>
+            <Button onClick={saveCategory} disabled={saving} className="rounded-xl font-black h-11 px-8 shadow-lg shadow-primary/20 bg-primary hover:scale-[1.02] transition-transform">
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'حفظ التغييرات'}
             </Button>
           </DialogFooter>
         </DialogContent>

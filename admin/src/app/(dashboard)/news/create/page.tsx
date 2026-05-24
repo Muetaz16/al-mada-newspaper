@@ -224,7 +224,7 @@ export default function CreateNewsPage() {
                             </SelectValue>
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent className="rounded-xl border-none shadow-2xl">
+                        <SelectContent className="rounded-2xl border-none shadow-2xl max-h-[300px] p-2 bg-white">
                           {(() => {
                             const roots = categories.filter(c => !c.parent_id);
                             const children = categories.filter(c => c.parent_id);
@@ -242,8 +242,23 @@ export default function CreateNewsPage() {
                             });
                             return list;
                           })().map((cat) => (
-                            <SelectItem key={cat.id} value={cat.id} className="font-bold rounded-lg py-3">
-                              {cat.isChild ? `↳ ${cat.name_ar}` : cat.name_ar}
+                            <SelectItem 
+                              key={cat.id} 
+                              value={cat.id} 
+                              className={`rounded-xl py-3 cursor-pointer ${
+                                cat.isChild 
+                                  ? 'pr-8 font-medium text-slate-500 hover:text-slate-800' 
+                                  : 'font-black text-slate-900 bg-slate-50/50 hover:bg-slate-100/50'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                {cat.isChild ? (
+                                  <span className="text-slate-400 font-black">↳</span>
+                                ) : (
+                                  <span className="text-primary select-none">📁</span>
+                                )}
+                                <span>{cat.name_ar}</span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
