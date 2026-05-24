@@ -3,9 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Menu, X, Play, Film, Mic2, Tv, Globe } from 'lucide-react';
+import { Globe, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
 
@@ -25,14 +24,22 @@ export function Navbar() {
     fetchCategories();
   }, [supabase]);
 
-  const navCategories = dbCategories.length > 0 ? dbCategories : [
-    { name_ar: 'سياسة', slug: 'politics' },
-    { name_ar: 'اقتصاد', slug: 'economy' },
-    { name_ar: 'رياضة', slug: 'sports' },
-    { name_ar: 'تكنولوجيا', slug: 'tech' },
-    { name_ar: 'ثقافة', slug: 'culture' },
-    { name_ar: 'صحة', slug: 'health' },
-  ];
+  // Group categories into parent-children tree
+  const rootCategories = dbCategories.length > 0 
+    ? dbCategories.filter(c => !c.parent_id) 
+    : [
+        { name_ar: 'سياسة', slug: 'politics', id: 'politics' },
+        { name_ar: 'اقتصاد', slug: 'economy', id: 'economy' },
+        { name_ar: 'رياضة', slug: 'sports', id: 'sports' },
+        { name_ar: 'تكنولوجيا', slug: 'tech', id: 'tech' },
+        { name_ar: 'ثقافة', slug: 'culture', id: 'culture' },
+        { name_ar: 'صحة', slug: 'health', id: 'health' },
+      ];
+
+  const getSubCategories = (parentId: string) => {
+    if (dbCategories.length === 0) return [];
+    return dbCategories.filter(c => c.parent_id === parentId);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full" dir="rtl">
@@ -88,22 +95,64 @@ export function Navbar() {
             <div className="flex items-center gap-2 p-1 bg-slate-950/5 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]">
               <Link
                 href="/"
-                className="px-8 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                className="px-8 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
               >
                 الرئيسية
               </Link>
 
               <div className="flex items-center gap-1 px-6">
-                {navCategories.map((cat: any) => (
-                  <Link
-                    key={cat.slug || cat.name_ar}
-                    href={`/category/${cat.slug || cat.name_ar}`}
-                    className="group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
-                  >
-                    {cat.name_ar}
-                    <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
-                  </Link>
-                ))}
+                {rootCategories.map((cat: any) => {
+                  const subs = getSubCategories(cat.id);
+                  const hasSubs = subs.length > 0;
+
+                  if (!hasSubs) {
+                    return (
+                      <Link
+                        key={cat.slug || cat.name_ar}
+                        href={`/category/${cat.slug || cat.name_ar}`}
+                        className="group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                      >
+                        {cat.name_ar}
+                        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                      </Link>
+                    );
+                  }
+
+                  return (
+                    <div 
+                      key={cat.slug || cat.name_ar}
+                      className="group relative"
+                    >
+                      <button
+                        className="px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none"
+                      >
+                        {cat.name_ar}
+                        <span className="text-[8px] text-slate-400 select-none group-hover:rotate-180 transition-transform duration-300">▼</span>
+                        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                      </button>
+
+                      {/* Absolute Dropdown */}
+                      <div className="absolute top-full right-0 mt-1 min-w-[180px] bg-slate-950/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-2 hidden group-hover:block animate-in fade-in slide-in-from-top-2 duration-200 z-50">
+                        <Link
+                          href={`/category/${cat.slug || cat.name_ar}`}
+                          className="block w-full text-right px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black"
+                        >
+                          كل {cat.name_ar}
+                        </Link>
+                        <div className="h-px bg-white/5 my-1" />
+                        {subs.map((sub: any) => (
+                          <Link
+                            key={sub.slug || sub.name_ar}
+                            href={`/category/${sub.slug || sub.name_ar}`}
+                            className="block w-full text-right px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black"
+                          >
+                            {sub.name_ar}
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </nav>
@@ -130,20 +179,45 @@ export function Navbar() {
             className="xl:hidden fixed inset-0 top-[84px] sm:top-[100px] md:top-[110px] bg-white/90 z-[100] p-12 overflow-y-auto"
           >
             <div className="space-y-16">
-              <div className="grid grid-cols-1 gap-10 font-black text-4xl text-start">
-                {navCategories.map((cat: any, idx) => (
-                  <motion.div
-                    key={cat.slug || cat.name_ar}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                  >
-                    <Link href={`/category/${cat.slug || cat.name_ar}`} onClick={() => setIsOpen(false)} className="group flex items-center gap-6 hover:text-primary transition-all">
-                      <span className="text-primary/20 group-hover:text-primary transition-colors">0{idx + 1}</span>
-                      {cat.name_ar}
-                    </Link>
-                  </motion.div>
-                ))}
+              <div className="grid grid-cols-1 gap-8 font-black text-start">
+                {rootCategories.map((cat: any, idx) => {
+                  const subs = getSubCategories(cat.id);
+                  const hasSubs = subs.length > 0;
+
+                  return (
+                    <motion.div
+                      key={cat.slug || cat.name_ar}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="space-y-4"
+                    >
+                      <Link 
+                        href={`/category/${cat.slug || cat.name_ar}`} 
+                        onClick={() => setIsOpen(false)} 
+                        className="group flex items-center gap-6 text-4xl hover:text-primary transition-all"
+                      >
+                        <span className="text-primary/20 group-hover:text-primary transition-colors">0{idx + 1}</span>
+                        {cat.name_ar}
+                      </Link>
+
+                      {hasSubs && (
+                        <div className="pr-12 space-y-3 flex flex-col border-r-2 border-slate-100 mr-4">
+                          {subs.map((sub: any) => (
+                            <Link 
+                              key={sub.slug || sub.name_ar}
+                              href={`/category/${sub.slug || sub.name_ar}`} 
+                              onClick={() => setIsOpen(false)} 
+                              className="text-2xl text-slate-500 hover:text-primary transition-all"
+                            >
+                              ↳ {sub.name_ar}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
               </div>
               <div className="pt-10 border-t border-slate-100">
                 <Button nativeButton={false} render={<Link href="/live" onClick={() => setIsOpen(false)} />} className="w-full h-16 rounded-[1.75rem] bg-primary hover:bg-primary/95 text-white font-black text-xl shadow-xl shadow-primary/20 active:scale-95 transition-all">بث مباشر</Button>
