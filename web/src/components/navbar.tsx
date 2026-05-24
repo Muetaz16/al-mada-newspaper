@@ -137,36 +137,36 @@ export function Navbar() {
                       <AnimatePresence>
                         {hoveredCat === cat.id && (
                           <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            initial={{ opacity: 0, y: 8, scale: 0.96 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                            transition={{ duration: 0.15, ease: 'easeOut' }}
-                            className="absolute top-full right-1/2 translate-x-1/2 mt-2 w-[220px] bg-slate-950/95 backdrop-blur-2xl border border-white/10 rounded-[1.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-3 z-50 text-right overflow-hidden"
+                            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                            transition={{ duration: 0.2, ease: 'easeOut' }}
+                            className="absolute top-full right-0 mt-2 w-[200px] bg-white/95 backdrop-blur-2xl border border-slate-200/50 rounded-2xl shadow-[0_15px_30px_-5px_rgba(0,0,0,0.08)] p-2.5 z-50 text-right overflow-hidden"
                           >
-                            {/* Stylish Glow Effect */}
-                            <div className="absolute top-0 right-1/4 w-12 h-12 bg-primary/20 blur-xl rounded-full" />
+                            {/* Accent Glow */}
+                            <div className="absolute top-0 right-1/4 w-10 h-10 bg-primary/5 blur-lg rounded-full" />
                             
-                            <div className="relative z-10 space-y-1">
+                            <div className="relative z-10 space-y-0.5">
                               <Link
                                 href={`/category/${cat.slug || cat.name_ar}`}
                                 onClick={() => setHoveredCat(null)}
-                                className="flex items-center justify-between w-full px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black group/item"
+                                className="flex items-center justify-between w-full px-3.5 py-2 rounded-xl text-xs font-black text-slate-800 hover:text-primary hover:bg-slate-50 transition-all group/item"
                               >
                                 <span>كل {cat.name_ar}</span>
-                                <span className="text-[10px] text-primary opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">←</span>
+                                <span className="text-[10px] text-primary opacity-0 -translate-x-1.5 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">←</span>
                               </Link>
                               
-                              <div className="h-px bg-white/10 my-1 mx-2" />
+                              <div className="h-px bg-slate-100/80 my-1.5 mx-1" />
                               
                               {subs.map((sub: any) => (
                                 <Link
                                   key={sub.slug || sub.name_ar}
                                   href={`/category/${sub.slug || sub.name_ar}`}
                                   onClick={() => setHoveredCat(null)}
-                                  className="flex items-center justify-between w-full px-4 py-2.5 text-xs text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition-all font-bold group/item"
+                                  className="flex items-center justify-between w-full px-3.5 py-2 rounded-xl text-xs font-black text-slate-500 hover:text-primary hover:bg-slate-50/50 transition-all group/item"
                                 >
                                   <span>{sub.name_ar}</span>
-                                  <span className="text-[10px] text-primary opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">↳</span>
+                                  <span className="text-[10px] text-primary opacity-0 -translate-x-1.5 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">↳</span>
                                 </Link>
                               ))}
                             </div>
@@ -225,15 +225,16 @@ export function Navbar() {
                       </Link>
 
                       {hasSubs && (
-                        <div className="pr-12 space-y-3 flex flex-col border-r-2 border-slate-100 mr-4">
+                        <div className="pr-8 mr-2.5 border-r border-slate-100 space-y-3 flex flex-col pt-1">
                           {subs.map((sub: any) => (
                             <Link 
                               key={sub.slug || sub.name_ar}
                               href={`/category/${sub.slug || sub.name_ar}`} 
                               onClick={() => setIsOpen(false)} 
-                              className="text-2xl text-slate-500 hover:text-primary transition-all"
+                              className="text-xl font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
                             >
-                              ↳ {sub.name_ar}
+                              <span className="text-xs text-slate-300 font-sans">↳</span>
+                              {sub.name_ar}
                             </Link>
                           ))}
                         </div>
