@@ -225,9 +225,25 @@ export default function CreateNewsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="rounded-xl border-none shadow-2xl">
-                          {categories.map((cat) => (
+                          {(() => {
+                            const roots = categories.filter(c => !c.parent_id);
+                            const children = categories.filter(c => c.parent_id);
+                            const list: any[] = [];
+                            roots.forEach(root => {
+                              list.push({ ...root, isChild: false });
+                              children.filter(child => child.parent_id === root.id).forEach(child => {
+                                list.push({ ...child, isChild: true });
+                              });
+                            });
+                            children.forEach(child => {
+                              if (!list.some(item => item.id === child.id)) {
+                                list.push({ ...child, isChild: true });
+                              }
+                            });
+                            return list;
+                          })().map((cat) => (
                             <SelectItem key={cat.id} value={cat.id} className="font-bold rounded-lg py-3">
-                              {cat.name_ar}
+                              {cat.isChild ? `↳ ${cat.name_ar}` : cat.name_ar}
                             </SelectItem>
                           ))}
                         </SelectContent>

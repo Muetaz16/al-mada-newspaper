@@ -26,9 +26,15 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -39,6 +45,7 @@ export default function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<any>(null);
   const [nameAr, setNameAr] = useState('');
   const [slug, setSlug] = useState('');
+  const [parentId, setParentId] = useState<string | null>(null);
   
   const supabase = createClient();
 
@@ -57,6 +64,7 @@ export default function CategoriesPage() {
     setEditingCategory(category);
     setNameAr(category.name_ar);
     setSlug(category.slug);
+    setParentId(category.parent_id || null);
     setOpen(true);
   };
 
@@ -64,6 +72,7 @@ export default function CategoriesPage() {
     setEditingCategory(null);
     setNameAr('');
     setSlug('');
+    setParentId(null);
     setOpen(true);
   };
 
@@ -71,10 +80,16 @@ export default function CategoriesPage() {
     if (!nameAr || !slug) return;
     setSaving(true);
 
+    const payload = {
+      name_ar: nameAr,
+      slug,
+      parent_id: parentId || null
+    };
+
     if (editingCategory) {
-      await supabase.from('categories').update({ name_ar: nameAr, slug }).eq('id', editingCategory.id);
+      await supabase.from('categories').update(payload).eq('id', editingCategory.id);
     } else {
-      await supabase.from('categories').insert({ name_ar: nameAr, slug });
+      await supabase.from('categories').insert(payload);
     }
 
     setOpen(false);
@@ -88,7 +103,36 @@ export default function CategoriesPage() {
     fetchCategories();
   };
 
-  const filteredCategories = categories.filter(c => 
+  // Build a visual hierarchy: place children categories directly beneath their parent category
+  const buildHierarchy = (items: any[]) => {
+    const roots = items.filter(c => !c.parent_id);
+    const children = items.filter(c => c.parent_id);
+    
+    const list: any[] = [];
+    roots.forEach(root => {
+      list.push({ ...root, isChild: false });
+      const rootChildren = children.filter(child => child.parent_id === root.id);
+      rootChildren.forEach(child => {
+        list.push({
+          ...child,
+          parentName: root.name_ar,
+          isChild: true
+        });
+      });
+    });
+    
+    // Catch-all for orphaned sub-categories if their parent is missing
+    children.forEach(child => {
+      if (!list.some(item => item.id === child.id)) {
+        list.push({ ...child, isChild: true, parentName: 'مجهول' });
+      }
+    });
+    
+    return list;
+  };
+
+  const hierarchicalList = buildHierarchy(categories);
+  const filteredCategories = hierarchicalList.filter(c => 
     c.name_ar.toLowerCase().includes(search.toLowerCase()) || 
     c.slug.toLowerCase().includes(search.toLowerCase())
   );
@@ -97,8 +141,11 @@ export default function CategoriesPage() {
     <div className="space-y-8" dir="rtl">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="text-start">
-          <h2 className="text-3xl font-black tracking-tight">إدارة الأقسام</h2>
-          <p className="text-muted-foreground text-sm font-bold mt-1">إضافة وتعديل أقسام الأخبار في الموقع</p>
+          <h2 className="text-3xl font-black tracking-tight flex items-center gap-2">
+            <Tag className="w-8 h-8 text-primary" />
+            إدارة الأقسام (القائمة)
+          </h2>
+          <p className="text-muted-foreground text-sm font-bold mt-1">إنشاء الأقسام الرئيسية والأقسام الفرعية (القوائم المنسدلة)</p>
         </div>
         <Button onClick={handleCreate} className="font-black h-12 px-6 rounded-2xl shadow-lg shadow-primary/20">
           <Plus className="ml-2 h-5 w-5" />
@@ -124,7 +171,8 @@ export default function CategoriesPage() {
             <Table>
               <TableHeader className="bg-slate-50/50">
                 <TableRow className="hover:bg-transparent border-b border-muted/30">
-                  <TableHead className="text-right py-5 px-6 font-black text-slate-800">اسم القسم</TableHead>
+                  <TableHead className="text-right py-5 px-6 font-black text-slate-800">اسم القسم / القائمة</TableHead>
+                  <TableHead className="text-right py-5 px-6 font-black text-slate-800">القسم الرئيسي</TableHead>
                   <TableHead className="text-right py-5 px-6 font-black text-slate-800">الرابط (Slug)</TableHead>
                   <TableHead className="w-[120px]"></TableHead>
                 </TableRow>
@@ -132,13 +180,13 @@ export default function CategoriesPage() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="py-20 text-center">
+                    <TableCell colSpan={4} className="py-20 text-center">
                       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
                     </TableCell>
                   </TableRow>
                 ) : filteredCategories.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="py-20 text-center text-muted-foreground font-bold">
+                    <TableCell colSpan={4} className="py-20 text-center text-muted-foreground font-bold">
                       لا توجد أقسام مطابقة للبحث
                     </TableCell>
                   </TableRow>
@@ -146,12 +194,26 @@ export default function CategoriesPage() {
                   filteredCategories.map((cat) => (
                     <TableRow key={cat.id} className="hover:bg-slate-50/50 transition-colors border-b border-muted/20 last:border-none">
                       <TableCell className="py-5 px-6 text-start">
-                        <div className="flex items-center gap-3">
-                          <div className="bg-primary/10 p-2 rounded-xl text-primary">
+                        <div className={`flex items-center gap-3 ${cat.isChild ? 'pr-8' : ''}`}>
+                          {cat.isChild ? (
+                            <span className="text-slate-400 font-black text-lg select-none">↳</span>
+                          ) : null}
+                          <div className={`p-2 rounded-xl ${cat.isChild ? 'bg-slate-100 text-slate-500' : 'bg-primary/10 text-primary'}`}>
                             <Tag className="h-4 w-4" />
                           </div>
-                          <p className="font-black text-slate-900">{cat.name_ar}</p>
+                          <p className={`font-black ${cat.isChild ? 'text-slate-700 text-sm' : 'text-slate-900'}`}>{cat.name_ar}</p>
                         </div>
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start">
+                        {cat.isChild ? (
+                          <span className="inline-flex items-center bg-slate-100 text-slate-700 text-[10px] font-black px-2.5 py-1 rounded-md">
+                            {cat.parentName}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center bg-primary/5 text-primary text-[10px] font-black px-2.5 py-1 rounded-md">
+                            قسم رئيسي (أب)
+                          </span>
+                        )}
                       </TableCell>
                       <TableCell className="py-5 px-6 text-start font-mono text-xs text-slate-500" dir="ltr">
                         {cat.slug}
@@ -182,7 +244,7 @@ export default function CategoriesPage() {
           </DialogHeader>
           <div className="grid gap-6 py-4">
             <div className="space-y-2 text-start">
-              <label className="text-sm font-black text-slate-700">اسم القسم (بالعربية)</label>
+              <label className="text-sm font-black text-slate-700">اسم القسم / القائمة (بالعربية)</label>
               <Input 
                 value={nameAr} 
                 onChange={(e) => {
@@ -195,6 +257,30 @@ export default function CategoriesPage() {
                 className="h-12 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold"
               />
             </div>
+            
+            <div className="space-y-2 text-start">
+              <label className="text-sm font-black text-slate-700">القسم الرئيسي (اختياري - لجعله قائمة فرعية)</label>
+              <Select 
+                onValueChange={(val) => setParentId(val === 'none' ? null : val)} 
+                value={parentId || 'none'}
+              >
+                <SelectTrigger className="h-12 rounded-xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold">
+                  <SelectValue placeholder="اختر قسماً رئيسياً" />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border-none shadow-2xl">
+                  <SelectItem value="none" className="font-bold rounded-lg py-3">بدون (قسم رئيسي / أعلى مستوى)</SelectItem>
+                  {categories
+                    .filter(c => !c.parent_id && c.id !== editingCategory?.id)
+                    .map(c => (
+                      <SelectItem key={c.id} value={c.id} className="font-bold rounded-lg py-3">
+                        {c.name_ar}
+                      </SelectItem>
+                    ))
+                  }
+                </SelectContent>
+              </Select>
+            </div>
+
             <div className="space-y-2 text-start">
               <label className="text-sm font-black text-slate-700">الرابط (Slug)</label>
               <Input 
