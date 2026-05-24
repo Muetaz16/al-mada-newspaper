@@ -196,13 +196,38 @@ export function Navbar() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(40px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            className="xl:hidden fixed inset-0 top-[84px] sm:top-[100px] md:top-[110px] bg-white/90 z-[100] p-12 overflow-y-auto"
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.03 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="xl:hidden fixed inset-0 bg-slate-950 z-[9999] p-8 flex flex-col justify-between overflow-y-auto"
+            dir="rtl"
           >
-            <div className="space-y-16">
-              <div className="grid grid-cols-1 gap-8 font-black text-start">
+            {/* Dark Mode Background Glows */}
+            <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 blur-[100px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+
+            {/* Header section in menu drawer */}
+            <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-6 mb-8">
+              <Link href="/" onClick={() => setIsOpen(false)} className="relative h-8 w-36">
+                <Image
+                  src="/logo.png"
+                  alt="صحيفة المدى"
+                  fill
+                  className="object-contain object-right brightness-0 invert"
+                />
+              </Link>
+              <button
+                className="p-3 bg-white/5 text-white hover:bg-primary rounded-2xl transition-all active:scale-90"
+                onClick={() => setIsOpen(false)}
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Links section */}
+            <div className="relative z-10 flex-1 py-4">
+              <div className="grid grid-cols-1 gap-6 font-black text-start">
                 {rootCategories.map((cat: any, idx) => {
                   const subs = getSubCategories(cat.id);
                   const hasSubs = subs.length > 0;
@@ -210,30 +235,30 @@ export function Navbar() {
                   return (
                     <motion.div
                       key={cat.slug || cat.name_ar}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="space-y-4"
+                      className="space-y-3"
                     >
                       <Link 
                         href={`/category/${cat.slug || cat.name_ar}`} 
                         onClick={() => setIsOpen(false)} 
-                        className="group flex items-center gap-6 text-4xl hover:text-primary transition-all"
+                        className="group flex items-baseline gap-4 hover:text-primary transition-all text-2xl sm:text-3xl"
                       >
-                        <span className="text-primary/20 group-hover:text-primary transition-colors">0{idx + 1}</span>
-                        {cat.name_ar}
+                        <span className="text-primary/40 font-serif italic text-sm">0{idx + 1}</span>
+                        <span className="text-white group-hover:text-primary transition-colors leading-none">{cat.name_ar}</span>
                       </Link>
 
                       {hasSubs && (
-                        <div className="pr-8 mr-2.5 border-r border-slate-100 space-y-3 flex flex-col pt-1">
+                        <div className="pr-6 mr-1.5 border-r border-white/10 space-y-2.5 flex flex-col pt-0.5 pb-2">
                           {subs.map((sub: any) => (
                             <Link 
                               key={sub.slug || sub.name_ar}
                               href={`/category/${sub.slug || sub.name_ar}`} 
                               onClick={() => setIsOpen(false)} 
-                              className="text-xl font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
+                              className="text-base font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
                             >
-                              <span className="text-xs text-slate-300 font-sans">↳</span>
+                              <span className="text-[10px] text-primary/60">↳</span>
                               {sub.name_ar}
                             </Link>
                           ))}
@@ -243,9 +268,17 @@ export function Navbar() {
                   );
                 })}
               </div>
-              <div className="pt-10 border-t border-slate-100">
-                <Button nativeButton={false} render={<Link href="/live" onClick={() => setIsOpen(false)} />} className="w-full h-16 rounded-[1.75rem] bg-primary hover:bg-primary/95 text-white font-black text-xl shadow-xl shadow-primary/20 active:scale-95 transition-all">بث مباشر</Button>
-              </div>
+            </div>
+
+            {/* Footer action */}
+            <div className="relative z-10 pt-6 border-t border-white/10 mt-8">
+              <Button 
+                nativeButton={false} 
+                render={<Link href="/live" onClick={() => setIsOpen(false)} />} 
+                className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/95 text-white font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all"
+              >
+                بث مباشر
+              </Button>
             </div>
           </motion.div>
         )}
