@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Table, 
@@ -8,29 +11,43 @@ import {
   TableRow 
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { 
   Plus, 
   Search,
-  Calendar,
   Film,
   Play,
-  Eye
+  Eye,
+  Loader2
 } from 'lucide-react';
-import { prisma } from '@/utils/prisma';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ReelActions } from '@/components/reel-actions';
+import { createClient } from '@/utils/supabase/client';
 import Image from 'next/image';
 
-export const dynamic = 'force-dynamic';
+export default function ReelsPage() {
+  const [reels, setReels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const supabase = createClient();
 
-export default async function ReelsPage() {
-  const reels = await prisma.reel.findMany({
-    orderBy: {
-      created_at: 'desc'
-    }
-  });
+  async function fetchReels() {
+    setLoading(true);
+    const { data } = await supabase
+      .from('reels')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (data) setReels(data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchReels();
+  }, []);
+
+  const filteredReels = reels.filter((reel) => 
+    reel.title?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-8" dir="rtl">
@@ -51,10 +68,12 @@ export default async function ReelsPage() {
       <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
         <CardContent className="p-0">
           <div className="p-6 border-b border-muted/30 flex flex-col md:flex-row gap-4 items-center justify-between bg-slate-50/50">
-            <div className="relative w-full md:w-96">
+            <div className="relative w-full md:w-96 text-start">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input 
                 placeholder="البحث في الريلز..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="pr-10 h-11 bg-white border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary/10 font-bold text-start"
               />
             </div>
@@ -71,45 +90,52 @@ export default async function ReelsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {reels.length === 0 && (
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="py-20 text-center">
+                      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                    </TableCell>
+                  </TableRow>
+                ) : filteredReels.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="py-20 text-center text-muted-foreground font-bold">
                       لا توجد فيديوهات حالياً
                     </TableCell>
                   </TableRow>
-                )}
-                {reels.map((reel) => (
-                  <TableRow key={reel.id} className="hover:bg-slate-50/50 transition-colors border-b border-muted/20 last:border-none">
-                    <TableCell className="py-5 px-6 text-start">
-                      <div className="flex items-center gap-4">
-                        <div className="relative w-16 h-24 rounded-xl overflow-hidden shadow-lg shrink-0">
-                          <Image
-                            src={reel.thumbnail || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'}
-                            alt={reel.title}
-                            fill
-                            className="object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                            <Play className="w-4 h-4 text-white fill-white" />
+                ) : (
+                  filteredReels.map((reel) => (
+                    <TableRow key={reel.id} className="hover:bg-slate-50/50 transition-colors border-b border-muted/20 last:border-none">
+                      <TableCell className="py-5 px-6 text-start">
+                        <div className="flex items-center gap-4">
+                          <div className="relative w-16 h-24 rounded-xl overflow-hidden shadow-lg shrink-0">
+                            <Image
+                              src={reel.thumbnail || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'}
+                              alt={reel.title}
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                              <Play className="w-4 h-4 text-white fill-white" />
+                            </div>
                           </div>
+                          <p className="font-black text-slate-900 leading-tight">{reel.title}</p>
                         </div>
-                        <p className="font-black text-slate-900 leading-tight">{reel.title}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-5 px-6 text-start">
-                      <div className="flex items-center gap-1.5 font-black text-xs text-slate-700">
-                        <Eye className="w-3.5 h-3.5 text-slate-400" />
-                        {(reel.views || 0).toLocaleString()}
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-5 px-6 text-start font-bold text-xs text-slate-500">
-                      {new Date(reel.created_at).toLocaleDateString('en-GB')}
-                    </TableCell>
-                    <TableCell className="py-5 px-6">
-                      <ReelActions reelId={reel.id} />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start">
+                        <div className="flex items-center gap-1.5 font-black text-xs text-slate-700">
+                          <Eye className="w-3.5 h-3.5 text-slate-400" />
+                          {(reel.views || 0).toLocaleString()}
+                        </div>
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start font-bold text-xs text-slate-500">
+                        {new Date(reel.created_at).toLocaleDateString('en-GB')}
+                      </TableCell>
+                      <TableCell className="py-5 px-6">
+                        <ReelActions reelId={reel.id} onDeleted={fetchReels} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

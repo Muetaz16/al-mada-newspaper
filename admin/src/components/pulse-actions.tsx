@@ -20,7 +20,7 @@ import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
 import { canDeletePost } from '@/utils/permissions';
 
-export function PulseActions({ pulseId }: { pulseId: string }) {
+export function PulseActions({ pulseId, onDeleted }: { pulseId: string; onDeleted?: () => void }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const supabase = createClient();
@@ -36,7 +36,11 @@ export function PulseActions({ pulseId }: { pulseId: string }) {
       alert('خطأ في الحذف: ' + error.message);
       setLoading(false);
     } else {
-      router.refresh();
+      if (onDeleted) {
+        onDeleted();
+      } else {
+        router.refresh();
+      }
     }
   };
 

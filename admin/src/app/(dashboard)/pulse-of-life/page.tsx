@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Table, 
@@ -12,25 +15,39 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Plus, 
   Search,
-  Filter,
-  Calendar,
   MessageCircleQuestion,
   Heart,
-  ChevronLeft
+  Loader2
 } from 'lucide-react';
-import { prisma } from '@/utils/prisma';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { PulseActions } from '@/components/pulse-actions';
+import { createClient } from '@/utils/supabase/client';
 
-export const dynamic = 'force-dynamic';
+export default function PulseOfLifePage() {
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const supabase = createClient();
 
-export default async function PulseOfLifePage() {
-  const items = await prisma.pulseOfLife.findMany({
-    orderBy: {
-      created_at: 'desc'
-    }
-  });
+  async function fetchItems() {
+    setLoading(true);
+    const { data } = await supabase
+      .from('pulse_of_life')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (data) setItems(data);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchItems();
+  }, []);
+
+  const filteredItems = items.filter((item) => 
+    item.question?.toLowerCase().includes(search.toLowerCase()) ||
+    item.category?.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div className="space-y-8" dir="rtl">
@@ -51,10 +68,12 @@ export default async function PulseOfLifePage() {
       <Card className="border-none shadow-xl rounded-[2.5rem] overflow-hidden bg-white">
         <CardContent className="p-0">
           <div className="p-6 border-b border-muted/30 flex flex-col md:flex-row gap-4 items-center justify-between bg-slate-50/50">
-            <div className="relative w-full md:w-96">
+            <div className="relative w-full md:w-96 text-start">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
               <Input 
                 placeholder="البحث في الأسئلة..." 
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 className="pr-10 h-11 bg-white border-none rounded-xl shadow-sm focus:ring-2 focus:ring-primary/10 font-bold text-start"
               />
             </div>
@@ -71,36 +90,43 @@ export default async function PulseOfLifePage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {items.length === 0 && (
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="py-20 text-center">
+                      <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                    </TableCell>
+                  </TableRow>
+                ) : filteredItems.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} className="py-20 text-center text-muted-foreground font-bold">
                       لا توجد أسئلة حالياً
                     </TableCell>
                   </TableRow>
-                )}
-                {items.map((item) => (
-                  <TableRow key={item.id} className="hover:bg-slate-50/50 transition-colors border-b border-muted/20 last:border-none">
-                    <TableCell className="py-5 px-6 text-start">
-                      <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
-                          <MessageCircleQuestion className="w-5 h-5 text-primary" />
+                ) : (
+                  filteredItems.map((item) => (
+                    <TableRow key={item.id} className="hover:bg-slate-50/50 transition-colors border-b border-muted/20 last:border-none">
+                      <TableCell className="py-5 px-6 text-start">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/5 flex items-center justify-center shrink-0">
+                            <MessageCircleQuestion className="w-5 h-5 text-primary" />
+                          </div>
+                          <p className="font-black text-slate-900 leading-tight mt-2">{item.question}</p>
                         </div>
-                        <p className="font-black text-slate-900 leading-tight mt-2">{item.question}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell className="py-5 px-6 text-start">
-                      <Badge className="bg-slate-100 text-slate-600 border-none font-bold px-3 py-1 rounded-lg">
-                        {item.category || 'عام'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="py-5 px-6 text-start font-bold text-xs text-slate-500">
-                      {new Date(item.created_at).toLocaleDateString('en-GB')}
-                    </TableCell>
-                    <TableCell className="py-5 px-6">
-                      <PulseActions pulseId={item.id} />
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start">
+                        <Badge className="bg-slate-100 text-slate-600 border-none font-bold px-3 py-1 rounded-lg">
+                          {item.category || 'عام'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start font-bold text-xs text-slate-500">
+                        {new Date(item.created_at).toLocaleDateString('en-GB')}
+                      </TableCell>
+                      <TableCell className="py-5 px-6">
+                        <PulseActions pulseId={item.id} onDeleted={fetchItems} />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
