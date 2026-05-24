@@ -11,6 +11,7 @@ import { createClient } from '@/utils/supabase/client';
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
+  const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -121,35 +122,57 @@ export function Navbar() {
                   return (
                     <div 
                       key={cat.slug || cat.name_ar}
-                      className="group relative"
+                      className="relative"
+                      onMouseEnter={() => setHoveredCat(cat.id)}
+                      onMouseLeave={() => setHoveredCat(null)}
                     >
                       <button
-                        className="px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none"
+                        className={`px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-slate-950' : ''}`}
                       >
                         {cat.name_ar}
-                        <span className="text-[8px] text-slate-400 select-none group-hover:rotate-180 transition-transform duration-300">▼</span>
-                        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                        <span className={`text-[8px] text-slate-400 select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
+                        <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${hoveredCat === cat.id ? 'w-4' : 'w-0'}`} />
                       </button>
 
-                      {/* Absolute Dropdown */}
-                      <div className="absolute top-full right-0 mt-1 min-w-[180px] bg-slate-950/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-2xl p-2 hidden group-hover:block animate-in fade-in slide-in-from-top-2 duration-200 z-50">
-                        <Link
-                          href={`/category/${cat.slug || cat.name_ar}`}
-                          className="block w-full text-right px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black"
-                        >
-                          كل {cat.name_ar}
-                        </Link>
-                        <div className="h-px bg-white/5 my-1" />
-                        {subs.map((sub: any) => (
-                          <Link
-                            key={sub.slug || sub.name_ar}
-                            href={`/category/${sub.slug || sub.name_ar}`}
-                            className="block w-full text-right px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black"
+                      <AnimatePresence>
+                        {hoveredCat === cat.id && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                            className="absolute top-full right-1/2 translate-x-1/2 mt-2 w-[220px] bg-slate-950/95 backdrop-blur-2xl border border-white/10 rounded-[1.5rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] p-3 z-50 text-right overflow-hidden"
                           >
-                            {sub.name_ar}
-                          </Link>
-                        ))}
-                      </div>
+                            {/* Stylish Glow Effect */}
+                            <div className="absolute top-0 right-1/4 w-12 h-12 bg-primary/20 blur-xl rounded-full" />
+                            
+                            <div className="relative z-10 space-y-1">
+                              <Link
+                                href={`/category/${cat.slug || cat.name_ar}`}
+                                onClick={() => setHoveredCat(null)}
+                                className="flex items-center justify-between w-full px-4 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-all font-black group/item"
+                              >
+                                <span>كل {cat.name_ar}</span>
+                                <span className="text-[10px] text-primary opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">←</span>
+                              </Link>
+                              
+                              <div className="h-px bg-white/10 my-1 mx-2" />
+                              
+                              {subs.map((sub: any) => (
+                                <Link
+                                  key={sub.slug || sub.name_ar}
+                                  href={`/category/${sub.slug || sub.name_ar}`}
+                                  onClick={() => setHoveredCat(null)}
+                                  className="flex items-center justify-between w-full px-4 py-2.5 text-xs text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition-all font-bold group/item"
+                                >
+                                  <span>{sub.name_ar}</span>
+                                  <span className="text-[10px] text-primary opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">↳</span>
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                   );
                 })}
