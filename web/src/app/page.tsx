@@ -17,6 +17,7 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  User,
 } from 'lucide-react';
 import { CategorySection } from '@/components/category-section';
 import { InBriefSection } from '@/components/in-brief-section';
@@ -280,49 +281,96 @@ export default function Home() {
         <PulseOfLifeSection />
         <InBriefSection />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-          {/* Left Column: Image Extent (The Display) */}
-          <section className="space-y-10 lg:sticky lg:top-32">
-             <div className="flex items-center gap-6 border-b-2 border-slate-900 pb-6">
-                <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter bg-slate-900 text-white px-6 py-2">
-                  مدى الصورة
-                </h3>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          {/* Left Column: Featured Analysis Display (7 cols) */}
+          <section className="lg:col-span-7 space-y-8 lg:sticky lg:top-32 text-start">
+             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
+                    التحليل المختار
+                  </h3>
+                </div>
+                <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Featured Analysis</span>
              </div>
+
              {analyses.length > 0 ? (
-               <div className="relative block aspect-[16/10] rounded-[3rem] overflow-hidden shadow-2xl group">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={analyses[selectedAnalysisIdx].id}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.7 }}
-                      className="absolute inset-0"
+               <div className="group bg-slate-50/50 rounded-[2.5rem] border border-slate-100 p-6 md:p-8 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 flex flex-col gap-6">
+                  {/* Hero Image */}
+                  <Link 
+                    href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
+                    className="relative block aspect-[16/10] rounded-[2rem] overflow-hidden shadow-lg cursor-pointer"
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={analyses[selectedAnalysisIdx].id}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.5 }}
+                        className="absolute inset-0"
+                      >
+                        <Image 
+                          src={analyses[selectedAnalysisIdx].image_url} 
+                          alt={analyses[selectedAnalysisIdx].title} 
+                          fill 
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-[6000ms]" 
+                        />
+                      </motion.div>
+                    </AnimatePresence>
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
+                    <div className="absolute top-4 right-4 bg-primary text-white font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg">
+                      تحليل ورأي
+                    </div>
+                  </Link>
+
+                  {/* Excerpt Details */}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                      <span className="text-slate-500 font-extrabold">{new Date(analyses[selectedAnalysisIdx].created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                      <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                      <span>قراءة دقيقة 6</span>
+                    </div>
+
+                    <Link 
+                      href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
+                      className="block hover:text-primary transition-colors duration-300 text-start"
                     >
-                      <Image 
-                        src={analyses[selectedAnalysisIdx].image_url} 
-                        alt="Featured Image" 
-                        fill 
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-[5000ms]" 
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-                  <div className="absolute bottom-10 right-10 left-10 text-start z-10">
-                     <motion.p 
-                       key={analyses[selectedAnalysisIdx].title}
-                       initial={{ y: 20, opacity: 0 }}
-                       animate={{ y: 0, opacity: 1 }}
-                       className="text-white font-black text-2xl leading-tight"
-                     >
-                       {analyses[selectedAnalysisIdx].title}
-                     </motion.p>
+                      <h4 className="text-2xl md:text-3.5xl font-black leading-tight tracking-tighter text-slate-900">
+                        {analyses[selectedAnalysisIdx].title}
+                      </h4>
+                    </Link>
+
+                    <p className="text-slate-600 font-medium text-sm md:text-base leading-relaxed line-clamp-3 text-start">
+                      {analyses[selectedAnalysisIdx].subtitle || 'نظرة تحليلية معمقة تسلط الضوء على الأبعاد الخفية للأحداث وتأثيراتها الإقليمية الدولية بأقلام كبار الكتاب والمحللين في صحيفة المدى.'}
+                    </p>
+
+                    {/* Author & Read CTA */}
+                    <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm overflow-hidden">
+                          <User className="h-5 w-5 text-slate-400" />
+                        </div>
+                        <div className="text-start">
+                          <p className="text-xs font-black text-slate-900 leading-tight">إدارة التحرير</p>
+                          <p className="text-[10px] font-bold text-slate-400">كاتب ومحلل سياسي</p>
+                        </div>
+                      </div>
+
+                      <Link 
+                        href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
+                        className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-white font-black text-xs px-6 py-3 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
+                      >
+                        <span>اقرأ المقال كاملاً</span>
+                        <ChevronLeft className="w-4 h-4 transition-transform group-hover/btn:-translate-x-1" />
+                      </Link>
+                    </div>
                   </div>
                </div>
              ) : (
                <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden shadow-2xl">
-                  <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000" alt="Image Extent" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                  <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000" alt="Featured Article" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
                   <div className="absolute bottom-10 left-10 right-10 flex justify-between gap-4">
                      <div className="bg-white/95 backdrop-blur-md px-8 py-3 rounded-2xl font-black text-sm shadow-xl">المشهد</div>
                   </div>
@@ -330,57 +378,75 @@ export default function Home() {
              )}
           </section>
 
-          {/* Right Column: Analyses (The Selector) */}
-          <section className="space-y-10">
-             <div className="flex items-center justify-between border-b-2 border-slate-900 pb-6">
-                <div className="flex items-center gap-6">
-                  <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter bg-slate-900 text-white px-6 py-2">
+          {/* Right Column: Analyses Selector & Secondary Feed (5 cols) */}
+          <section className="lg:col-span-5 space-y-8">
+             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
                     أبعد مدى
                   </h3>
                 </div>
+                <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Analyses Feed</span>
              </div>
              
-             <div className="flex flex-col gap-6 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
-               {analyses.length > 0 ? analyses.map((item, idx) => (
-                 <div 
-                   key={item.id} 
-                   onClick={() => setSelectedAnalysisIdx(idx)}
-                   className={`flex gap-6 group bg-white rounded-[2.5rem] p-8 border transition-all duration-500 cursor-pointer text-start items-start
-                     ${selectedAnalysisIdx === idx 
-                       ? 'shadow-[0_25px_50px_-12px_rgba(255,61,61,0.15)] border-primary/40 ring-1 ring-primary/20 scale-[1.03] bg-primary/[0.02]' 
-                       : 'shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] border-slate-100 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.01]'}`}
-                 >
-                    <div className="flex-1 space-y-4">
-                       <div className="flex items-center gap-3">
-                         <div className={`w-1 h-6 rounded-full transition-colors ${selectedAnalysisIdx === idx ? 'bg-primary' : 'bg-slate-200 group-hover:bg-primary/40'}`} />
-                         <h4 className={`text-xl font-black transition-colors leading-tight line-clamp-2 tracking-tighter ${selectedAnalysisIdx === idx ? 'text-primary' : 'text-slate-950 group-hover:text-primary'}`}>
-                           {item.title}
-                         </h4>
-                       </div>
-                       <p className="text-slate-500 font-bold text-xs line-clamp-2 leading-relaxed pr-4">
-                         {item.subtitle || 'نظرة تحليلية معمقة في أبرز القضايا الراهنة بأقلام خبراء المدى.'}
-                       </p>
-                       <div className="flex items-center gap-4 pt-1 pr-4">
-                         <div className="flex items-center gap-2 px-3 py-1 bg-slate-50 rounded-lg border border-slate-100 shadow-sm">
-                           <span className="text-[9px] font-black text-slate-500 tracking-widest">{new Date(item.created_at).toLocaleDateString('en-GB')}</span>
-                         </div>
-                       </div>
-                    </div>
-                    {item.image_url && (
-                      <div className="relative w-24 aspect-square rounded-[2rem] overflow-hidden shadow-xl shrink-0 pointer-events-none ring-1 ring-slate-100">
-                        <Image 
-                          src={item.image_url} 
-                          alt={item.title}
-                          fill
-                          sizes="150px"
-                          className="object-cover transition-transform duration-700 group-hover:scale-110" 
-                        />
-                      </div>
-                    )}
-                 </div>
-               )) : (
-                 <p className="text-slate-400 font-bold italic">لا توجد مقالات معمقة حالياً</p>
-               )}
+             <div className="flex flex-col gap-5 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
+                {analyses.length > 0 ? analyses.map((item, idx) => (
+                  <div 
+                    key={item.id} 
+                    onClick={() => setSelectedAnalysisIdx(idx)}
+                    className={`group bg-white rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-start relative overflow-hidden
+                      ${selectedAnalysisIdx === idx 
+                        ? 'shadow-[0_20px_40px_-15px_rgba(255,61,61,0.12)] border-primary/30 ring-1 ring-primary/20 scale-[1.02] bg-primary/[0.01]' 
+                        : 'shadow-[0_4px_20px_-10px_rgba(0,0,0,0.03)] border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.01]'}`}
+                  >
+                     <div className="flex-1 space-y-3">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                          <span className={`w-1.5 h-1.5 rounded-full ${selectedAnalysisIdx === idx ? 'bg-primary animate-pulse' : 'bg-slate-300'}`} />
+                          <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
+                          <div className="w-1 h-1 rounded-full bg-slate-200" />
+                          <span className="text-[9px] font-black tracking-widest text-primary uppercase">ANALYSIS</span>
+                        </div>
+                        
+                        <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedAnalysisIdx === idx ? 'text-primary' : 'text-slate-950 group-hover:text-primary'}`}>
+                          {item.title}
+                        </h4>
+
+                        <p className="text-slate-500 font-medium text-xs line-clamp-2 leading-relaxed pr-3">
+                          {item.subtitle || 'نظرة تحليلية معمقة في أبرز القضايا الراهنة بأقلام خبراء المدى.'}
+                        </p>
+
+                        <div className="flex items-center gap-2 pt-2 pr-3">
+                          <Link 
+                            href={`/news/${item.slug || item.id}`}
+                            className="inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary/80 hover:underline transition-all"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <span>تفاصيل التحليل</span>
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                          </Link>
+                        </div>
+                     </div>
+                     
+                     {item.image_url && (
+                       <Link 
+                         href={`/news/${item.slug || item.id}`}
+                         className="relative w-20 md:w-24 aspect-[4/3] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-slate-100 cursor-pointer"
+                         onClick={(e) => e.stopPropagation()}
+                       >
+                         <Image 
+                           src={item.image_url} 
+                           alt={item.title}
+                           fill
+                           sizes="120px"
+                           className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                         />
+                       </Link>
+                     )}
+                  </div>
+                )) : (
+                  <p className="text-slate-400 font-bold italic">لا توجد مقالات معمقة حالياً</p>
+                )}
              </div>
           </section>
         </div>
