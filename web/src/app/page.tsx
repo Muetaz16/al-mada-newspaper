@@ -215,7 +215,7 @@ export default function Home() {
                           </div>
                           <h4 
                             onClick={() => setActiveVideo(filteredVideos[0])}
-                            className="text-2xl md:text-3xl font-black leading-tight drop-shadow-xl max-w-2xl cursor-pointer hover:text-primary transition-all duration-300 tracking-tighter"
+                            className="text-xl md:text-2xl font-black leading-tight drop-shadow-xl max-w-2xl cursor-pointer hover:text-primary transition-all duration-300 tracking-tighter"
                           >
                             {filteredVideos[0].title}
                           </h4>
@@ -337,12 +337,12 @@ export default function Home() {
                       href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
                       className="block hover:text-primary transition-colors duration-300 text-start"
                     >
-                      <h4 className="text-2xl md:text-3.5xl font-black leading-tight tracking-tighter text-slate-900">
+                      <h4 className="text-xl md:text-2.5xl font-black leading-tight tracking-tighter text-slate-900">
                         {analyses[selectedAnalysisIdx].title}
                       </h4>
                     </Link>
 
-                    <p className="text-slate-600 font-medium text-sm md:text-base leading-relaxed line-clamp-3 text-start">
+                    <p className="text-slate-600 font-medium text-xs md:text-sm leading-relaxed line-clamp-3 text-start">
                       {analyses[selectedAnalysisIdx].subtitle || 'نظرة تحليلية معمقة تسلط الضوء على الأبعاد الخفية للأحداث وتأثيراتها الإقليمية الدولية بأقلام كبار الكتاب والمحللين في صحيفة المدى.'}
                     </p>
 
