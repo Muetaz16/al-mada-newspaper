@@ -107,10 +107,10 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-8 gap-6">
         <div className="flex items-center gap-8">
           <div className="relative">
-            <h3 className="text-4xl md:text-5xl font-black text-slate-950 tracking-tighter">
+            <h3 className="text-2xl md:text-3.5xl font-black text-slate-950 tracking-tighter">
               {title}
             </h3>
-            <div className="absolute -bottom-2 right-0 w-12 h-1.5 bg-primary rounded-full" />
+            <div className="absolute -bottom-1.5 right-0 w-8 h-1 bg-primary rounded-full" />
           </div>
           
           <nav className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-hide no-scrollbar">
@@ -217,7 +217,7 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                       {/* Floating Description Overlay (Enhanced Glassmorphism) */}
                       <div className="absolute inset-x-8 bottom-8 translate-y-6 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-700 z-20">
                         <div className="bg-slate-950/40 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-2xl">
-                          <p className="text-white text-sm font-bold leading-relaxed line-clamp-3">
+                          <p className="text-white text-xs font-bold leading-relaxed line-clamp-3">
                             {previewText || 'اضغط لمتابعة كافة المستجدات وتحليل الأحداث الجارية بالتفصيل عبر منصة المدى.'}
                           </p>
                         </div>
@@ -245,10 +245,10 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                       </div>
                       
                       <div className="relative inline-block">
-                        <h4 className="text-3xl md:text-4xl font-black text-slate-950 leading-[1.1] group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
+                        <h4 className="text-xl md:text-2.5xl font-black text-slate-950 leading-snug group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
                           {item.title}
                         </h4>
-                        <span className="absolute -bottom-2 right-0 w-0 h-1.5 bg-primary/20 rounded-full group-hover/card:w-full transition-all duration-700" />
+                        <span className="absolute -bottom-1.5 right-0 w-0 h-0.5 bg-primary/20 rounded-full group-hover/card:w-full transition-all duration-700" />
                       </div>
                     </Link>
                   </div>
