@@ -1,5 +1,5 @@
 import { Navbar } from '@/components/navbar';
-import { User, Calendar, Clock, TrendingUp, Vote, ChevronRight } from 'lucide-react';
+import { User, Calendar, Clock, TrendingUp, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
@@ -101,14 +101,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
     .order('created_at', { ascending: false })
     .limit(5);
 
-  // Fetch active poll
-  const { data: poll } = await supabase
-    .from('polls')
-    .select('*, options:poll_options(*)')
-    .eq('status', 'ACTIVE')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
 
   const contentHtml = parseContent(news.content, news.subtitle || null);
 
@@ -215,29 +207,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
               </div>
             </div>
 
-            {/* Poll Widget */}
-            {poll && (
-              <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white space-y-6 shadow-2xl">
-                <div className="flex items-center gap-2">
-                  <Vote className="w-5 h-5 text-primary" />
-                  <span className="text-white font-black text-[10px] uppercase tracking-widest">شاركنا رأيك</span>
-                </div>
-                <h4 className="text-lg font-black text-start">{poll.question}</h4>
-                <div className="space-y-3">
-                  {poll.options?.map((opt: any) => (
-                    <button
-                      key={opt.id}
-                      className="w-full text-start p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all font-bold text-xs"
-                    >
-                      {opt.text}
-                    </button>
-                  ))}
-                </div>
-                <button className="w-full h-12 bg-primary rounded-xl font-black text-xs shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
-                  تصويت
-                </button>
-              </div>
-            )}
 
           </aside>
 
