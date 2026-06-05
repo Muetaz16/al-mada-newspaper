@@ -84,16 +84,16 @@ export function Navbar() {
 
       <div className="relative z-10 container mx-auto px-6 py-2.5">
         <div className="flex items-center justify-between gap-12">
-          {/* Logo Section - Editorial Masterpiece */}
-          <Link href="/" className="relative z-20 flex items-center gap-6 group shrink-0 mr-4 sm:mr-8">
-            <div className="relative h-10 w-44 sm:h-14 sm:w-64 md:h-18 md:w-[30rem] lg:h-20 lg:w-[36rem] flex items-center justify-start">
+          {/* Logo Section - Circular Editorial Masterpiece */}
+          <Link href="/" className="relative z-20 flex items-center shrink-0 mr-2 sm:mr-4">
+            <div className="relative h-16 w-16 sm:h-22 sm:w-22 md:h-26 md:w-26 rounded-full overflow-hidden border-2 border-primary bg-slate-950 flex items-center justify-center shadow-lg shadow-black/30 transition-all duration-300 hover:scale-105 group-hover:border-primary/80">
               <Image
                 src="/logo.png"
                 alt="صحيفة المدى"
                 fill
                 priority
-                sizes="(max-width: 768px) 200px, 500px"
-                className="object-contain object-right transition-transform duration-200 group-hover:scale-115 p-0"
+                sizes="(max-width: 768px) 64px, 120px"
+                className="object-contain p-2 transition-transform duration-300"
               />
             </div>
           </Link>
