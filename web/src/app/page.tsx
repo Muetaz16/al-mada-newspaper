@@ -36,7 +36,7 @@ export default function Home() {
   const [voted, setVoted] = useState(false);
   const [analyses, setAnalyses] = useState<any[]>([]);
   const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL'>('VIDEO');
-  
+
   const [selectedAnalysisIdx, setSelectedAnalysisIdx] = useState(0);
   const supabase = createClient();
 
@@ -47,7 +47,7 @@ export default function Home() {
         .from('categories')
         .select('*')
         .order('name_ar');
-      
+
       if (cats) setCategories(cats);
 
       // Fetch all published news
@@ -56,7 +56,7 @@ export default function Home() {
         .select('*, category:categories(name_ar, slug)')
         .eq('status', 'PUBLISHED')
         .order('created_at', { ascending: false });
-      
+
       if (news) {
         // Group by category name for sections
         const grouped = news.reduce((acc: any, item: any) => {
@@ -66,14 +66,14 @@ export default function Home() {
           return acc;
         }, {});
         setNewsByCategory(grouped);
-        
+
         // Specifically extract analyses by slug (more reliable) or name
-        const analysesItems = news.filter((item: any) => 
+        const analysesItems = news.filter((item: any) =>
           item.category?.slug === 'analyses' || item.category?.name_ar === 'أبعد مدى'
         );
         setAnalyses(analysesItems);
       }
-      
+
       // Fetch latest Videos & Reels (Al-Mada TV)
       const { data: videoData } = await supabase
         .from('videos')
@@ -122,9 +122,9 @@ export default function Home() {
         <HeroSection />
 
         {/* Section: "الأولى" (Main Category News) */}
-        <CategorySection 
-          title="الأولى" 
-          items={Object.values(newsByCategory).flat()} 
+        <CategorySection
+          title="الأولى"
+          items={Object.values(newsByCategory).flat()}
           subCategories={Object.keys(newsByCategory)}
         />
 
@@ -135,7 +135,7 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -mr-32 -mt-32 opacity-40 animate-pulse" />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/5 rounded-full blur-[100px] -ml-32 -mb-32 opacity-20" />
           </div>
-          
+
           <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-10 space-y-16">
             {/* Header: Compact Title */}
             <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-start border-b border-white/10 pb-10">
@@ -156,13 +156,13 @@ export default function Home() {
 
               {/* Dynamic Separate Tabs for Videos and Reels */}
               <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
-                <button 
+                <button
                   onClick={() => setActiveMediaTab('VIDEO')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'VIDEO' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
                   التقارير المرئية
                 </button>
-                <button 
+                <button
                   onClick={() => setActiveMediaTab('REEL')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'REEL' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
@@ -186,34 +186,34 @@ export default function Home() {
                     {filteredVideos[0] && (
                       <div className="relative aspect-video rounded-3xl overflow-hidden shadow-2xl border border-white/5 group-hover/main:border-primary/20 transition-all duration-500">
                         <div className="absolute inset-0 pointer-events-none">
-                          <Image 
-                            src={filteredVideos[0].thumbnail_url || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'} 
-                            alt={filteredVideos[0].title} 
-                            fill 
+                          <Image
+                            src={filteredVideos[0].thumbnail_url || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'}
+                            alt={filteredVideos[0].title}
+                            fill
                             sizes="(max-width: 1024px) 100vw, 800px"
                             priority
-                            className="object-cover opacity-60 group-hover/main:scale-105 transition-all duration-[4000ms]" 
+                            className="object-cover opacity-60 group-hover/main:scale-105 transition-all duration-[4000ms]"
                           />
                         </div>
-                        
+
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 pointer-events-none" />
-                        
+
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <button 
+                          <button
                             onClick={() => setActiveVideo(filteredVideos[0])}
                             className="h-20 w-20 bg-primary rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-500 z-30 group/btn"
                           >
                             <Play className="h-8 w-8 fill-white text-white ml-1 transition-transform" />
                           </button>
                         </div>
-                        
+
                         <div className="absolute bottom-10 right-10 left-10 space-y-3 z-20">
                           <div className="flex items-center gap-2">
                             <span className="bg-primary px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
                               {filteredVideos[0].type === 'REEL' ? 'REEL (ريلز)' : 'VIDEO'}
                             </span>
                           </div>
-                          <h4 
+                          <h4
                             onClick={() => setActiveVideo(filteredVideos[0])}
                             className="text-xl md:text-2xl font-black leading-tight drop-shadow-xl max-w-2xl cursor-pointer hover:text-primary transition-all duration-300 tracking-tighter"
                           >
@@ -230,21 +230,21 @@ export default function Home() {
                       <span className="text-[8px] font-black uppercase tracking-[0.2em] whitespace-nowrap">مقاطع مختارة</span>
                       <div className="h-px flex-1 bg-white/5" />
                     </div>
-                    
+
                     {filteredVideos.slice(1, 5).map((v, idx) => (
                       <div key={v.id} className="group/sub flex gap-5 items-center cursor-pointer">
                         <div className="relative aspect-video w-36 rounded-2xl overflow-hidden border border-white/5 shadow-xl shrink-0">
                           <div className="absolute inset-0 pointer-events-none">
-                            <Image 
-                              src={v.thumbnail_url || 'https://images.unsplash.com/photo-1492724441997-5dc865305da7'} 
-                              alt={v.title} 
-                              fill 
+                            <Image
+                              src={v.thumbnail_url || 'https://images.unsplash.com/photo-1492724441997-5dc865305da7'}
+                              alt={v.title}
+                              fill
                               sizes="150px"
-                              className="object-cover opacity-40 group-hover/sub:scale-110 transition-all duration-700" 
+                              className="object-cover opacity-40 group-hover/sub:scale-110 transition-all duration-700"
                             />
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/sub:opacity-100 transition-all duration-500 backdrop-blur-sm">
-                            <button 
+                            <button
                               onClick={() => setActiveVideo(v)}
                               className="h-8 w-8 bg-white text-slate-950 rounded-full flex items-center justify-center shadow-2xl transition-all"
                             >
@@ -254,13 +254,13 @@ export default function Home() {
                         </div>
                         <div className="space-y-1.5 text-start flex-1">
                           <div className="flex items-center gap-2">
-                             <span className="text-primary font-black text-[8px]">0{idx + 1}</span>
-                             <div className="w-1 h-1 rounded-full bg-white/10" />
-                             <span className="text-white/20 font-bold text-[7px] uppercase tracking-widest">
-                               {v.type === 'REEL' ? 'REEL (ريلز)' : 'Al-Mada TV'}
-                             </span>
+                            <span className="text-primary font-black text-[8px]">0{idx + 1}</span>
+                            <div className="w-1 h-1 rounded-full bg-white/10" />
+                            <span className="text-white/20 font-bold text-[7px] uppercase tracking-widest">
+                              {v.type === 'REEL' ? 'REEL (ريلز)' : 'Al-Mada TV'}
+                            </span>
                           </div>
-                          <h5 
+                          <h5
                             onClick={() => setActiveVideo(v)}
                             className="text-base font-black leading-snug hover:text-primary transition-all duration-300 line-clamp-2 tracking-tighter"
                           >
@@ -277,177 +277,175 @@ export default function Home() {
         </section>
 
         <PodcastSection />
-        
+
         <PulseOfLifeSection />
         <InBriefSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Featured Analysis Display (7 cols) */}
           <section className="lg:col-span-7 space-y-8 lg:sticky lg:top-32 text-start">
-             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-primary" />
-                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
-                    التحليل المختار
-                  </h3>
-                </div>
-                <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Featured Analysis</span>
-             </div>
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-primary" />
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
+                  التحليل المختار
+                </h3>
+              </div>
+            </div>
 
-             {analyses.length > 0 ? (
-               <div className="group bg-slate-50/50 rounded-[2.5rem] border border-slate-100 p-6 md:p-8 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 flex flex-col gap-6">
-                  {/* Hero Image */}
-                  <Link 
+            {analyses.length > 0 ? (
+              <div className="group bg-slate-50/50 rounded-[2.5rem] border border-slate-100 p-6 md:p-8 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 flex flex-col gap-6">
+                {/* Hero Image */}
+                <Link
+                  href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
+                  className="relative block aspect-[16/10] rounded-[2rem] overflow-hidden shadow-lg cursor-pointer"
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={analyses[selectedAnalysisIdx].id}
+                      initial={{ opacity: 0, scale: 1.05 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.5 }}
+                      className="absolute inset-0"
+                    >
+                      <Image
+                        src={analyses[selectedAnalysisIdx].image_url}
+                        alt={analyses[selectedAnalysisIdx].title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-[6000ms]"
+                      />
+                    </motion.div>
+                  </AnimatePresence>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
+                  <div className="absolute top-4 right-4 bg-primary text-white font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg">
+                    تحليل ورأي
+                  </div>
+                </Link>
+
+                {/* Excerpt Details */}
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                    <span className="text-slate-500 font-extrabold">{new Date(analyses[selectedAnalysisIdx].created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                    <span>قراءة دقيقة 6</span>
+                  </div>
+
+                  <Link
                     href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                    className="relative block aspect-[16/10] rounded-[2rem] overflow-hidden shadow-lg cursor-pointer"
+                    className="block hover:text-primary transition-colors duration-300 text-start"
                   >
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={analyses[selectedAnalysisIdx].id}
-                        initial={{ opacity: 0, scale: 1.05 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        transition={{ duration: 0.5 }}
-                        className="absolute inset-0"
-                      >
-                        <Image 
-                          src={analyses[selectedAnalysisIdx].image_url} 
-                          alt={analyses[selectedAnalysisIdx].title} 
-                          fill 
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          className="object-cover group-hover:scale-105 transition-transform duration-[6000ms]" 
-                        />
-                      </motion.div>
-                    </AnimatePresence>
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
-                    <div className="absolute top-4 right-4 bg-primary text-white font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg">
-                      تحليل ورأي
-                    </div>
+                    <h4 className="text-xl md:text-2.5xl font-black leading-tight tracking-tighter text-slate-900">
+                      {analyses[selectedAnalysisIdx].title}
+                    </h4>
                   </Link>
 
-                  {/* Excerpt Details */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                      <span className="text-slate-500 font-extrabold">{new Date(analyses[selectedAnalysisIdx].created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                      <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                      <span>قراءة دقيقة 6</span>
-                    </div>
+                  <p className="text-slate-600 font-medium text-xs md:text-sm leading-relaxed line-clamp-3 text-start">
+                    {analyses[selectedAnalysisIdx].subtitle || 'نظرة تحليلية معمقة تسلط الضوء على الأبعاد الخفية للأحداث وتأثيراتها الإقليمية الدولية بأقلام كبار الكتاب والمحللين في صحيفة المدى.'}
+                  </p>
 
-                    <Link 
-                      href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                      className="block hover:text-primary transition-colors duration-300 text-start"
-                    >
-                      <h4 className="text-xl md:text-2.5xl font-black leading-tight tracking-tighter text-slate-900">
-                        {analyses[selectedAnalysisIdx].title}
-                      </h4>
-                    </Link>
-
-                    <p className="text-slate-600 font-medium text-xs md:text-sm leading-relaxed line-clamp-3 text-start">
-                      {analyses[selectedAnalysisIdx].subtitle || 'نظرة تحليلية معمقة تسلط الضوء على الأبعاد الخفية للأحداث وتأثيراتها الإقليمية الدولية بأقلام كبار الكتاب والمحللين في صحيفة المدى.'}
-                    </p>
-
-                    {/* Author & Read CTA */}
-                    <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm overflow-hidden">
-                          <User className="h-5 w-5 text-slate-400" />
-                        </div>
-                        <div className="text-start">
-                          <p className="text-xs font-black text-slate-900 leading-tight">إدارة التحرير</p>
-                          <p className="text-[10px] font-bold text-slate-400">كاتب ومحلل سياسي</p>
-                        </div>
+                  {/* Author & Read CTA */}
+                  <div className="flex items-center justify-between pt-6 border-t border-slate-100 mt-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm overflow-hidden">
+                        <User className="h-5 w-5 text-slate-400" />
                       </div>
-
-                      <Link 
-                        href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                        className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-white font-black text-xs px-6 py-3 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
-                      >
-                        <span>اقرأ المقال كاملاً</span>
-                        <ChevronLeft className="w-4 h-4 transition-transform group-hover/btn:-translate-x-1" />
-                      </Link>
+                      <div className="text-start">
+                        <p className="text-xs font-black text-slate-900 leading-tight">إدارة التحرير</p>
+                        <p className="text-[10px] font-bold text-slate-400">كاتب ومحلل سياسي</p>
+                      </div>
                     </div>
+
+                    <Link
+                      href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
+                      className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-white font-black text-xs px-6 py-3 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
+                    >
+                      <span>اقرأ المقال كاملاً</span>
+                      <ChevronLeft className="w-4 h-4 transition-transform group-hover/btn:-translate-x-1" />
+                    </Link>
                   </div>
-               </div>
-             ) : (
-               <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden shadow-2xl">
-                  <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000" alt="Featured Article" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-                  <div className="absolute bottom-10 left-10 right-10 flex justify-between gap-4">
-                     <div className="bg-white/95 backdrop-blur-md px-8 py-3 rounded-2xl font-black text-sm shadow-xl">المشهد</div>
-                  </div>
-               </div>
-             )}
+                </div>
+              </div>
+            ) : (
+              <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden shadow-2xl">
+                <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000" alt="Featured Article" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                <div className="absolute bottom-10 left-10 right-10 flex justify-between gap-4">
+                  <div className="bg-white/95 backdrop-blur-md px-8 py-3 rounded-2xl font-black text-sm shadow-xl">المشهد</div>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Right Column: Analyses Selector & Secondary Feed (5 cols) */}
           <section className="lg:col-span-5 space-y-8">
-             <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
-                  <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
-                    أبعد مدى
-                  </h3>
-                </div>
-                <span className="text-[10px] font-black text-slate-400 tracking-widest uppercase">Analyses Feed</span>
-             </div>
-             
-             <div className="flex flex-col gap-5 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
-                {analyses.length > 0 ? analyses.map((item, idx) => (
-                  <div 
-                    key={item.id} 
-                    onClick={() => setSelectedAnalysisIdx(idx)}
-                    className={`group bg-white rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-start relative overflow-hidden
-                      ${selectedAnalysisIdx === idx 
-                        ? 'shadow-[0_20px_40px_-15px_rgba(255,61,61,0.12)] border-primary/30 ring-1 ring-primary/20 scale-[1.02] bg-primary/[0.01]' 
-                        : 'shadow-[0_4px_20px_-10px_rgba(0,0,0,0.03)] border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.01]'}`}
-                  >
-                     <div className="flex-1 space-y-3">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                          <span className={`w-1.5 h-1.5 rounded-full ${selectedAnalysisIdx === idx ? 'bg-primary animate-pulse' : 'bg-slate-300'}`} />
-                          <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
-                          <div className="w-1 h-1 rounded-full bg-slate-200" />
-                          <span className="text-[9px] font-black tracking-widest text-primary uppercase">ANALYSIS</span>
-                        </div>
-                        
-                        <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedAnalysisIdx === idx ? 'text-primary' : 'text-slate-950 group-hover:text-primary'}`}>
-                          {item.title}
-                        </h4>
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-center gap-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-slate-900" />
+                <h3 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tighter">
+                  أبعد مدى
+                </h3>
+              </div>
+            </div>
 
-                        <p className="text-slate-500 font-medium text-xs line-clamp-2 leading-relaxed pr-3">
-                          {item.subtitle || 'نظرة تحليلية معمقة في أبرز القضايا الراهنة بأقلام خبراء المدى.'}
-                        </p>
+            <div className="flex flex-col gap-5 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
+              {analyses.length > 0 ? analyses.map((item, idx) => (
+                <div
+                  key={item.id}
+                  onClick={() => setSelectedAnalysisIdx(idx)}
+                  className={`group bg-white rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-start relative overflow-hidden
+                      ${selectedAnalysisIdx === idx
+                      ? 'shadow-[0_20px_40px_-15px_rgba(255,61,61,0.12)] border-primary/30 ring-1 ring-primary/20 scale-[1.02] bg-primary/[0.01]'
+                      : 'shadow-[0_4px_20px_-10px_rgba(0,0,0,0.03)] border-slate-100 hover:border-slate-200 hover:shadow-xl hover:shadow-primary/5 hover:scale-[1.01]'}`}
+                >
+                  <div className="flex-1 space-y-3">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                      <span className={`w-1.5 h-1.5 rounded-full ${selectedAnalysisIdx === idx ? 'bg-primary animate-pulse' : 'bg-slate-300'}`} />
+                      <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
+                      <div className="w-1 h-1 rounded-full bg-slate-200" />
+                      <span className="text-[9px] font-black tracking-widest text-primary uppercase">ANALYSIS</span>
+                    </div>
 
-                        <div className="flex items-center gap-2 pt-2 pr-3">
-                          <Link 
-                            href={`/news/${item.slug || item.id}`}
-                            className="inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary/80 hover:underline transition-all"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <span>تفاصيل التحليل</span>
-                            <ChevronLeft className="w-3.5 h-3.5" />
-                          </Link>
-                        </div>
-                     </div>
-                     
-                     {item.image_url && (
-                       <Link 
-                         href={`/news/${item.slug || item.id}`}
-                         className="relative w-20 md:w-24 aspect-[4/3] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-slate-100 cursor-pointer"
-                         onClick={(e) => e.stopPropagation()}
-                       >
-                         <Image 
-                           src={item.image_url} 
-                           alt={item.title}
-                           fill
-                           sizes="120px"
-                           className="object-cover transition-transform duration-700 group-hover:scale-105" 
-                         />
-                       </Link>
-                     )}
+                    <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedAnalysisIdx === idx ? 'text-primary' : 'text-slate-950 group-hover:text-primary'}`}>
+                      {item.title}
+                    </h4>
+
+                    <p className="text-slate-500 font-medium text-xs line-clamp-2 leading-relaxed pr-3">
+                      {item.subtitle || 'نظرة تحليلية معمقة في أبرز القضايا الراهنة بأقلام خبراء المدى.'}
+                    </p>
+
+                    <div className="flex items-center gap-2 pt-2 pr-3">
+                      <Link
+                        href={`/news/${item.slug || item.id}`}
+                        className="inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary/80 hover:underline transition-all"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span>تفاصيل التحليل</span>
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
-                )) : (
-                  <p className="text-slate-400 font-bold italic">لا توجد مقالات معمقة حالياً</p>
-                )}
-             </div>
+
+                  {item.image_url && (
+                    <Link
+                      href={`/news/${item.slug || item.id}`}
+                      className="relative w-20 md:w-24 aspect-[4/3] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-slate-100 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Image
+                        src={item.image_url}
+                        alt={item.title}
+                        fill
+                        sizes="120px"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    </Link>
+                  )}
+                </div>
+              )) : (
+                <p className="text-slate-400 font-bold italic">لا توجد مقالات معمقة حالياً</p>
+              )}
+            </div>
           </section>
         </div>
 
@@ -467,10 +465,10 @@ export default function Home() {
                 {poll ? (
                   <div className="space-y-12 max-w-4xl mx-auto">
                     <h4 className="text-2xl md:text-4xl font-black leading-tight">{poll.question}</h4>
-                    
+
                     <AnimatePresence>
                       {voted && (
-                        <motion.div 
+                        <motion.div
                           initial={{ opacity: 0, scale: 0.95, y: 20 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           className="flex flex-col md:flex-row items-center justify-center gap-16 bg-slate-900/60 backdrop-blur-3xl p-12 rounded-[3rem] border border-white/10 shadow-[0_0_60px_-15px_rgba(255,255,255,0.05)]"
@@ -481,7 +479,7 @@ export default function Home() {
                               {poll.options.map((opt: any, idx: number) => {
                                 const totalVotes = poll.options.reduce((acc: number, o: any) => acc + (o.votes_count || 0), 0);
                                 const percentage = totalVotes > 0 ? (opt.votes_count || 0) / totalVotes : 0;
-                                
+
                                 // Calculate offset for this segment
                                 let offset = 0;
                                 for (let i = 0; i < idx; i++) {
@@ -549,21 +547,21 @@ export default function Home() {
                         const color = colors[idx % colors.length];
 
                         return (
-                          <button 
-                            key={opt.id} 
-                            disabled={voted} 
+                          <button
+                            key={opt.id}
+                            disabled={voted}
                             onClick={async () => {
                               setVoted(true);
                               const updatedOptions = poll.options.map((o: any) => o.id === opt.id ? { ...o, votes_count: (o.votes_count || 0) + 1 } : o);
                               setPoll({ ...poll, options: updatedOptions });
                               await supabase.from('poll_options').update({ votes_count: (opt.votes_count || 0) + 1 }).eq('id', opt.id);
-                            }} 
+                            }}
                             className={`w-full group relative p-8 rounded-[2.5rem] border-2 transition-all text-start overflow-hidden h-28 ${voted ? 'bg-slate-900/50 border-white/5 cursor-default' : 'bg-slate-900/40 border-white/10 hover:border-primary/50 hover:bg-slate-800 hover:shadow-[0_0_30px_-5px_rgba(255,61,61,0.2)] active:scale-95'}`}
                           >
                             {voted && (
-                              <div 
-                                className="absolute inset-y-0 right-0 opacity-20 transition-all duration-1000 ease-out" 
-                                style={{ width: `${percentage}%`, backgroundColor: color }} 
+                              <div
+                                className="absolute inset-y-0 right-0 opacity-20 transition-all duration-1000 ease-out"
+                                style={{ width: `${percentage}%`, backgroundColor: color }}
                               />
                             )}
                             <div className="relative z-10 flex items-center justify-between h-full w-full">

@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { Globe, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
 
 export function Navbar() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
@@ -16,7 +18,7 @@ export function Navbar() {
   const supabase = createClient();
 
   const toggleMobileSub = (catId: string) => {
-    setExpandedMobileCats(prev => 
+    setExpandedMobileCats(prev =>
       prev.includes(catId) ? prev.filter(id => id !== catId) : [...prev, catId]
     );
   };
@@ -33,16 +35,16 @@ export function Navbar() {
   }, [supabase]);
 
   // Group categories into parent-children tree
-  const rootCategories = dbCategories.length > 0 
-    ? dbCategories.filter(c => !c.parent_id) 
+  const rootCategories = dbCategories.length > 0
+    ? dbCategories.filter(c => !c.parent_id)
     : [
-        { name_ar: 'سياسة', slug: 'politics', id: 'politics' },
-        { name_ar: 'اقتصاد', slug: 'economy', id: 'economy' },
-        { name_ar: 'رياضة', slug: 'sports', id: 'sports' },
-        { name_ar: 'تكنولوجيا', slug: 'tech', id: 'tech' },
-        { name_ar: 'ثقافة', slug: 'culture', id: 'culture' },
-        { name_ar: 'صحة', slug: 'health', id: 'health' },
-      ];
+      { name_ar: 'سياسة', slug: 'politics', id: 'politics' },
+      { name_ar: 'اقتصاد', slug: 'economy', id: 'economy' },
+      { name_ar: 'رياضة', slug: 'sports', id: 'sports' },
+      { name_ar: 'تكنولوجيا', slug: 'tech', id: 'tech' },
+      { name_ar: 'ثقافة', slug: 'culture', id: 'culture' },
+      { name_ar: 'صحة', slug: 'health', id: 'health' },
+    ];
 
   const getSubCategories = (parentId: string) => {
     if (dbCategories.length === 0) return [];
@@ -101,44 +103,72 @@ export function Navbar() {
           {/* Main Navigation - Integrated Capsule Design */}
           <nav className="flex-1 hidden xl:flex items-center justify-center">
             <div className="flex items-center gap-2 p-1 bg-slate-950/5 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]">
-              <Link
-                href="/"
-                className="px-8 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
-              >
-                الرئيسية
-              </Link>
+              {(() => {
+                const isHomeActive = pathname === '/';
+                return (
+                  <Link
+                    href="/"
+                    className={isHomeActive
+                      ? "px-8 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
+                      : "group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                    }
+                  >
+                    الرئيسية
+                    {!isHomeActive && (
+                      <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                    )}
+                  </Link>
+                );
+              })()}
 
               <div className="flex items-center gap-1 px-6">
                 {rootCategories.map((cat: any) => {
                   const subs = getSubCategories(cat.id);
                   const hasSubs = subs.length > 0;
 
+                  const isCatActive = pathname === `/category/${cat.slug || cat.name_ar}` ||
+                                      pathname === `/category/${encodeURIComponent(cat.slug || cat.name_ar)}`;
+                  const isParentOrChildActive = isCatActive || subs.some((sub: any) => 
+                    pathname === `/category/${sub.slug || sub.name_ar}` ||
+                    pathname === `/category/${encodeURIComponent(sub.slug || sub.name_ar)}`
+                  );
+
                   if (!hasSubs) {
                     return (
                       <Link
                         key={cat.slug || cat.name_ar}
                         href={`/category/${cat.slug || cat.name_ar}`}
-                        className="group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                        className={isParentOrChildActive
+                          ? "px-6 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                          : "group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                        }
                       >
                         {cat.name_ar}
-                        <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                        {!isParentOrChildActive && (
+                          <span className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-0 h-1 bg-primary rounded-full group-hover:w-4 transition-all duration-500" />
+                        )}
                       </Link>
                     );
                   }
 
                   return (
-                    <div 
+                    <div
                       key={cat.slug || cat.name_ar}
                       className="relative"
                       onMouseEnter={() => setHoveredCat(cat.id)}
                       onMouseLeave={() => setHoveredCat(null)}
                     >
                       <button
-                        className={`px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-slate-950' : ''}`}
+                        className={isParentOrChildActive
+                          ? "px-6 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5 focus:outline-none"
+                          : `px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-slate-950' : ''}`
+                        }
                       >
                         {cat.name_ar}
-                        <span className={`text-[8px] text-slate-400 select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
-                        <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${hoveredCat === cat.id ? 'w-4' : 'w-0'}`} />
+                        <span className={`text-[8px] ${isParentOrChildActive ? 'text-white/60' : 'text-slate-400'} select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
+                        {!isParentOrChildActive && (
+                          <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${hoveredCat === cat.id ? 'w-4' : 'w-0'}`} />
+                        )}
                       </button>
 
                       <AnimatePresence>
@@ -152,7 +182,7 @@ export function Navbar() {
                           >
                             {/* Accent Glow */}
                             <div className="absolute top-0 right-1/4 w-10 h-10 bg-primary/5 blur-lg rounded-full" />
-                            
+
                             <div className="relative z-10 space-y-0.5">
                               <Link
                                 href={`/category/${cat.slug || cat.name_ar}`}
@@ -162,9 +192,9 @@ export function Navbar() {
                                 <span>كل {cat.name_ar}</span>
                                 <span className="text-[10px] text-primary opacity-0 -translate-x-1.5 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all font-sans">←</span>
                               </Link>
-                              
+
                               <div className="h-px bg-slate-100/80 my-1.5 mx-1" />
-                              
+
                               {subs.map((sub: any) => (
                                 <Link
                                   key={sub.slug || sub.name_ar}
@@ -248,9 +278,9 @@ export function Navbar() {
                       className="space-y-3"
                     >
                       <div className="flex items-center justify-between w-full">
-                        <Link 
-                          href={`/category/${cat.slug || cat.name_ar}`} 
-                          onClick={() => setIsOpen(false)} 
+                        <Link
+                          href={`/category/${cat.slug || cat.name_ar}`}
+                          onClick={() => setIsOpen(false)}
                           className="group flex items-baseline gap-4 hover:text-primary transition-all text-2xl sm:text-3xl"
                         >
                           <span className="text-primary/40 font-serif italic text-sm">0{idx + 1}</span>
@@ -277,10 +307,10 @@ export function Navbar() {
                             className="pr-6 mr-1.5 border-r border-white/10 space-y-2.5 flex flex-col pt-0.5 pb-2 overflow-hidden"
                           >
                             {subs.map((sub: any) => (
-                              <Link 
+                              <Link
                                 key={sub.slug || sub.name_ar}
-                                href={`/category/${sub.slug || sub.name_ar}`} 
-                                onClick={() => setIsOpen(false)} 
+                                href={`/category/${sub.slug || sub.name_ar}`}
+                                onClick={() => setIsOpen(false)}
                                 className="text-base font-bold text-slate-400 hover:text-primary transition-all flex items-center gap-2"
                               >
                                 <span className="text-[10px] text-primary/60">↳</span>
@@ -298,9 +328,9 @@ export function Navbar() {
 
             {/* Footer action */}
             <div className="relative z-10 pt-6 border-t border-white/10 mt-8">
-              <Button 
-                nativeButton={false} 
-                render={<Link href="/live" onClick={() => setIsOpen(false)} />} 
+              <Button
+                nativeButton={false}
+                render={<Link href="/live" onClick={() => setIsOpen(false)} />}
                 className="w-full h-14 rounded-2xl bg-primary hover:bg-primary/95 text-white font-black text-lg shadow-xl shadow-primary/20 active:scale-95 transition-all"
               >
                 بث مباشر
