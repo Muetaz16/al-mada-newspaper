@@ -57,7 +57,7 @@ export function Navbar() {
       <div
         className="absolute inset-0 backdrop-blur-[40px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
         style={{
-          background: 'linear-gradient(to left, #656666 0%, #656666 8%, rgba(101, 102, 102, 0.7) 22%, rgba(255, 255, 255, 0.9) 55%, #ffffff 75%, #ffffff 100%)'
+          background: 'linear-gradient(to left, #142038 0%, #142038 15%, rgba(20, 32, 56, 0.85) 30%, rgba(255, 255, 255, 0.95) 60%, #ffffff 80%, #ffffff 100%)'
         }}
       />
 
@@ -86,31 +86,31 @@ export function Navbar() {
 
       <div className="relative z-10 container mx-auto px-6 py-2.5">
         <div className="flex items-center justify-between gap-12">
-          {/* Logo Section - Circular Editorial Masterpiece */}
-          <Link href="/" className="relative z-20 flex items-center shrink-0 mr-2 sm:mr-4">
-            <div className="relative h-16 w-16 sm:h-22 sm:w-22 md:h-26 md:w-26 rounded-full overflow-hidden border-2 border-primary bg-slate-950 flex items-center justify-center shadow-lg shadow-black/30 transition-all duration-300 hover:scale-105 group-hover:border-primary/80">
+          {/* Logo Section - Editorial Masterpiece */}
+          <Link href="/" className="relative z-20 flex items-center gap-6 group shrink-0 mr-4 sm:mr-8">
+            <div className="relative h-10 w-44 sm:h-14 sm:w-64 md:h-18 md:w-[30rem] lg:h-20 lg:w-[36rem] flex items-center justify-start">
               <Image
                 src="/logo.png"
                 alt="صحيفة المدى"
                 fill
                 priority
-                sizes="(max-width: 768px) 64px, 120px"
-                className="object-contain p-2 transition-transform duration-300"
+                sizes="(max-width: 768px) 200px, 500px"
+                className="object-contain object-right transition-transform duration-200 group-hover:scale-115 p-0"
               />
             </div>
           </Link>
 
           {/* Main Navigation - Integrated Capsule Design */}
           <nav className="flex-1 hidden xl:flex items-center justify-center">
-            <div className="flex items-center gap-2 p-1 bg-slate-950/5 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-[inset_0_2px_10px_rgba(0,0,0,0.05)]">
+            <div className="flex items-center gap-2 p-1 bg-[#142038] backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
               {(() => {
                 const isHomeActive = pathname === '/';
                 return (
                   <Link
                     href="/"
                     className={isHomeActive
-                      ? "px-8 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
-                      : "group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                      ? "px-8 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
+                      : "group relative px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
                     }
                   >
                     الرئيسية
@@ -139,8 +139,8 @@ export function Navbar() {
                         key={cat.slug || cat.name_ar}
                         href={`/category/${cat.slug || cat.name_ar}`}
                         className={isParentOrChildActive
-                          ? "px-6 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95"
-                          : "group relative px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                          : "group relative px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
                         }
                       >
                         {cat.name_ar}
@@ -160,12 +160,12 @@ export function Navbar() {
                     >
                       <button
                         className={isParentOrChildActive
-                          ? "px-6 py-2.5 rounded-[2rem] bg-slate-950 text-white font-black text-xs shadow-2xl shadow-slate-950/40 hover:scale-105 transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5 focus:outline-none"
-                          : `px-5 py-2.5 text-slate-600 hover:text-slate-950 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-slate-950' : ''}`
+                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5 focus:outline-none"
+                          : `px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-white' : ''}`
                         }
                       >
                         {cat.name_ar}
-                        <span className={`text-[8px] ${isParentOrChildActive ? 'text-white/60' : 'text-slate-400'} select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
+                        <span className={`text-[8px] ${isParentOrChildActive ? 'text-slate-950/60' : 'text-slate-300/60'} select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
                         {!isParentOrChildActive && (
                           <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${hoveredCat === cat.id ? 'w-4' : 'w-0'}`} />
                         )}
