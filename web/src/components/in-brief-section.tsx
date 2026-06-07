@@ -36,11 +36,11 @@ export function InBriefSection() {
 
   return (
     <section className="space-y-12">
-      <div className="flex items-center gap-6 border-b-2 border-slate-900 pb-6">
-        <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter bg-slate-900 text-white px-6 py-2">
+      <div className="flex items-center gap-6 border-b border-white/10 pb-6">
+        <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl">
           بإيجاز
         </h3>
-        <p className="text-slate-500 font-bold text-lg hidden md:block">فيديو قصير يفسر الخبر في الحاضر أو التاريخ</p>
+        <p className="text-white/60 font-bold text-lg hidden md:block">فيديو قصير يفسر الخبر في الحاضر أو التاريخ</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">

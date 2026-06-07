@@ -104,10 +104,10 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
   return (
     <section className="space-y-8 py-12" dir="rtl">
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-100 pb-8 gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-white/10 pb-8 gap-6">
         <div className="flex items-center gap-8">
           <div className="relative">
-            <h3 className="text-2xl md:text-3.5xl font-black text-slate-950 tracking-tighter">
+            <h3 className="text-2xl md:text-3.5xl font-black text-white tracking-tighter">
               {title}
             </h3>
             <div className="absolute -bottom-1.5 right-0 w-8 h-1 bg-primary rounded-full" />
@@ -119,7 +119,7 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
               className={`px-5 py-2 rounded-full text-sm font-black transition-all ${
                 activeCategory === 'الكل' 
                 ? 'bg-slate-950 text-white shadow-xl shadow-slate-900/20' 
-                : 'text-slate-400 hover:text-slate-950 hover:bg-slate-50'
+                : 'text-white/40 hover:text-white hover:bg-white/5'
               }`}
             >
               الكل
@@ -131,7 +131,7 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                 className={`px-5 py-2 rounded-full text-sm font-black transition-all whitespace-nowrap ${
                   activeCategory === sub 
                   ? 'bg-slate-950 text-white shadow-xl shadow-slate-900/20' 
-                  : 'text-slate-400 hover:text-slate-950 hover:bg-slate-50'
+                  : 'text-white/40 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {sub}
@@ -144,21 +144,21 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
           <div className="flex items-center gap-2">
             <button 
               onClick={() => scroll('right')}
-              className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"
+              className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#1c2e4e] hover:text-white transition-all shadow-sm text-white/70"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
             <button 
               onClick={() => scroll('left')}
-              className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-950 hover:text-white transition-all shadow-sm"
+              className="w-12 h-12 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#1c2e4e] hover:text-white transition-all shadow-sm text-white/70"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
           </div>
-          <div className="w-px h-8 bg-slate-100 mx-2" />
+          <div className="w-px h-8 bg-white/10 mx-2" />
           <Link 
             href={activeCategory === 'الكل' ? '/news' : `/category/${encodeURIComponent(activeCategory)}`} 
-            className="hidden md:flex items-center gap-3 text-slate-400 hover:text-primary font-black text-sm transition-all group"
+            className="hidden md:flex items-center gap-3 text-white/40 hover:text-primary font-black text-sm transition-all group"
           >
             مشاهدة الكل
             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -169,8 +169,8 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
       {/* Horizontal Scrollable Content with Edge Fading */}
       <div className="relative group/scroll-container">
         {/* Left & Right Fading Gradients */}
-        <div className="absolute left-0 top-0 bottom-12 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none opacity-0 group-hover/scroll-container:opacity-100 transition-opacity duration-500" />
-        <div className="absolute right-0 top-0 bottom-12 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none opacity-0 group-hover/scroll-container:opacity-100 transition-opacity duration-500" />
+        <div className="absolute left-0 top-0 bottom-12 w-24 bg-gradient-to-r from-[#142038] to-transparent z-10 pointer-events-none opacity-0 group-hover/scroll-container:opacity-100 transition-opacity duration-500" />
+        <div className="absolute right-0 top-0 bottom-12 w-24 bg-gradient-to-l from-[#142038] to-transparent z-10 pointer-events-none opacity-0 group-hover/scroll-container:opacity-100 transition-opacity duration-500" />
 
         <div 
           ref={scrollRef}
@@ -199,7 +199,7 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                 >
                   <div className="space-y-6 relative">
                     {/* Image Container (Non-clickable) */}
-                    <div className="relative aspect-[16/10] rounded-[3.5rem] overflow-hidden shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] group-hover/card:shadow-primary/30 transition-all duration-700 pointer-events-none ring-1 ring-slate-100">
+                    <div className="relative aspect-[16/10] rounded-[3.5rem] overflow-hidden shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] group-hover/card:shadow-primary/30 transition-all duration-700 pointer-events-none ring-1 ring-white/5">
                       <Image
                         src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
                         alt={item.title}
@@ -235,17 +235,17 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                     
                     {/* Title & Meta (Clickable) */}
                     <Link href={`/news/${item.slug || item.id}`} className="block space-y-5 text-start px-8 cursor-pointer group/title">
-                      <div className="flex items-center gap-5 text-[10px] font-black text-slate-400">
-                        <div className="flex items-center gap-2.5 px-4 py-2 bg-slate-50 rounded-xl border border-slate-100 shadow-sm">
+                      <div className="flex items-center gap-5 text-[10px] font-black text-white/40">
+                        <div className="flex items-center gap-2.5 px-4 py-2 bg-[#1c2e4e] rounded-xl border border-white/5 shadow-2xl">
                           <Calendar className="w-4 h-4 text-primary" />
-                          <span className="text-slate-900">{new Date(item.created_at).toLocaleDateString('en-GB')}</span>
+                          <span className="text-white">{new Date(item.created_at).toLocaleDateString('en-GB')}</span>
                         </div>
                         <div className="w-1.5 h-1.5 bg-primary/20 rounded-full" />
                         <span className="uppercase tracking-[0.3em] text-primary/60">تحقيق خاص</span>
                       </div>
                       
                       <div className="relative inline-block">
-                        <h4 className="text-xl md:text-2.5xl font-black text-slate-950 leading-snug group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
+                        <h4 className="text-xl md:text-2.5xl font-black text-white leading-snug group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
                           {item.title}
                         </h4>
                         <span className="absolute -bottom-1.5 right-0 w-0 h-0.5 bg-primary/20 rounded-full group-hover/card:w-full transition-all duration-700" />

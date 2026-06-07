@@ -105,7 +105,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
   const contentHtml = parseContent(news.content, news.subtitle || null);
 
   return (
-    <main className="min-h-screen bg-slate-50/30" dir="rtl">
+    <main className="min-h-screen bg-[#142038] text-white" dir="rtl">
       <Navbar />
 
       <div className="container mx-auto px-4 py-12">
@@ -115,7 +115,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
           <article className="lg:col-span-8 space-y-10">
 
             {/* Breadcrumbs */}
-            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-slate-400 text-start">
+            <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/40 text-start">
               <Link href="/" className="hover:text-primary transition-colors">الرئيسية</Link>
               <ChevronRight className="w-3 h-3" />
               <Link href={`/category/${news.category?.slug}`} className="text-primary">
@@ -125,30 +125,30 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
             {/* Header */}
             <header className="space-y-6 text-start">
-              <h1 className="text-4xl md:text-6xl font-black leading-tight text-slate-900 tracking-tight">
+              <h1 className="text-4xl md:text-6xl font-black leading-tight text-white tracking-tight">
                 {news.title}
               </h1>
 
-              <div className="flex flex-wrap items-center gap-6 py-6 border-y border-slate-100 text-xs font-bold text-slate-500">
+              <div className="flex flex-wrap items-center gap-6 py-6 border-y border-white/10 text-xs font-bold text-white/50">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center">
-                    <User className="h-4 w-4 text-slate-400" />
+                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
+                    <User className="h-4 w-4 text-white/40" />
                   </div>
-                  <span className="text-slate-900">إدارة التحرير</span>
+                  <span className="text-white/95">إدارة التحرير</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   <span>{new Date(news.created_at).toLocaleDateString('en-GB')}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-slate-400" />
+                  <Clock className="h-4 w-4 text-white/40" />
                   <span>5 دقائق قراءة</span>
                 </div>
               </div>
             </header>
 
             {/* Hero Image */}
-            <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200">
+            <div className="relative aspect-video rounded-[3rem] overflow-hidden shadow-2xl">
               <Image
                 src={news.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995'}
                 alt={news.title}
@@ -161,9 +161,9 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             </div>
 
             {/* Article Body */}
-            <div className="bg-white rounded-[3rem] p-10 md:p-16 shadow-xl shadow-slate-100/50">
+            <div className="bg-[#1c2e4e] border border-white/5 rounded-[3rem] p-10 md:p-16 shadow-2xl">
               <div
-                className="prose prose-xl prose-slate max-w-none text-start font-medium leading-[2.2] text-slate-700 prose-headings:font-black prose-p:mb-8"
+                className="prose prose-xl prose-invert max-w-none text-start font-medium leading-[2.2] text-white/80 prose-headings:text-white prose-p:mb-8"
                 dangerouslySetInnerHTML={{ __html: contentHtml }}
               />
             </div>
@@ -175,14 +175,14 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
             {/* Trending News */}
             <div className="space-y-8 text-start">
-              <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2 border-b border-white/10 pb-4">
                 <TrendingUp className="w-5 h-5 text-primary" />
-                <h4 className="text-xl font-black text-slate-900 tracking-tight">أخبار رائجة</h4>
+                <h4 className="text-xl font-black text-white tracking-tight">أخبار رائجة</h4>
               </div>
               <div className="space-y-6">
                 {trending?.map((item: any) => (
                   <Link key={item.id} href={`/news/${item.slug || item.id}`} className="flex gap-4 group">
-                    <div className="relative h-20 w-24 shrink-0 rounded-2xl overflow-hidden shadow-sm">
+                    <div className="relative h-20 w-24 shrink-0 rounded-2xl overflow-hidden shadow-md border border-white/5 bg-[#1c2e4e]">
                       <Image
                         src={item.image_url || 'https://images.unsplash.com/photo-1512433035046-39973f1fca12'}
                         alt={item.title}
@@ -195,14 +195,14 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                       <span className="text-[9px] font-black text-primary uppercase">
                         {item.category?.name_ar}
                       </span>
-                      <h5 className="text-sm font-black text-slate-800 leading-snug group-hover:text-primary transition-colors line-clamp-2">
+                      <h5 className="text-sm font-black text-white/90 leading-snug group-hover:text-primary transition-colors line-clamp-2">
                         {item.title}
                       </h5>
                     </div>
                   </Link>
                 ))}
                 {(!trending || trending.length === 0) && (
-                  <p className="text-slate-400 font-bold text-sm">لا توجد أخبار أخرى حالياً.</p>
+                  <p className="text-white/40 font-bold text-sm">لا توجد أخبار أخرى حالياً.</p>
                 )}
               </div>
             </div>

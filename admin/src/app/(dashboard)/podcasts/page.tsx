@@ -34,6 +34,8 @@ export default function PodcastsPage() {
   const [duration, setDuration] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [sourceType, setSourceType] = useState<'UPLOAD' | 'URL'>('UPLOAD');
+  const [youtubeUrl, setYoutubeUrl] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const coverInputRef = useRef<HTMLInputElement>(null);
@@ -87,14 +89,26 @@ export default function PodcastsPage() {
     setCoverPreview(objectUrl);
   };
 
+  const getYoutubeThumbnail = (urlStr: string) => {
+    if (!urlStr) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = urlStr.match(regExp);
+    const id = (match && match[2].length === 11) ? match[2] : null;
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+  };
+
   const handleUploadAndSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title) {
       setMessage({ type: 'error', text: 'الرجاء إدخال عنوان الحلقة' });
       return;
     }
-    if (!file) {
+    if (sourceType === 'UPLOAD' && !file) {
       setMessage({ type: 'error', text: 'الرجاء اختيار ملف صوتي أو فيديو للرفع' });
+      return;
+    }
+    if (sourceType === 'URL' && !youtubeUrl) {
+      setMessage({ type: 'error', text: 'الرجاء إدخال رابط الحلقة' });
       return;
     }
 
@@ -105,23 +119,27 @@ export default function PodcastsPage() {
       let finalAudioUrl = '';
       let finalCoverUrl = '';
 
-      // 1. Upload Audio/Video Media
-      const audioFormData = new FormData();
-      audioFormData.append('file', file);
-      audioFormData.append('folder', 'audio');
+      if (sourceType === 'UPLOAD') {
+        // 1. Upload Audio/Video Media
+        const audioFormData = new FormData();
+        audioFormData.append('file', file!);
+        audioFormData.append('folder', 'audio');
 
-      const audioRes = await fetch('/api/upload', {
-        method: 'POST',
-        body: audioFormData,
-      });
+        const audioRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: audioFormData,
+        });
 
-      if (!audioRes.ok) {
-        const errorData = await audioRes.json();
-        throw new Error(errorData.error || 'فشل رفع الملف الصوتي');
+        if (!audioRes.ok) {
+          const errorData = await audioRes.json();
+          throw new Error(errorData.error || 'فشل رفع الملف الصوتي');
+        }
+
+        const audioData = await audioRes.json();
+        finalAudioUrl = audioData.url;
+      } else {
+        finalAudioUrl = youtubeUrl;
       }
-
-      const audioData = await audioRes.json();
-      finalAudioUrl = audioData.url;
 
       // 2. Upload Cover Image (Optional but highly recommended)
       if (coverFile) {
@@ -137,6 +155,12 @@ export default function PodcastsPage() {
         if (coverRes.ok) {
           const coverData = await coverRes.json();
           finalCoverUrl = coverData.url;
+        }
+      } else if (sourceType === 'URL' && (youtubeUrl.includes('youtube.com') || youtubeUrl.includes('youtu.be'))) {
+        // Auto extract YouTube thumbnail
+        const ytThumb = getYoutubeThumbnail(youtubeUrl);
+        if (ytThumb) {
+          finalCoverUrl = ytThumb;
         }
       }
 
@@ -164,6 +188,7 @@ export default function PodcastsPage() {
       setMessage({ type: 'success', text: 'تم نشر حلقة البودكاست بنجاح مع صورة الغلاف!' });
       setTitle('');
       setFile(null);
+      setYoutubeUrl('');
       setCoverFile(null);
       setCoverPreview(null);
       setDuration(null);
@@ -247,38 +272,72 @@ export default function PodcastsPage() {
               />
             </div>
 
-            {/* Twin Upload Cards Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+             <div className="space-y-2">
+                <label className="text-sm font-black text-slate-300">مصدر الوسائط</label>
+                <div className="flex gap-2 bg-white/5 p-1 rounded-2xl border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => { setSourceType('UPLOAD'); setYoutubeUrl(''); }}
+                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'UPLOAD' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    رفع ملف (MP3 / MP4)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setSourceType('URL'); setFile(null); }}
+                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'URL' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
+                  >
+                    رابط يوتيوب / خارجي
+                  </button>
+                </div>
+              </div>
+
+              {/* Twin Upload Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              {/* Media Upload Box */}
-              <div className="space-y-3">
-                <label className="text-sm font-black text-slate-300 block">الملف الصوتي أو الفيديو (MP3 / MP4)</label>
-                <div className="relative group h-48 bg-white/5 border-2 border-dashed border-white/10 hover:border-primary/40 rounded-[2rem] flex flex-col items-center justify-center p-6 text-center hover:bg-white/10 transition-all cursor-pointer">
-                  <input 
-                    type="file" 
-                    accept="audio/mp3, audio/mpeg, video/mp4, video/x-m4v"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20"
-                    required
-                  />
-                  <div className="flex flex-col items-center gap-3 text-slate-400 group-hover:text-slate-200">
-                    <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/5 group-hover:scale-105 transition-all">
-                      {file ? (
-                        file.type.startsWith('video') ? <FileVideo className="w-6 h-6 text-primary" /> : <FileAudio className="w-6 h-6 text-primary" />
-                      ) : (
-                        <UploadCloud className="w-6 h-6" />
-                      )}
-                    </div>
-                    <div>
-                      <span className="block text-xs font-black text-slate-200 truncate max-w-[200px]">
-                        {file ? file.name : 'اختر ملف الصوت أو الفيديو'}
-                      </span>
-                      {!file && <span className="text-[10px] text-slate-400 font-bold block mt-1">يدعم ملفات MP3 و MP4 فقط</span>}
+              {/* Media Upload Box or YouTube Input */}
+              {sourceType === 'UPLOAD' ? (
+                <div className="space-y-3">
+                  <label className="text-sm font-black text-slate-300 block">الملف الصوتي أو الفيديو (MP3 / MP4)</label>
+                  <div className="relative group h-48 bg-white/5 border-2 border-dashed border-white/10 hover:border-primary/40 rounded-[2rem] flex flex-col items-center justify-center p-6 text-center hover:bg-white/10 transition-all cursor-pointer">
+                    <input 
+                      type="file" 
+                      accept="audio/mp3, audio/mpeg, video/mp4, video/x-m4v"
+                      ref={fileInputRef}
+                      onChange={handleFileChange}
+                      className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20"
+                    />
+                    <div className="flex flex-col items-center gap-3 text-slate-400 group-hover:text-slate-200">
+                      <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/5 group-hover:scale-105 transition-all">
+                        {file ? (
+                          file.type.startsWith('video') ? <FileVideo className="w-6 h-6 text-primary" /> : <FileAudio className="w-6 h-6 text-primary" />
+                        ) : (
+                          <UploadCloud className="w-6 h-6" />
+                        )}
+                      </div>
+                      <div>
+                        <span className="block text-xs font-black text-slate-200 truncate max-w-[200px]">
+                          {file ? file.name : 'اختر ملف الصوت أو الفيديو'}
+                        </span>
+                        {!file && <span className="text-[10px] text-slate-400 font-bold block mt-1">يدعم ملفات MP3 و MP4 فقط</span>}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="space-y-3">
+                  <label className="text-sm font-black text-slate-300 block">رابط اليوتيوب أو الرابط الخارجي</label>
+                  <div className="h-48 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-center p-6 hover:bg-white/10 transition-all">
+                    <Input 
+                      value={youtubeUrl}
+                      onChange={(e) => setYoutubeUrl(e.target.value)}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      dir="ltr"
+                      className="h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold px-6 text-base placeholder:text-white/20 focus:ring-2 focus:ring-primary/20 w-full"
+                    />
+                  </div>
+                </div>
+              )}
 
               {/* Cover Image Upload Box */}
               <div className="space-y-3">

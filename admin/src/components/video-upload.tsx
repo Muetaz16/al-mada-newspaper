@@ -53,11 +53,18 @@ export function VideoUpload({ value, onChange }: VideoUploadProps) {
     <div className="space-y-4">
       {value ? (
         <div className="relative group rounded-[2.5rem] overflow-hidden bg-slate-900 border-4 border-slate-100 shadow-2xl">
-          <video 
-            src={value} 
-            className="w-full aspect-video object-cover opacity-60"
-            controls={false}
-          />
+          {value.includes('youtube.com') || value.includes('youtu.be') ? (
+            <iframe 
+              src={`https://www.youtube.com/embed/${value.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/)?.[2] || ''}`}
+              className="w-full aspect-video object-cover opacity-80"
+            />
+          ) : (
+            <video 
+              src={value} 
+              className="w-full aspect-video object-cover opacity-60"
+              controls={false}
+            />
+          )}
           <div className="absolute inset-0 flex flex-col items-center justify-center space-y-2">
             <CheckCircle2 className="w-12 h-12 text-primary drop-shadow-2xl" />
             <span className="text-white font-black text-xs uppercase tracking-widest">جاهز للنشر</span>

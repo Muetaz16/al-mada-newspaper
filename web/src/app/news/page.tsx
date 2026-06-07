@@ -70,30 +70,30 @@ export default function AllNewsPage() {
 
   if (loading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-white">
+      <div className="h-screen flex items-center justify-center bg-[#142038]">
         <Loader2 className="w-10 h-10 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-white" dir="rtl">
+    <main className="min-h-screen bg-[#142038] text-white" dir="rtl">
       <Navbar />
       <BreakingNewsTicker />
 
       <div className="container mx-auto px-4 py-16 space-y-16">
         {/* Header */}
-        <div className="flex flex-col md:flex-row items-center gap-8 border-b-4 border-slate-950 pb-12">
-          <div className="bg-slate-950 text-white px-10 py-4 rounded-[1.5rem] shadow-2xl">
+        <div className="flex flex-col md:flex-row items-center gap-8 border-b-4 border-white/10 pb-12">
+          <div className="bg-[#1c2e4e] border border-white/5 text-white px-10 py-4 rounded-[1.5rem] shadow-2xl">
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter">
               الأخبار
             </h1>
           </div>
           <div className="flex-1 text-start">
-             <p className="text-slate-500 font-black text-xl md:text-2xl italic">جميع الأخبار والتقارير الحصرية من المدى</p>
+             <p className="text-white/70 font-black text-xl md:text-2xl italic">جميع الأخبار والتقارير الحصرية من المدى</p>
              <div className="flex items-center gap-3 mt-4">
                 <div className="w-12 h-1 bg-primary rounded-full" />
-                <span className="text-slate-400 font-bold uppercase tracking-widest text-xs">إجمالي الأخبار المنشورة: {news.length}</span>
+                <span className="text-white/40 font-bold uppercase tracking-widest text-xs">إجمالي الأخبار المنشورة: {news.length}</span>
              </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function AllNewsPage() {
               className="group cursor-pointer space-y-6"
             >
               <Link href={`/news/${item.slug || item.id}`}>
-                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200 border border-slate-100">
+                <div className="relative aspect-[16/10] rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/5 bg-[#1c2e4e]">
                   <Image 
                     src={item.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'} 
                     alt={item.title}
@@ -119,7 +119,7 @@ export default function AllNewsPage() {
                   />
                   {item.category && (
                     <div className="absolute top-6 right-6">
-                      <span className="bg-white/95 backdrop-blur-md text-slate-900 px-4 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl">
+                      <span className="bg-[#142038]/90 backdrop-blur-md text-white px-4 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl border border-white/10">
                         {item.category.name_ar}
                       </span>
                     </div>
@@ -128,17 +128,17 @@ export default function AllNewsPage() {
               </Link>
 
               <div className="space-y-4 text-start px-2">
-                <div className="flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="flex items-center gap-4 text-[10px] font-black text-white/40 uppercase tracking-widest">
                   <span className="flex items-center gap-1.5"><Calendar className="w-3 h-3" /> {new Date(item.created_at).toLocaleDateString('en-GB')}</span>
-                  <span className="w-1 h-1 bg-slate-200 rounded-full" />
+                  <span className="w-1 h-1 bg-white/10 rounded-full" />
                   <span className="flex items-center gap-1.5"><User className="w-3 h-3" /> هيئة التحرير</span>
                 </div>
                 <Link href={`/news/${item.slug || item.id}`}>
-                  <h3 className="text-2xl font-black text-slate-900 group-hover:text-primary transition-colors leading-tight">
+                  <h3 className="text-2xl font-black text-white group-hover:text-primary transition-colors leading-tight">
                     {item.title}
                   </h3>
                 </Link>
-                <p className="text-slate-500 font-bold line-clamp-2 leading-relaxed">
+                <p className="text-white/60 font-bold line-clamp-2 leading-relaxed">
                   {getPreviewText(item)}
                 </p>
                 <Link href={`/news/${item.slug || item.id}`} className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest group-hover:gap-4 transition-all">
@@ -151,8 +151,8 @@ export default function AllNewsPage() {
         </div>
 
         {news.length === 0 && (
-          <div className="py-32 text-center bg-slate-50 rounded-[4rem] border-2 border-dashed border-slate-200">
-             <p className="text-slate-400 font-black text-2xl italic">لا توجد أخبار حالياً</p>
+          <div className="py-32 text-center bg-[#1c2e4e] rounded-[4rem] border-2 border-dashed border-white/5">
+             <p className="text-white/40 font-black text-2xl italic">لا توجد أخبار حالياً</p>
           </div>
         )}
       </div>

@@ -142,10 +142,10 @@ export function HeroSection() {
             {news.slice(1).map((item) => (
               <div 
                 key={item.id} 
-                className="group flex gap-4 p-4 bg-white rounded-[2.5rem] border border-slate-100 hover:border-primary/20 shadow-[0_10px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.05)] transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                className="group flex gap-4 p-4 bg-[#1c2e4e] rounded-[2.5rem] border border-white/5 hover:border-primary/20 shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
               >
                 {/* Side Thumbnail */}
-                <div className="relative aspect-[4/3] w-28 rounded-[1.8rem] overflow-hidden shrink-0 bg-slate-50 border border-slate-100">
+                <div className="relative aspect-[4/3] w-28 rounded-[1.8rem] overflow-hidden shrink-0 bg-slate-950 border border-white/10">
                   <Image
                     src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
                     alt={item.title}
@@ -162,12 +162,12 @@ export function HeroSection() {
                       {item.category?.name_ar || 'أخبار'}
                     </span>
                     <Link href={`/news/${item.slug}`}>
-                      <h4 className="text-sm font-black text-slate-800 leading-snug line-clamp-3 group-hover:text-primary transition-colors tracking-tight">
+                      <h4 className="text-sm font-black text-white/90 leading-snug line-clamp-3 group-hover:text-primary transition-colors tracking-tight">
                         {item.title}
                       </h4>
                     </Link>
                   </div>
-                  <div className="flex items-center gap-1.5 text-slate-400 text-[9px] font-bold">
+                  <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold">
                     <Calendar className="w-3.5 h-3.5 text-primary/70" />
                     {new Date(item.created_at).toLocaleDateString('en-GB')}
                   </div>

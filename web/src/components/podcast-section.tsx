@@ -30,6 +30,21 @@ export function PodcastSection() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const supabase = createClient();
 
+  const isYoutube = (url: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
+
+  const getEmbedUrl = (url: string, autoplay: boolean) => {
+    if (!url) return '';
+    let id = '';
+    if (url.includes('shorts/')) {
+      id = url.split('shorts/')[1]?.split(/[?&]/)[0];
+    } else {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      id = (match && match[2].length === 11) ? match[2] : '';
+    }
+    return id ? `https://www.youtube.com/embed/${id}?enablejsapi=1${autoplay ? '&autoplay=1' : ''}` : url;
+  };
+
   useEffect(() => {
     async function fetchPodcasts() {
       const { data } = await supabase
@@ -41,22 +56,45 @@ export function PodcastSection() {
       if (data && data.length > 0) {
         setPodcasts(data);
         setActiveTrack(data[0]); // Default to latest track
+        setDuration(data[0].duration || 180);
       }
       setLoading(false);
     }
     fetchPodcasts();
   }, [supabase]);
 
+  // Simulated playback progress for YouTube tracks
+  useEffect(() => {
+    let interval: any;
+    if (isPlaying && activeTrack && isYoutube(activeTrack.audio_url)) {
+      interval = setInterval(() => {
+        setCurrentTime((prev) => {
+          if (prev >= duration) {
+            setIsPlaying(false);
+            return 0;
+          }
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, activeTrack, duration]);
+
   // Playback Control Handlers
   const handlePlayPause = () => {
-    if (!audioRef.current || !activeTrack) return;
+    if (!activeTrack) return;
 
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
+    if (isYoutube(activeTrack.audio_url)) {
+      setIsPlaying(!isPlaying);
     } else {
-      audioRef.current.play().catch(err => console.error("Audio playback error:", err));
-      setIsPlaying(true);
+      if (!audioRef.current) return;
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().catch(err => console.error("Audio playback error:", err));
+        setIsPlaying(true);
+      }
     }
   };
 
@@ -69,15 +107,22 @@ export function PodcastSection() {
     } else {
       setIsPlaying(false);
       setCurrentTime(0);
-      setDuration(0);
-      // Let standard HTML5 source update before auto-playing
-      setTimeout(() => {
-        if (audioRef.current) {
-          audioRef.current.play()
-            .then(() => setIsPlaying(true))
-            .catch(err => console.error("Audio playback error:", err));
-        }
-      }, 100);
+      setDuration(track.duration || 180);
+
+      if (isYoutube(track.audio_url)) {
+        setTimeout(() => {
+          setIsPlaying(true);
+        }, 100);
+      } else {
+        // Let standard HTML5 source update before auto-playing
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play()
+              .then(() => setIsPlaying(true))
+              .catch(err => console.error("Audio playback error:", err));
+          }
+        }, 100);
+      }
     }
   };
 
@@ -106,11 +151,15 @@ export function PodcastSection() {
   };
 
   const handleWaveformClick = (index: number, totalBars: number) => {
-    if (audioRef.current && duration > 0) {
+    if (duration > 0) {
       const clickRatio = index / totalBars;
       const targetTime = clickRatio * duration;
-      audioRef.current.currentTime = targetTime;
-      setCurrentTime(targetTime);
+      if (activeTrack && isYoutube(activeTrack.audio_url)) {
+        setCurrentTime(targetTime);
+      } else if (audioRef.current) {
+        audioRef.current.currentTime = targetTime;
+        setCurrentTime(targetTime);
+      }
     }
   };
 
@@ -149,7 +198,7 @@ export function PodcastSection() {
     <section className="space-y-12 py-12" dir="rtl">
       
       {/* Underlying Audio Engine */}
-      {activeTrack && (
+      {activeTrack && !isYoutube(activeTrack.audio_url) && (
         <audio
           ref={audioRef}
           src={activeTrack.audio_url}
@@ -160,8 +209,8 @@ export function PodcastSection() {
       )}
 
       {/* Header Section */}
-      <div className="flex items-center gap-6 border-b border-slate-100 pb-6 text-start">
-        <h3 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter bg-slate-900 text-white px-6 py-2 flex items-center gap-3">
+      <div className="flex items-center gap-6 border-b border-white/10 pb-6 text-start">
+        <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl flex items-center gap-3">
           <Mic className="w-8 h-8 text-primary animate-pulse" />
           البودكاست (البث الصوتي)
         </h3>
@@ -198,14 +247,25 @@ export function PodcastSection() {
               
               {/* GORGEOUS SQUARE COVER IMAGE (Not Rotating) */}
               <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/10 shrink-0 group shadow-2xl flex items-center justify-center">
-                <img 
-                  src={activeTrack?.cover_url || defaultCover} 
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  alt={activeTrack?.title || "Podcast cover"} 
-                />
-                
-                {/* Elegant overlay gradient to make it blend into the background */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-85" />
+                {activeTrack && isYoutube(activeTrack.audio_url) && isPlaying ? (
+                  <iframe
+                    src={getEmbedUrl(activeTrack.audio_url, true)}
+                    className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                    allow="autoplay; encrypted-media"
+                    allowFullScreen
+                  />
+                ) : (
+                  <>
+                    <img 
+                      src={activeTrack?.cover_url || defaultCover} 
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                      alt={activeTrack?.title || "Podcast cover"} 
+                    />
+                    
+                    {/* Elegant overlay gradient to make it blend into the background */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-85" />
+                  </>
+                )}
                 
                 {/* High-end mic indicator if playing */}
                 {isPlaying && (
@@ -303,11 +363,11 @@ export function PodcastSection() {
 
         {/* Previous Tracks Feed (Right Sidebar) */}
         <div className="lg:col-span-4 flex flex-col justify-between gap-6 h-full">
-          <div className="bg-slate-50 border border-slate-200/60 rounded-[3.5rem] p-8 flex flex-col gap-6 flex-1 min-w-0 shadow-sm">
+          <div className="bg-[#1c2e4e] border border-white/5 rounded-[3.5rem] p-8 flex flex-col gap-6 flex-1 min-w-0 shadow-2xl">
             
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-4 text-start">
-              <Mic className="w-5 h-5 text-slate-500" />
-              <h4 className="font-black text-slate-700 text-lg">الأرشيف الصوتي</h4>
+            <div className="flex items-center gap-3 border-b border-white/10 pb-4 text-start">
+              <Mic className="w-5 h-5 text-white/40" />
+              <h4 className="font-black text-white text-lg">الأرشيف الصوتي</h4>
             </div>
 
             <div className="flex flex-col gap-4 overflow-y-auto max-h-[390px] pr-2 custom-scrollbar">
@@ -319,11 +379,11 @@ export function PodcastSection() {
                     onClick={() => handleSelectTrack(track)}
                     className={`flex items-center gap-4 p-3.5 rounded-2xl border transition-all cursor-pointer text-start group
                       ${isActive 
-                        ? 'bg-primary/5 border-primary/20 shadow-md ring-1 ring-primary/5' 
-                        : 'bg-white border-slate-100 hover:border-primary/20 shadow-sm hover:scale-[1.01]'}`}
+                        ? 'bg-primary/10 border-primary/25 shadow-md ring-1 ring-primary/10' 
+                        : 'bg-[#142038]/50 border-white/5 hover:border-primary/25 hover:bg-[#142038] shadow-sm hover:scale-[1.01]'}`}
                   >
                     {/* Small cover image preview */}
-                    <div className="h-14 w-14 rounded-xl overflow-hidden bg-slate-900 border border-slate-100 shrink-0 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center relative">
+                    <div className="h-14 w-14 rounded-xl overflow-hidden bg-slate-900 border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center relative">
                       {track.cover_url ? (
                         <img src={track.cover_url} className="w-full h-full object-cover" alt="" />
                       ) : (
@@ -343,12 +403,12 @@ export function PodcastSection() {
                     
                     <div className="space-y-1.5 flex-1 min-w-0">
                       <h5 className={`font-black text-sm truncate leading-tight transition-colors
-                        ${isActive ? 'text-primary' : 'text-slate-800 group-hover:text-primary'}`}>
+                        ${isActive ? 'text-primary' : 'text-white/90 group-hover:text-primary'}`}>
                         {track.title}
                       </h5>
-                      <div className="flex items-center gap-2.5 text-[9px] font-bold text-slate-400">
+                      <div className="flex items-center gap-2.5 text-[9px] font-bold text-white/40">
                         <span>{new Date(track.created_at).toLocaleDateString('en-GB')}</span>
-                        <div className="w-1 h-1 rounded-full bg-slate-200" />
+                        <div className="w-1 h-1 rounded-full bg-white/10" />
                         <span className="flex items-center gap-1 font-mono">
                           <Clock className="w-3 h-3" />
                           {formatTime(track.duration)}

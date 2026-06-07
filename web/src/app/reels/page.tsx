@@ -14,6 +14,21 @@ export default function ReelsPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const supabase = createClient();
 
+  const isYoutube = (url: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
+
+  const getEmbedUrl = (url: string) => {
+    if (!url) return '';
+    let id = '';
+    if (url.includes('shorts/')) {
+      id = url.split('shorts/')[1]?.split(/[?&]/)[0];
+    } else {
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      id = (match && match[2].length === 11) ? match[2] : '';
+    }
+    return id ? `https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}` : url;
+  };
+
   useEffect(() => {
     async function fetchReels() {
       const { data } = await supabase
@@ -88,19 +103,28 @@ export default function ReelsPage() {
             transition={{ type: 'spring', damping: 30, stiffness: 200 }}
             className="relative w-full max-w-[450px] aspect-[9/16] bg-black md:rounded-[3.5rem] overflow-hidden shadow-[0_0_120px_rgba(0,0,0,0.8)] border border-white/5 group"
           >
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted={muted}
-              playsInline
-              className="w-full h-full object-cover"
-              onClick={() => setMuted(!muted)}
-            >
-              <source src={encodeURI(reels[currentIdx].url)} type="video/mp4" />
-              <source src={encodeURI(reels[currentIdx].url)} type="video/webm" />
-              Your browser does not support the video tag.
-            </video>
+            {isYoutube(reels[currentIdx].url) ? (
+              <iframe
+                src={getEmbedUrl(reels[currentIdx].url)}
+                className="w-full h-full object-cover border-none"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              />
+            ) : (
+              <video
+                ref={videoRef}
+                autoPlay
+                loop
+                muted={muted}
+                playsInline
+                className="w-full h-full object-cover"
+                onClick={() => setMuted(!muted)}
+              >
+                <source src={encodeURI(reels[currentIdx].url)} type="video/mp4" />
+                <source src={encodeURI(reels[currentIdx].url)} type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+            )}
 
             {/* Mute Indicator Overlay */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">

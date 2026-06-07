@@ -20,6 +20,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Loader2, Save, ArrowRight, Film } from 'lucide-react';
 import Link from 'next/link';
 import { ImageUpload } from '@/components/image-upload';
+import { VideoUpload } from '@/components/video-upload';
 
 const reelSchema = z.object({
   title: z.string().min(5, 'العنوان قصير جداً'),
@@ -31,6 +32,7 @@ export default function EditReelPage({ params }: { params: Promise<{ id: string 
   const { id } = use(params);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [sourceType, setSourceType] = useState<'UPLOAD' | 'URL'>('URL');
   const router = useRouter();
   const supabase = createClient();
 
@@ -65,6 +67,8 @@ export default function EditReelPage({ params }: { params: Promise<{ id: string 
             video_url: data.video_url,
             thumbnail: data.thumbnail || '',
           });
+          const isYtOrExt = data.video_url.includes('youtube.com') || data.video_url.includes('youtu.be') || !data.video_url.includes('/uploads/');
+          setSourceType(isYtOrExt ? 'URL' : 'UPLOAD');
         }
       } catch (err: any) {
         console.error('Error fetching reel item:', err);
@@ -76,14 +80,28 @@ export default function EditReelPage({ params }: { params: Promise<{ id: string 
     fetchData();
   }, [id, form, router, supabase]);
 
+  const getYoutubeThumbnail = (urlStr: string) => {
+    if (!urlStr) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = urlStr.match(regExp);
+    const id = (match && match[2].length === 11) ? match[2] : null;
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+  };
+
   async function onSubmit(values: z.infer<typeof reelSchema>) {
     setLoading(true);
+    let finalThumbnail = values.thumbnail;
+    if (!finalThumbnail && (values.video_url.includes('youtube.com') || values.video_url.includes('youtu.be'))) {
+      const ytThumb = getYoutubeThumbnail(values.video_url);
+      if (ytThumb) finalThumbnail = ytThumb;
+    }
+
     const { error } = await supabase
       .from('reels')
       .update({
         title: values.title,
         video_url: values.video_url,
-        thumbnail: values.thumbnail || null,
+        thumbnail: finalThumbnail || null,
       })
       .eq('id', id);
 
@@ -148,19 +166,45 @@ export default function EditReelPage({ params }: { params: Promise<{ id: string 
                 )}
               />
               
+              <div className="space-y-3">
+                <FormLabel className="text-sm font-black text-slate-500">مصدر الفيديو</FormLabel>
+                <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                  <button
+                    type="button"
+                    onClick={() => { setSourceType('UPLOAD'); form.setValue('video_url', ''); }}
+                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'UPLOAD' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                  >
+                    رفع ملف فيديو
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setSourceType('URL'); form.setValue('video_url', ''); }}
+                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'URL' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                  >
+                    رابط يوتيوب / خارجي
+                  </button>
+                </div>
+              </div>
+
               <FormField
                 control={form.control}
                 name="video_url"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-black text-slate-500">رابط الفيديو (YouTube/MP4)</FormLabel>
+                    <FormLabel className="text-sm font-black text-slate-500">
+                      {sourceType === 'UPLOAD' ? 'ملف الفيديو' : 'رابط الفيديو (YouTube/MP4)'}
+                    </FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="https://..." 
-                        {...field} 
-                        dir="ltr"
-                        className="h-14 text-lg font-bold bg-slate-50 border-none rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20"
-                      />
+                      {sourceType === 'UPLOAD' ? (
+                        <VideoUpload value={field.value} onChange={field.onChange} />
+                      ) : (
+                        <Input 
+                          placeholder="https://..." 
+                          {...field} 
+                          dir="ltr"
+                          className="h-14 text-lg font-bold bg-slate-50 border-none rounded-2xl focus-visible:ring-2 focus-visible:ring-primary/20"
+                        />
+                      )}
                     </FormControl>
                     <FormMessage className="font-bold" />
                   </FormItem>

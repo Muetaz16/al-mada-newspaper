@@ -49,6 +49,7 @@ export default function VideosPage() {
   const [url, setUrl] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [type, setType] = useState('VIDEO');
+  const [sourceType, setSourceType] = useState<'UPLOAD' | 'URL'>('UPLOAD');
   
   const supabase = createClient();
 
@@ -71,6 +72,7 @@ export default function VideosPage() {
     setUrl('');
     setThumbnail('');
     setType('VIDEO');
+    setSourceType('UPLOAD');
     setOpen(true);
   };
 
@@ -81,6 +83,14 @@ export default function VideosPage() {
     });
   };
 
+  const getYoutubeThumbnail = (urlStr: string) => {
+    if (!urlStr) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = urlStr.match(regExp);
+    const id = (match && match[2].length === 11) ? match[2] : null;
+    return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
+  };
+
   const saveItem = async () => {
     if (!title || !url) {
       alert('يرجى تعبئة العنوان والرابط');
@@ -88,11 +98,17 @@ export default function VideosPage() {
     }
     setSaving(true);
     
+    let finalThumbnail = thumbnail;
+    if (!finalThumbnail && (url.includes('youtube.com') || url.includes('youtu.be'))) {
+      const ytThumb = getYoutubeThumbnail(url);
+      if (ytThumb) finalThumbnail = ytThumb;
+    }
+
     const { error } = await supabase.from('videos').insert({
       id: generateUUID(),
       title,
       url,
-      thumbnail_url: thumbnail,
+      thumbnail_url: finalThumbnail,
       type,
       status: 'PUBLISHED',
       created_at: new Date().toISOString()
@@ -278,9 +294,42 @@ export default function VideosPage() {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block mb-2">ملف الفيديو</label>
-              <VideoUpload value={url} onChange={setUrl} />
+              <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block mb-1">مصدر الفيديو</label>
+              <div className="flex gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                <button
+                  type="button"
+                  onClick={() => { setSourceType('UPLOAD'); setUrl(''); }}
+                  className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'UPLOAD' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                >
+                  رفع ملف فيديو
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setSourceType('URL'); setUrl(''); }}
+                  className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'URL' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                >
+                  رابط يوتيوب / خارجي
+                </button>
+              </div>
             </div>
+
+            {sourceType === 'UPLOAD' ? (
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block mb-2">ملف الفيديو</label>
+                <VideoUpload value={url} onChange={setUrl} />
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block mb-2">رابط الفيديو</label>
+                <Input 
+                  value={url}
+                  onChange={(e) => setUrl(e.target.value)}
+                  placeholder="https://www.youtube.com/watch?v=... أو أي رابط خارجي" 
+                  dir="ltr"
+                  className="h-14 rounded-2xl bg-slate-50 border-none focus:ring-2 focus:ring-primary/20 font-bold px-6 text-start"
+                />
+              </div>
+            )}
 
             <div className="space-y-3">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest px-1 block mb-2">صورة الغلاف (اختياري)</label>

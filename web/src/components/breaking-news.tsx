@@ -32,8 +32,8 @@ export function BreakingNewsTicker() {
   }, [supabase]);
 
   return (
-    <div className="bg-slate-950 text-white h-16 overflow-hidden flex items-stretch relative z-40 shadow-[0_10px_40px_rgba(218,145,39,0.15)] border-y border-white/5" dir="rtl">
-      <div className="bg-slate-950 px-12 h-full flex items-center gap-4 font-black text-lg uppercase tracking-widest z-20 shadow-[20px_0_40px_rgba(0,0,0,0.4)] relative">
+    <div className="bg-[#c8102e] text-white h-16 overflow-hidden flex items-stretch relative z-40 shadow-[0_10px_40px_rgba(200,16,46,0.15)]" dir="rtl">
+      <div className="bg-slate-950 px-12 h-full flex items-center gap-4 font-black text-lg uppercase tracking-widest z-20 shadow-[20px_0_40px_rgba(0,0,0,0.4)] relative border-y border-slate-950">
         <div className="relative">
           <Zap className="w-5 h-5 text-primary fill-primary animate-pulse" />
           <div className="absolute inset-0 bg-primary/40 blur-xl animate-ping rounded-full" />
@@ -41,7 +41,7 @@ export function BreakingNewsTicker() {
         عاجل
         <div className="absolute top-0 right-0 bottom-0 w-px bg-white/10" />
       </div>
-      <div className="flex-1 whitespace-nowrap h-full flex items-center bg-[#142038]">
+      <div className="flex-1 whitespace-nowrap h-full flex items-center bg-[#c8102e] border-y border-[#a00c22]">
         <motion.div
           animate={{ x: ['100%', '-100%'] }}
           transition={{

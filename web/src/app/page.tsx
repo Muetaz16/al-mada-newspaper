@@ -114,7 +114,7 @@ export default function Home() {
   const filteredVideos = videos.filter((v: any) => v.type === activeMediaTab);
 
   return (
-    <main className="min-h-screen bg-white" dir="rtl">
+    <main className="min-h-screen bg-[#142038] text-white" dir="rtl">
       <Navbar />
       <BreakingNewsTicker />
 

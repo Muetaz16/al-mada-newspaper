@@ -57,7 +57,7 @@ export function Navbar() {
       <div
         className="absolute inset-0 backdrop-blur-[40px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.03)]"
         style={{
-          background: 'linear-gradient(to left, #142038 0%, #142038 15%, rgba(20, 32, 56, 0.85) 30%, rgba(255, 255, 255, 0.95) 60%, #ffffff 80%, #ffffff 100%)'
+          background: '#142038'
         }}
       />
 
@@ -88,29 +88,29 @@ export function Navbar() {
         <div className="flex items-center justify-between gap-12">
           {/* Logo Section - Editorial Masterpiece */}
           <Link href="/" className="relative z-20 flex items-center gap-6 group shrink-0 mr-4 sm:mr-8">
-            <div className="relative h-10 w-44 sm:h-14 sm:w-64 md:h-18 md:w-[30rem] lg:h-20 lg:w-[36rem] flex items-center justify-start">
+            <div className="relative h-11 w-44 sm:h-14 sm:w-60 md:h-16 md:w-72 lg:h-20 lg:w-80 flex items-center justify-start">
               <Image
                 src="/logo.png"
                 alt="صحيفة المدى"
                 fill
                 priority
-                sizes="(max-width: 768px) 200px, 500px"
-                className="object-contain object-right transition-transform duration-200 group-hover:scale-115 p-0"
+                sizes="(max-width: 768px) 250px, 400px"
+                className="object-contain object-right transition-transform duration-200 group-hover:scale-110 p-0"
               />
             </div>
           </Link>
 
           {/* Main Navigation - Integrated Capsule Design */}
-          <nav className="flex-1 hidden xl:flex items-center justify-center">
-            <div className="flex items-center gap-2 p-1 bg-[#142038] backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
+          <nav className="flex-1 hidden lg:flex items-center justify-center">
+            <div className="flex items-center gap-2 p-1 bg-[#142038] backdrop-blur-3xl rounded-[2.5rem] border-2 border-white shadow-[0_10px_30px_rgba(0,0,0,0.15)]">
               {(() => {
                 const isHomeActive = pathname === '/';
                 return (
                   <Link
                     href="/"
                     className={isHomeActive
-                      ? "px-8 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
-                      : "group relative px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                      ? "px-8 py-2.5 rounded-[2rem] bg-white text-[#142038] font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 animate-none"
+                      : "group relative px-5 py-2.5 text-white hover:text-white/80 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
                     }
                   >
                     الرئيسية
@@ -139,8 +139,8 @@ export function Navbar() {
                         key={cat.slug || cat.name_ar}
                         href={`/category/${cat.slug || cat.name_ar}`}
                         className={isParentOrChildActive
-                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95"
-                          : "group relative px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
+                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-[#142038] font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95"
+                          : "group relative px-5 py-2.5 text-white hover:text-white/80 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest"
                         }
                       >
                         {cat.name_ar}
@@ -160,12 +160,12 @@ export function Navbar() {
                     >
                       <button
                         className={isParentOrChildActive
-                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-slate-950 font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5 focus:outline-none"
-                          : `px-5 py-2.5 text-slate-300 hover:text-white transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-white' : ''}`
+                          ? "px-6 py-2.5 rounded-[2rem] bg-white text-[#142038] font-black text-xs shadow-2xl hover:scale-105 transition-all whitespace-nowrap active:scale-95 flex items-center gap-1.5 focus:outline-none"
+                          : `px-5 py-2.5 text-white hover:text-white/80 transition-all font-black text-[11px] whitespace-nowrap uppercase tracking-widest flex items-center gap-1.5 focus:outline-none ${hoveredCat === cat.id ? 'text-white' : ''}`
                         }
                       >
                         {cat.name_ar}
-                        <span className={`text-[8px] ${isParentOrChildActive ? 'text-slate-950/60' : 'text-slate-300/60'} select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
+                        <span className={`text-[8px] ${isParentOrChildActive ? 'text-[#142038]/70' : 'text-white/60'} select-none transition-transform duration-300 ${hoveredCat === cat.id ? 'rotate-180 text-primary' : ''}`}>▼</span>
                         {!isParentOrChildActive && (
                           <span className={`absolute bottom-1.5 left-1/2 -translate-x-1/2 h-1 bg-primary rounded-full transition-all duration-300 ${hoveredCat === cat.id ? 'w-4' : 'w-0'}`} />
                         )}
@@ -220,7 +220,7 @@ export function Navbar() {
           {/* Actions - High End Interactions */}
           <div className="flex items-center gap-4">
             <button
-              className="xl:hidden p-3 bg-slate-950 text-white rounded-2xl shadow-2xl hover:bg-primary transition-all active:scale-90"
+              className="lg:hidden p-3 bg-slate-950 text-white rounded-2xl shadow-2xl hover:bg-primary transition-all active:scale-90"
               onClick={() => setIsOpen(!isOpen)}
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -237,7 +237,7 @@ export function Navbar() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.03 }}
             transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="xl:hidden fixed inset-0 bg-slate-950 z-[9999] p-8 flex flex-col justify-between overflow-y-auto"
+            className="lg:hidden fixed inset-0 bg-slate-950 z-[9999] p-8 flex flex-col justify-between overflow-y-auto"
             dir="rtl"
           >
             {/* Dark Mode Background Glows */}
