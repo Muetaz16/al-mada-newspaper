@@ -38,7 +38,7 @@ export function VideoModal({ isOpen, onClose, videoUrl, title, views }: VideoMod
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-4xl p-0 overflow-hidden bg-black border-none shadow-2xl rounded-[2.5rem]">
+      <DialogContent showCloseButton={false} className="sm:max-w-4xl p-0 overflow-hidden bg-black border-none shadow-2xl rounded-[2.5rem]">
         <div className="relative aspect-video w-full bg-black">
           {isOpen && (
             <>
