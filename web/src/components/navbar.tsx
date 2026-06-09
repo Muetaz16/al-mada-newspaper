@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Search, Clock } from 'lucide-react';
+import { Menu, X, Search, Clock, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
 
@@ -35,6 +35,10 @@ export function Navbar() {
       { name_ar: 'ليبيا', slug: 'libya', id: 'libya' },
       { name_ar: 'منوعات', slug: 'miscellaneous', id: 'miscellaneous' },
     ];
+
+  const getSubcategories = (parentId: string) => {
+    return dbCategories.filter(c => c.parent_id === parentId);
+  };
 
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, ' / ');
@@ -94,14 +98,32 @@ export function Navbar() {
           {rootCategories.map((cat: any) => {
             const isCatActive = pathname === `/category/${cat.slug || cat.name_ar}` ||
                                 pathname === `/category/${encodeURIComponent(cat.slug || cat.name_ar)}`;
+            const subCategories = getSubcategories(cat.id);
+            const hasSub = subCategories.length > 0;
             return (
-              <Link
-                key={cat.slug || cat.name_ar}
-                href={`/category/${cat.slug || cat.name_ar}`}
-                className={`font-black text-sm pb-5 border-b-2 transition-colors ${isCatActive ? 'text-primary border-primary' : 'text-white border-transparent hover:text-primary'}`}
-              >
-                {cat.name_ar}
-              </Link>
+              <div key={cat.slug || cat.name_ar} className="relative group h-full flex items-center">
+                <Link
+                  href={`/category/${cat.slug || cat.name_ar}`}
+                  className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${isCatActive ? 'text-primary border-primary' : 'text-white border-transparent hover:text-primary'}`}
+                >
+                  {cat.name_ar}
+                  {hasSub && <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" />}
+                </Link>
+
+                {hasSub && (
+                  <div className="absolute top-full right-0 min-w-[180px] bg-[#0c1220] border border-white/5 border-t-0 rounded-b-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-2 z-50">
+                    {subCategories.map((sub: any) => (
+                      <Link
+                        key={sub.id}
+                        href={`/category/${sub.slug || sub.name_ar}`}
+                        className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
+                      >
+                        {sub.name_ar}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
         </nav>
@@ -127,16 +149,34 @@ export function Navbar() {
              className="lg:hidden bg-[#0c1220] border-t border-white/5 flex flex-col px-6 py-4 space-y-4 overflow-hidden"
            >
              <Link href="/" className="text-white font-black text-base pb-3 border-b border-white/5" onClick={() => setIsOpen(false)}>الرئيسية</Link>
-             {rootCategories.map((cat: any) => (
-                <Link 
-                  key={cat.slug || cat.name_ar}
-                  href={`/category/${cat.slug || cat.name_ar}`}
-                  className="text-white font-black text-base pb-3 border-b border-white/5"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {cat.name_ar}
-                </Link>
-             ))}
+             {rootCategories.map((cat: any) => {
+                const subCategories = getSubcategories(cat.id);
+                return (
+                  <div key={cat.slug || cat.name_ar} className="flex flex-col pb-3 border-b border-white/5">
+                    <Link 
+                      href={`/category/${cat.slug || cat.name_ar}`}
+                      className="text-white font-black text-base"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {cat.name_ar}
+                    </Link>
+                    {subCategories.length > 0 && (
+                      <div className="flex flex-col pt-3 pr-4 space-y-3">
+                        {subCategories.map((sub: any) => (
+                          <Link 
+                            key={sub.id}
+                            href={`/category/${sub.slug || sub.name_ar}`}
+                            className="text-slate-400 hover:text-primary font-bold text-sm transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {sub.name_ar}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+             })}
            </motion.div>
         )}
       </AnimatePresence>
