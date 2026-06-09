@@ -93,10 +93,10 @@ export function HeroSection() {
 
   return (
     <section className="space-y-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Main Featured Card */}
-        <div className="lg:col-span-8">
-          <div className="group relative aspect-[16/9] rounded-[3.5rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700 hover:shadow-primary/20 border border-slate-100/50 bg-slate-950">
+        <div className="lg:col-span-9">
+          <div className="group relative aspect-[16/9] md:aspect-auto md:min-h-[550px] rounded-xl overflow-hidden shadow-2xl transition-all duration-700 border border-white/10 bg-slate-950">
             <AnimatePresence mode="wait">
               <motion.div
                 key={current.id}
@@ -112,40 +112,50 @@ export function HeroSection() {
                   fill
                   sizes="(max-width: 1024px) 100vw, 66vw"
                   priority
-                  className="object-cover opacity-90 transition-transform duration-[10000ms] group-hover:scale-105"
+                  className="object-cover transition-transform duration-[10000ms] group-hover:scale-105"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c1220] via-[#0c1220]/60 to-transparent" />
               </motion.div>
             </AnimatePresence>
             
-            <div className="absolute top-10 right-10 z-10 pointer-events-none">
-              <Badge className="bg-primary text-white font-black px-8 py-3 rounded-2xl text-xs uppercase tracking-widest shadow-2xl">
-                الرئيسية
+            <div className="absolute top-6 right-6 z-10 pointer-events-none">
+              <Badge className="bg-primary text-[#142038] font-black px-6 py-1.5 rounded-full text-xs uppercase tracking-widest shadow-xl">
+                {current.category?.name_ar || 'أخبار'}
               </Badge>
             </div>
 
-            <Link href={`/news/${current.slug}`} className="absolute bottom-12 right-12 left-12 space-y-6 text-start z-20 cursor-pointer block group/link">
-              <h2 className="text-2xl md:text-5.5xl font-black text-white leading-[1.1] tracking-tighter drop-shadow-2xl group-hover/link:text-primary transition-colors">
+            <Link href={`/news/${current.slug}`} className="absolute bottom-8 right-8 left-8 space-y-4 text-start z-20 cursor-pointer block group/link">
+              <h2 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tighter drop-shadow-2xl group-hover/link:text-primary transition-colors">
                 {current.title}
               </h2>
-              <div className="flex items-center gap-6 text-white/60 font-bold text-xs">
-                <Calendar className="w-4 h-4 text-primary" />
-                {new Date(current.created_at).toLocaleDateString('en-GB')}
+              <p className="text-slate-300 font-medium text-sm md:text-base line-clamp-2 max-w-3xl leading-relaxed">
+                {current.summary}
+              </p>
+              
+              <div className="flex items-center gap-4 text-slate-400 font-bold text-xs pt-2">
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-primary" />
+                  {new Date(current.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </div>
+                <div className="w-px h-3 bg-slate-600" />
+                <span>5 دقائق قراءة</span>
+                <div className="w-px h-3 bg-slate-600" />
+                <span className="text-primary">{current.category?.name_ar || 'أخبار'}</span>
               </div>
             </Link>
           </div>
         </div>
 
-        {/* Side/Sub Headlines (Automatic exact height matching with vertical scroll) */}
-        <div className="lg:col-span-4 relative min-h-[450px] lg:min-h-0">
-          <div className="lg:absolute lg:inset-0 lg:overflow-y-auto lg:pl-2 lg:pr-1 flex flex-col gap-5 scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-            {news.slice(1).map((item) => (
+        {/* Side/Sub Headlines */}
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          <div className="flex flex-col gap-4 flex-1">
+            {news.slice(1, 4).map((item) => (
               <div 
                 key={item.id} 
-                className="group flex gap-4 p-4 bg-[#1c2e4e] rounded-[2.5rem] border border-white/5 hover:border-primary/20 shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+                className="group flex gap-4 p-4 bg-[#101828] rounded-xl border border-white/5 hover:border-primary/30 shadow-lg transition-all duration-300 cursor-pointer"
               >
                 {/* Side Thumbnail */}
-                <div className="relative aspect-[4/3] w-28 rounded-[1.8rem] overflow-hidden shrink-0 bg-slate-950 border border-white/10">
+                <div className="relative aspect-[4/3] w-28 rounded-lg overflow-hidden shrink-0 bg-slate-950 border border-white/10">
                   <Image
                     src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
                     alt={item.title}
@@ -157,24 +167,29 @@ export function HeroSection() {
                 
                 {/* News Details */}
                 <div className="flex flex-col justify-between py-1 text-start flex-1 min-w-0">
-                  <div className="space-y-1">
-                    <span className="text-primary font-black text-[9px] uppercase tracking-wider block">
+                  <div className="space-y-1.5">
+                    <span className="text-primary font-black text-[10px] tracking-wider block">
                       {item.category?.name_ar || 'أخبار'}
                     </span>
                     <Link href={`/news/${item.slug}`}>
-                      <h4 className="text-sm font-black text-white/90 leading-snug line-clamp-3 group-hover:text-primary transition-colors tracking-tight">
+                      <h4 className="text-sm font-black text-white/90 leading-snug line-clamp-2 group-hover:text-primary transition-colors tracking-tight">
                         {item.title}
                       </h4>
                     </Link>
                   </div>
-                  <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold">
-                    <Calendar className="w-3.5 h-3.5 text-primary/70" />
-                    {new Date(item.created_at).toLocaleDateString('en-GB')}
+                  <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold">
+                    <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                    {new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          
+          <Link href="/news" className="w-full flex items-center justify-between px-6 py-3 border border-primary/50 rounded-xl hover:bg-primary/10 transition-all group">
+             <span className="text-primary font-bold text-sm">عرض المزيد</span>
+             <span className="text-primary text-lg">←</span>
+          </Link>
         </div>
       </div>
     </section>

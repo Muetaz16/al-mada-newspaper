@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
-import { AlertCircle, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 export function BreakingNewsTicker() {
   const [news, setNews] = useState<any[]>([]);
@@ -32,37 +32,40 @@ export function BreakingNewsTicker() {
   }, [supabase]);
 
   return (
-    <div className="bg-[#c8102e] text-white h-16 overflow-hidden flex items-stretch relative z-40 shadow-[0_10px_40px_rgba(200,16,46,0.15)]" dir="rtl">
-      <div className="bg-slate-950 px-12 h-full flex items-center gap-4 font-black text-lg uppercase tracking-widest z-20 shadow-[20px_0_40px_rgba(0,0,0,0.4)] relative border-y border-slate-950">
-        <div className="relative">
-          <Zap className="w-5 h-5 text-primary fill-primary animate-pulse" />
-          <div className="absolute inset-0 bg-primary/40 blur-xl animate-ping rounded-full" />
-        </div>
-        عاجل
-        <div className="absolute top-0 right-0 bottom-0 w-px bg-white/10" />
+    <div className="bg-[#101828] text-white h-14 overflow-hidden flex items-stretch relative z-40 border-b border-white/5" dir="rtl">
+      <div 
+        className="bg-primary px-8 h-full flex items-center justify-center gap-2 font-black text-sm md:text-base uppercase z-20 text-[#142038]"
+        style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 15% 100%)', minWidth: '120px' }}
+      >
+        <Zap className="w-4 h-4 fill-[#142038] animate-pulse" />
+        <span className="pr-1 pl-4">عاجل</span>
       </div>
-      <div className="flex-1 whitespace-nowrap h-full flex items-center bg-[#c8102e] border-y border-[#a00c22]">
+      <div className="flex-1 whitespace-nowrap h-full flex items-center pl-4">
         <motion.div
           animate={{ x: ['100%', '-100%'] }}
           transition={{
             repeat: Infinity,
-            duration: 50,
+            duration: 60,
             ease: 'linear',
           }}
-          className="flex gap-20"
+          className="flex gap-12 items-center"
         >
           {news.map((item, i) => (
-            <span key={i} className="font-black text-lg md:text-xl flex items-center gap-6">
-              {item}
-              <div className="w-3 h-3 rounded-full bg-white/20" />
-            </span>
+            <div key={i} className="flex items-center gap-12">
+              <span className="font-bold text-sm text-slate-200">
+                {item}
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+            </div>
           ))}
           {/* Duplicate for seamless loop */}
           {news.map((item, i) => (
-            <span key={`dup-${i}`} className="font-black text-lg md:text-xl flex items-center gap-6">
-              {item}
-              <div className="w-3 h-3 rounded-full bg-white/20" />
-            </span>
+            <div key={`dup-${i}`} className="flex items-center gap-12">
+              <span className="font-bold text-sm text-slate-200">
+                {item}
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+            </div>
           ))}
         </motion.div>
       </div>

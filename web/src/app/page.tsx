@@ -119,7 +119,49 @@ export default function Home() {
       <BreakingNewsTicker />
 
       <div className="container mx-auto px-4 py-16 space-y-32">
-        <HeroSection />
+        <div className="space-y-6">
+          <HeroSection />
+
+          {/* Latest News Section */}
+          <section className="space-y-6 pt-2 border-t border-white/5">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <span className="w-1.5 h-6 bg-primary rounded-full" />
+                <h3 className="text-2xl font-black text-white">آخر الأخبار</h3>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {Object.values(newsByCategory).flat().slice(0, 4).map((item: any) => (
+                <Link key={item.id} href={`/news/${item.slug}`} className="group relative bg-[#101828] rounded-xl overflow-hidden border border-white/5 shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 block">
+                  <div className="relative aspect-[16/10]">
+                    <Image
+                      src={item.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-3 right-3">
+                      <span className="bg-primary text-[#142038] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md">
+                        {item.category?.name_ar || 'أخبار'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4 space-y-3 bg-[#101828]">
+                    <h4 className="text-sm font-black text-white leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h4>
+                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold">
+                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                      {new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        </div>
 
         {/* Section: "الأولى" (Main Category News) */}
         <CategorySection
