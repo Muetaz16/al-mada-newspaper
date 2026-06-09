@@ -7,12 +7,6 @@ import { usePathname } from 'next/navigation';
 import { Menu, X, Search, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { createClient } from '@/utils/supabase/client';
-import { 
-  FaFacebookF, 
-  FaXTwitter, 
-  FaInstagram, 
-  FaYoutube 
-} from 'react-icons/fa6'; // Assuming react-icons is installed, if not we can use generic icons. Actually, let's use lucide-react if react-icons is not guaranteed.
 
 export function Navbar() {
   const pathname = usePathname();
