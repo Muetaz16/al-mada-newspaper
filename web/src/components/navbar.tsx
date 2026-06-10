@@ -40,6 +40,15 @@ export function Navbar() {
     return dbCategories.filter(c => c.parent_id === parentId);
   };
 
+  const getCategoryHref = (cat: any) => {
+    if (cat.external_url) return cat.external_url;
+    return `/category/${cat.slug || cat.name_ar}`;
+  };
+
+  const getCategoryTarget = (cat: any) => {
+    return cat.external_url ? "_blank" : undefined;
+  };
+
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, ' / ');
   const weekday = currentDate.toLocaleDateString('ar-EG', { weekday: 'long' });
@@ -103,7 +112,8 @@ export function Navbar() {
             return (
               <div key={cat.slug || cat.name_ar} className="relative group h-full flex items-center">
                 <Link
-                  href={`/category/${cat.slug || cat.name_ar}`}
+                  href={getCategoryHref(cat)}
+                  target={getCategoryTarget(cat)}
                   className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${isCatActive ? 'text-primary border-primary' : 'text-white border-transparent hover:text-primary'}`}
                 >
                   {cat.name_ar}
@@ -115,7 +125,8 @@ export function Navbar() {
                     {subCategories.map((sub: any) => (
                       <Link
                         key={sub.id}
-                        href={`/category/${sub.slug || sub.name_ar}`}
+                        href={getCategoryHref(sub)}
+                        target={getCategoryTarget(sub)}
                         className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
                       >
                         {sub.name_ar}
@@ -154,7 +165,8 @@ export function Navbar() {
                 return (
                   <div key={cat.slug || cat.name_ar} className="flex flex-col pb-3 border-b border-white/5">
                     <Link 
-                      href={`/category/${cat.slug || cat.name_ar}`}
+                      href={getCategoryHref(cat)}
+                      target={getCategoryTarget(cat)}
                       className="text-white font-black text-base"
                       onClick={() => setIsOpen(false)}
                     >
@@ -165,7 +177,8 @@ export function Navbar() {
                         {subCategories.map((sub: any) => (
                           <Link 
                             key={sub.id}
-                            href={`/category/${sub.slug || sub.name_ar}`}
+                            href={getCategoryHref(sub)}
+                            target={getCategoryTarget(sub)}
                             className="text-slate-400 hover:text-primary font-bold text-sm transition-colors"
                             onClick={() => setIsOpen(false)}
                           >

@@ -46,6 +46,7 @@ export default function CategoriesPage() {
   const [nameAr, setNameAr] = useState('');
   const [slug, setSlug] = useState('');
   const [parentId, setParentId] = useState<string | null>(null);
+  const [externalUrl, setExternalUrl] = useState('');
   
   const supabase = createClient();
 
@@ -65,6 +66,7 @@ export default function CategoriesPage() {
     setNameAr(category.name_ar);
     setSlug(category.slug);
     setParentId(category.parent_id || null);
+    setExternalUrl(category.external_url || '');
     setOpen(true);
   };
 
@@ -73,6 +75,7 @@ export default function CategoriesPage() {
     setNameAr('');
     setSlug('');
     setParentId(null);
+    setExternalUrl('');
     setOpen(true);
   };
 
@@ -83,7 +86,8 @@ export default function CategoriesPage() {
     const payload = {
       name_ar: nameAr,
       slug,
-      parent_id: parentId || null
+      parent_id: parentId || null,
+      external_url: externalUrl || null
     };
 
     if (editingCategory) {
@@ -338,6 +342,20 @@ export default function CategoriesPage() {
                   https://almada.com/category/<span className="text-primary font-bold">{slug || 'slug'}</span>
                 </span>
               </div>
+            </div>
+
+            <div className="space-y-2 text-start">
+              <label className="text-xs font-black text-slate-500 uppercase tracking-wider">رابط خارجي (اختياري)</label>
+              <Input 
+                value={externalUrl} 
+                onChange={(e) => setExternalUrl(e.target.value)}
+                placeholder="https://example.com/product" 
+                dir="ltr"
+                className="h-13 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-mono text-sm px-4 text-slate-800"
+              />
+              <p className="text-[10px] text-slate-400 font-bold leading-normal">
+                إذا أردت توجيه هذا القسم إلى رابط خارجي (مثل صفحة منتج)، أدخل الرابط هنا.
+              </p>
             </div>
           </div>
 

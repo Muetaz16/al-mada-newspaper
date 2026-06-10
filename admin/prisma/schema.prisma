@@ -28,8 +28,9 @@ model Category {
   name_ar    String
   name_en    String?
   slug       String     @unique
-  parent_id  String?
-  created_at DateTime   @default(now())
+  parent_id    String?
+  external_url String?
+  created_at   DateTime   @default(now())
   updated_at DateTime   @updatedAt
   parent     Category?  @relation("SubCategories", fields: [parent_id], references: [id])
   children   Category[] @relation("SubCategories")
