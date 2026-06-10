@@ -43,6 +43,7 @@ export default function VideosPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<any>(null);
   
   // Form State
   const [title, setTitle] = useState('');
@@ -68,11 +69,23 @@ export default function VideosPage() {
   }
 
   const handleCreate = () => {
+    setEditingItem(null);
     setTitle('');
     setUrl('');
     setThumbnail('');
     setType('VIDEO');
     setSourceType('UPLOAD');
+    setOpen(true);
+  };
+
+  const handleEdit = (item: any) => {
+    setEditingItem(item);
+    setTitle(item.title || '');
+    setUrl(item.url || '');
+    setThumbnail(item.thumbnail_url || '');
+    setType(item.type || 'VIDEO');
+    const isExternal = item.url && (item.url.includes('youtube.com') || item.url.includes('youtu.be') || (item.url.startsWith('http') && !item.url.includes('/uploads/')));
+    setSourceType(isExternal ? 'URL' : 'UPLOAD');
     setOpen(true);
   };
 
@@ -104,15 +117,26 @@ export default function VideosPage() {
       if (ytThumb) finalThumbnail = ytThumb;
     }
 
-    const { error } = await supabase.from('videos').insert({
-      id: generateUUID(),
+    const payload = {
       title,
       url,
       thumbnail_url: finalThumbnail,
       type,
-      status: 'PUBLISHED',
-      created_at: new Date().toISOString()
-    });
+      status: 'PUBLISHED'
+    };
+
+    let error;
+    if (editingItem) {
+      const { error: updateError } = await supabase.from('videos').update(payload).eq('id', editingItem.id);
+      error = updateError;
+    } else {
+      const { error: insertError } = await supabase.from('videos').insert({
+        id: generateUUID(),
+        ...payload,
+        created_at: new Date().toISOString()
+      });
+      error = insertError;
+    }
 
     if (error) {
       alert('خطأ في الحفظ: ' + error.message);
@@ -157,6 +181,14 @@ export default function VideosPage() {
             </div>
 
             <div className="absolute top-4 right-4 flex gap-2">
+              <Button 
+                variant="secondary" 
+                size="icon" 
+                className="h-10 w-10 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500 shadow-xl translate-x-4 group-hover:translate-x-0"
+                onClick={() => handleEdit(item)}
+              >
+                <Settings2 className="h-4 w-4" />
+              </Button>
               <Button 
                 variant="destructive" 
                 size="icon" 
@@ -261,7 +293,9 @@ export default function VideosPage() {
                 <div className="w-2 h-2 rounded-full bg-primary animate-ping" />
                 <span className="text-primary font-black text-[10px] uppercase tracking-[0.2em]">إضافة وسائط</span>
               </div>
-              <DialogTitle className="text-3xl font-black">إضافة محتوى مرئي</DialogTitle>
+              <DialogTitle className="text-3xl font-black">
+                {editingItem ? 'تعديل محتوى مرئي' : 'إضافة محتوى مرئي'}
+              </DialogTitle>
             </DialogHeader>
           </div>
 

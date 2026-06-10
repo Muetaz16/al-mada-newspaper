@@ -29,25 +29,23 @@ async function ensureSuperAdmin() {
 }
 
 export async function createUserAction(formData: FormData) {
-  await ensureSuperAdmin();
-  const email = formData.get('email') as string;
-  const password = formData.get('password') as string;
-  const name = formData.get('name') as string;
-  const role = formData.get('role') as Role;
-
-  if (!email || !password || !name || !role) {
-    throw new Error('جميع الحقول مطلوبة');
-  }
-
-  if (password.trim().length < 6) {
-    throw new Error('يجب أن تكون كلمة المرور 6 أحرف على الأقل');
-  }
-
   try {
-    // 1. Hash password in Node.js
+    await ensureSuperAdmin();
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const name = formData.get('name') as string;
+    const role = formData.get('role') as Role;
+
+    if (!email || !password || !name || !role) {
+      return { success: false, error: 'جميع الحقول مطلوبة' };
+    }
+
+    if (password.trim().length < 6) {
+      return { success: false, error: 'يجب أن تكون كلمة المرور 6 أحرف على الأقل' };
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // 2. Create the user profile in the database via Prisma
     const user = await prisma.user.create({
       data: {
         email,
@@ -60,7 +58,10 @@ export async function createUserAction(formData: FormData) {
     return { success: true, user };
   } catch (error: any) {
     console.error('Database insertion error:', error);
-    throw new Error(error.message || 'خطأ في إنشاء حساب المستخدم');
+    if (error.code === 'P2002') {
+      return { success: false, error: 'البريد الإلكتروني مسجل بالفعل' };
+    }
+    return { success: false, error: error.message || 'خطأ في إنشاء حساب المستخدم' };
   }
 }
 

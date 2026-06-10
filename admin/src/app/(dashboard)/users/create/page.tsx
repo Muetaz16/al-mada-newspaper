@@ -21,11 +21,16 @@ export default function CreateUserPage() {
 
     const formData = new FormData(event.currentTarget);
     try {
-      await createUserAction(formData);
+      const res = await createUserAction(formData);
+      if (res && res.success === false) {
+        setError(res.error || 'حدث خطأ أثناء إنشاء المستخدم');
+        setLoading(false);
+        return;
+      }
       router.push('/users');
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'حدث خطأ أثناء إنشاء المستخدم');
+      setError(err.message || 'حدث خطأ غير متوقع');
       setLoading(false);
     }
   }
