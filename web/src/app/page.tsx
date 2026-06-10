@@ -131,8 +131,8 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {Object.values(newsByCategory).flat().slice(0, 4).map((item: any) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+              {Object.values(newsByCategory).flat().slice(0, 5).map((item: any) => (
                 <Link key={item.id} href={`/news/${item.slug}`} className="group relative bg-[#101828] rounded-xl overflow-hidden border border-white/5 shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 block">
                   <div className="relative aspect-[16/10]">
                     <Image

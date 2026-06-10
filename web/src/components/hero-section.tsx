@@ -95,7 +95,7 @@ export function HeroSection() {
     <section className="space-y-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Main Featured Card */}
-        <div className="lg:col-span-9">
+        <div className="lg:col-span-8">
           <div className="group relative aspect-[16/9] md:aspect-auto md:min-h-[550px] rounded-xl overflow-hidden shadow-2xl transition-all duration-700 border border-white/10 bg-slate-950">
             <AnimatePresence mode="wait">
               <motion.div
@@ -147,7 +147,7 @@ export function HeroSection() {
         </div>
 
         {/* Side/Sub Headlines */}
-        <div className="lg:col-span-3 flex flex-col gap-4">
+        <div className="lg:col-span-4 flex flex-col gap-4">
           <div className="flex flex-col gap-4 flex-1">
             {news.slice(1, 4).map((item) => (
               <div 
@@ -155,7 +155,7 @@ export function HeroSection() {
                 className="group flex gap-4 p-4 bg-[#101828] rounded-xl border border-white/5 hover:border-primary/30 shadow-lg transition-all duration-300 cursor-pointer"
               >
                 {/* Side Thumbnail */}
-                <div className="relative aspect-[4/3] w-28 rounded-lg overflow-hidden shrink-0 bg-slate-950 border border-white/10">
+                <div className="relative aspect-[4/3] w-36 rounded-lg overflow-hidden shrink-0 bg-slate-950 border border-white/10">
                   <Image
                     src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
                     alt={item.title}

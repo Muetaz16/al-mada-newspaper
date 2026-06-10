@@ -1,5 +1,7 @@
 # 📰 Al-Mada Newspaper Platform
 
+**Last Updated:** June 9, 2026 (UI Redesign & Navigation Submenus)
+
 An elegant, high-performance, decoupled full-stack digital publication platform engineered for the **Al-Mada Newspaper**. The system leverages **Next.js**, **Prisma ORM**, and a highly sophisticated, secure **API Database Bridge** that mirrors the Supabase Client SDK to achieve perfect decoupling between public rendering and administrative management layers.
 
 ---
