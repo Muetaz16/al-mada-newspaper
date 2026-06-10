@@ -1,6 +1,7 @@
 'use client';
  
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
 import { 
   Play, 
@@ -16,7 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 
-export function PodcastSection() {
+export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) {
   const [podcasts, setPodcasts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,11 +48,16 @@ export function PodcastSection() {
 
   useEffect(() => {
     async function fetchPodcasts() {
-      const { data } = await supabase
+      let query = supabase
         .from('audio_recordings')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .order('created_at', { ascending: false });
+        
+      if (!showAll) {
+        query = query.limit(5);
+      }
+        
+      const { data } = await query;
 
       if (data && data.length > 0) {
         setPodcasts(data);
@@ -209,12 +215,21 @@ export function PodcastSection() {
       )}
 
       {/* Header Section */}
-      <div className="flex items-center gap-6 border-b border-white/10 pb-6 text-start">
-        <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl flex items-center gap-3">
-          <Mic className="w-8 h-8 text-primary animate-pulse" />
-          البودكاست (البث الصوتي)
-        </h3>
-      </div>
+      {!showAll && (
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-6 text-start">
+          <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl flex items-center gap-3">
+            <Mic className="w-8 h-8 text-primary animate-pulse" />
+            البودكاست (البث الصوتي)
+          </h3>
+          <Link 
+            href="/podcasts" 
+            className="flex items-center justify-center gap-2 bg-white/5 hover:bg-primary text-slate-300 hover:text-white border border-white/10 hover:border-primary px-6 py-3 rounded-2xl font-black transition-all shadow-lg text-sm w-full md:w-auto"
+          >
+            <Disc className="w-4 h-4" />
+            الذهاب لمكتبة البودكاست
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         
