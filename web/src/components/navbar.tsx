@@ -87,7 +87,7 @@ export function Navbar() {
         <div className="flex items-center gap-6 lg:gap-10 pb-5">
           <Link href="/" className="relative h-16 w-56 md:h-20 md:w-64 flex items-center">
             <Image
-              src="/logo.png"
+              src="/logo3.png"
               alt="صحيفة المدى"
               fill
               priority
