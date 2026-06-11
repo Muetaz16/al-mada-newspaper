@@ -84,16 +84,20 @@ export function Navbar() {
       <div className="px-6 lg:px-12 pt-5 pb-0 flex items-center justify-between border-b border-white/5">
         
         {/* Right: Logo */}
-        <div className="flex items-center gap-6 lg:gap-10 pb-5">
-          <Link href="/" className="relative h-16 w-56 md:h-20 md:w-64 flex items-center">
+        <div className="flex flex-col items-start gap-1 md:gap-2 pb-5 pt-2">
+          <Link href="/" className="relative h-20 w-[350px] md:h-28 md:w-[500px] xl:w-[600px] flex items-center">
             <Image
-              src="/logo3.png"
+              src="/logo.png"
               alt="صحيفة المدى"
               fill
               priority
-              className="object-contain object-right"
+              className="object-contain object-right md:scale-110 origin-right"
             />
           </Link>
+          <div className="flex items-center gap-3 pr-2 md:pr-4">
+            <div className="h-[2px] w-8 md:w-12 bg-primary rounded-full"></div>
+            <span className="text-slate-300 text-[11px] md:text-sm font-black tracking-wider">صحيفة ليبية مستقلة</span>
+          </div>
         </div>
 
         {/* Center: Links */}
