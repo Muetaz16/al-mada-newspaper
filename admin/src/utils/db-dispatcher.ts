@@ -13,6 +13,7 @@ const getModel = (table: string): any => {
     case 'users': return prisma.user;
     case 'live_streams': return prisma.liveStream;
     case 'audio_recordings': return prisma.audioRecording;
+    case 'programs': return prisma.program;
     default: return null;
   }
 };
