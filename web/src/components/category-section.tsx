@@ -184,77 +184,80 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
           `}
         >
           <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, idx) => {
-              const previewText = getPreviewText(item);
-              
-              return (
-                <motion.div
-                  key={item.id || idx}
-                  layout
-                  initial={{ opacity: 0, x: 50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.5, delay: idx * 0.05 }}
-                  className="min-w-[320px] md:min-w-[440px] lg:min-w-[540px] snap-center first:snap-start last:snap-end group/card"
-                >
-                  <div className="space-y-6 relative">
-                    {/* Image Container (Non-clickable) */}
-                    <div className="relative aspect-[16/10] rounded-[3.5rem] overflow-hidden shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] group-hover/card:shadow-primary/30 transition-all duration-700 pointer-events-none ring-1 ring-white/5">
-                      <Image
-                        src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
-                        alt={item.title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover transition-transform duration-[6000ms] group-hover/card:scale-110"
-                      />
-                      
-                      {/* Cinematic Shimmer Effect */}
-                      <div className="absolute inset-0 animate-shimmer opacity-0 group-hover/card:opacity-100 transition-opacity duration-1000" />
-                      
-                      {/* Cinematic Gradients */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent opacity-70 group-hover/card:opacity-90 transition-opacity duration-700" />
-                      
-                      {/* Floating Description Overlay (Enhanced Glassmorphism) */}
-                      <div className="absolute inset-x-8 bottom-8 translate-y-6 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all duration-700 z-20">
-                        <div className="bg-slate-950/40 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-2xl">
-                          <p className="text-white text-xs font-bold leading-relaxed line-clamp-3">
-                            {previewText || 'اضغط لمتابعة كافة المستجدات وتحليل الأحداث الجارية بالتفصيل عبر منصة المدى.'}
-                          </p>
+            {filteredItems.length > 0 ? (
+              filteredItems.map((item, idx) => {
+                const previewText = getPreviewText(item);
+                
+                return (
+                  <motion.div
+                    key={item.id || idx}
+                    layout
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.5, delay: idx * 0.05 }}
+                    className="min-w-[320px] md:min-w-[440px] lg:min-w-[540px] snap-center first:snap-start last:snap-end group/card"
+                  >
+                    <div className="space-y-6 relative">
+                      {/* Image Container (Non-clickable) */}
+                      <div className="relative aspect-[16/10] rounded-[3.5rem] overflow-hidden shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] group-hover/card:shadow-primary/30 transition-all duration-700 pointer-events-none ring-1 ring-white/5">
+                        <Image
+                          src={item.image_url || 'https://images.unsplash.com/photo-1611974717482-9828d28d1d8a'}
+                          alt={item.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover/card:scale-105 transition-transform duration-[8000ms] ease-out-sine"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80" />
+                        
+                        {/* Hover Overlay */}
+                        <div className="absolute inset-0 bg-[#142038]/40 mix-blend-multiply opacity-0 group-hover/card:opacity-100 transition-opacity duration-500" />
+                        
+                        {/* Premium Read Badge (Clickable target helper) */}
+                        <div className="absolute bottom-6 left-6 flex items-center gap-2 bg-[#1c2e4e]/90 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-black text-white/90 border border-white/10 uppercase tracking-widest shadow-xl opacity-0 translate-y-3 group-hover/card:opacity-100 group-hover/card:translate-y-0 transition-all duration-500">
+                          <span>قراءة الخبر</span>
+                          <span className="text-primary text-xs">←</span>
                         </div>
                       </div>
 
-                      {/* Category Badge (Cinematic Style) */}
-                      <div className="absolute top-10 right-10 z-20">
-                        <div className="bg-primary/95 backdrop-blur-md px-6 py-2.5 rounded-2xl shadow-2xl border border-white/20">
-                          <span className="text-[10px] font-black text-white uppercase tracking-[0.3em]">
-                            {item.category?.name_ar || item.category_name || 'المدى'}
-                          </span>
-                        </div>
+                      {/* Content (Clickable) */}
+                      <div className="absolute top-6 right-6 z-10 pointer-events-none">
+                        <span className="bg-primary text-[#142038] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-xl">
+                          {item.category?.name_ar || item.category_name || 'أخبار'}
+                        </span>
                       </div>
+
+                      <Link href={`/news/${item.slug || item.id}`} className="block space-y-4 px-4 text-start">
+                        {/* Date and type */}
+                        <div className="flex items-center gap-3 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="w-4 h-4 text-primary" />
+                            <span className="text-white">{new Date(item.created_at).toLocaleDateString('en-GB')}</span>
+                          </div>
+                          <div className="w-1.5 h-1.5 bg-primary/20 rounded-full" />
+                          <span className="uppercase tracking-[0.3em] text-primary/60">تحقيق خاص</span>
+                        </div>
+                        
+                        <div className="relative inline-block">
+                          <h4 className="text-xl md:text-2.5xl font-black text-white leading-snug group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
+                            {item.title}
+                          </h4>
+                          <span className="absolute -bottom-1.5 right-0 w-0 h-0.5 bg-primary/20 rounded-full group-hover/card:w-full transition-all duration-700" />
+                        </div>
+                      </Link>
                     </div>
-                    
-                    {/* Title & Meta (Clickable) */}
-                    <Link href={`/news/${item.slug || item.id}`} className="block space-y-5 text-start px-8 cursor-pointer group/title">
-                      <div className="flex items-center gap-5 text-[10px] font-black text-white/40">
-                        <div className="flex items-center gap-2.5 px-4 py-2 bg-[#1c2e4e] rounded-xl border border-white/5 shadow-2xl">
-                          <Calendar className="w-4 h-4 text-primary" />
-                          <span className="text-white">{new Date(item.created_at).toLocaleDateString('en-GB')}</span>
-                        </div>
-                        <div className="w-1.5 h-1.5 bg-primary/20 rounded-full" />
-                        <span className="uppercase tracking-[0.3em] text-primary/60">تحقيق خاص</span>
-                      </div>
-                      
-                      <div className="relative inline-block">
-                        <h4 className="text-xl md:text-2.5xl font-black text-white leading-snug group-hover/card:text-primary transition-all duration-300 tracking-tighter line-clamp-2">
-                          {item.title}
-                        </h4>
-                        <span className="absolute -bottom-1.5 right-0 w-0 h-0.5 bg-primary/20 rounded-full group-hover/card:w-full transition-all duration-700" />
-                      </div>
-                    </Link>
-                  </div>
-                </motion.div>
-              );
-            })}
+                  </motion.div>
+                );
+              })
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="w-full py-16 text-center text-slate-400 font-black text-lg"
+              >
+                لا توجد أخبار في هذا القسم حالياً
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </div>

@@ -118,12 +118,12 @@ export default function Home() {
       <Navbar />
       <BreakingNewsTicker />
 
-      <div className="container mx-auto px-4 py-16 space-y-32">
-        <div className="space-y-6">
+      <div className="container mx-auto px-4 pt-6 pb-16 space-y-24">
+        <div className="space-y-4">
           <HeroSection />
 
           {/* Latest News Section */}
-          <section className="space-y-6 pt-2 border-t border-white/5">
+          <section className="space-y-4 pt-1 border-t border-white/5">
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
                 <span className="w-1.5 h-6 bg-primary rounded-full" />
@@ -167,7 +167,11 @@ export default function Home() {
         <CategorySection
           title="الأولى"
           items={Object.values(newsByCategory).flat()}
-          subCategories={Object.keys(newsByCategory)}
+          subCategories={
+            categories.length > 0
+              ? categories.filter((c: any) => !c.parent_id).map((c: any) => c.name_ar)
+              : ['سياسة', 'اقتصاد', 'رياضة', 'تكنولوجيا', 'ليبيا', 'منوعات']
+          }
         />
 
         {/* Section: Al-Mada TV (Compact Visual Library) */}

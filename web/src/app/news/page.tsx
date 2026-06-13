@@ -81,7 +81,7 @@ export default function AllNewsPage() {
       <Navbar />
       <BreakingNewsTicker />
 
-      <div className="container mx-auto px-4 py-16 space-y-16">
+      <div className="container mx-auto px-4 pt-6 pb-16 space-y-16">
         {/* Header */}
         <div className="flex flex-col md:flex-row items-center gap-8 border-b-4 border-white/10 pb-12">
           <div className="bg-[#1c2e4e] border border-white/5 text-white px-10 py-4 rounded-[1.5rem] shadow-2xl">
