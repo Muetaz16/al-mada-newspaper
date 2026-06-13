@@ -85,9 +85,9 @@ const menuItems = [
     icon: Radio,
   },
   {
-    title: 'أبعد مدى (المقالات)',
-    url: '/analyses',
-    icon: Layers,
+    title: 'البرامج',
+    url: '/programs',
+    icon: Tv,
   },
   {
     title: 'البودكاست',

@@ -265,3 +265,13 @@ model PulseOfLife {
 
   @@map("pulse_of_life")
 }
+
+model Program {
+  id         String   @id @default(uuid())
+  title      String
+  video_url  String
+  thumbnail  String?
+  created_at DateTime @default(now())
+
+  @@map("programs")
+}

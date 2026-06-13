@@ -26,6 +26,21 @@ import { PulseOfLifeSection } from '@/components/pulse-of-life-section';
 import { VideoModal } from '@/components/video-modal';
 import { Footer } from '@/components/footer';
 
+const isYoutube = (url: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
+
+const getEmbedUrl = (url: string) => {
+  if (!url) return '';
+  let id = '';
+  if (url.includes('shorts/')) {
+    id = url.split('shorts/')[1]?.split(/[?&]/)[0];
+  } else {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    id = (match && match[2].length === 11) ? match[2] : '';
+  }
+  return id ? `https://www.youtube.com/embed/${id}` : url;
+};
+
 export default function Home() {
   const [newsByCategory, setNewsByCategory] = useState<Record<string, any[]>>({});
   const [categories, setCategories] = useState<any[]>([]);
@@ -34,10 +49,10 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState<any | null>(null);
   const [voted, setVoted] = useState(false);
-  const [analyses, setAnalyses] = useState<any[]>([]);
+  const [programs, setPrograms] = useState<any[]>([]);
   const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL'>('VIDEO');
 
-  const [selectedAnalysisIdx, setSelectedAnalysisIdx] = useState(0);
+  const [selectedProgramIdx, setSelectedProgramIdx] = useState(0);
   const supabase = createClient();
 
   useEffect(() => {
@@ -66,13 +81,14 @@ export default function Home() {
           return acc;
         }, {});
         setNewsByCategory(grouped);
-
-        // Specifically extract analyses by slug (more reliable) or name
-        const analysesItems = news.filter((item: any) =>
-          item.category?.slug === 'analyses' || item.category?.name_ar === 'أبعد مدى'
-        );
-        setAnalyses(analysesItems);
       }
+
+      // Fetch latest programs
+      const { data: programsData } = await supabase
+        .from('programs')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (programsData) setPrograms(programsData);
 
       // Fetch latest Videos & Reels (Al-Mada TV)
       const { data: videoData } = await supabase
@@ -328,168 +344,110 @@ export default function Home() {
         <InBriefSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          {/* Left Column: Featured Analysis Display (7 cols) */}
+          {/* Left Column: Featured Program Display (7 cols) */}
           <section className="lg:col-span-7 space-y-8 lg:sticky lg:top-32 text-start">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary" />
                 <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">
-                  التحليل المختار
+                  برامج
                 </h3>
               </div>
             </div>
 
-            {analyses.length > 0 ? (
+            {programs.length > 0 ? (
               <div className="group bg-slate-950/40 rounded-[2.5rem] border border-white/10 p-6 md:p-8 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.5)] transition-all duration-700 flex flex-col gap-6 backdrop-blur-md">
-                {/* Hero Image */}
-                <Link
-                  href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                  className="relative block aspect-[16/10] rounded-[2rem] overflow-hidden shadow-lg cursor-pointer"
-                >
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={analyses[selectedAnalysisIdx].id}
-                      initial={{ opacity: 0, scale: 1.05 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.5 }}
-                      className="absolute inset-0"
-                    >
-                      <Image
-                        src={analyses[selectedAnalysisIdx].image_url}
-                        alt={analyses[selectedAnalysisIdx].title}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-[6000ms]"
-                      />
-                    </motion.div>
-                  </AnimatePresence>
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 via-transparent to-transparent" />
-                  <div className="absolute top-4 right-4 bg-primary text-white font-black text-[9px] uppercase tracking-widest px-4 py-1.5 rounded-xl shadow-lg">
-                    تحليل ورأي
-                  </div>
-                </Link>
+                {/* Responsive Video Embed Card */}
+                <div className="relative block aspect-[16/10] rounded-[2rem] overflow-hidden shadow-2xl border border-white/5 bg-slate-900">
+                  {isYoutube(programs[selectedProgramIdx].video_url) ? (
+                    <iframe
+                      src={getEmbedUrl(programs[selectedProgramIdx].video_url)}
+                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      allow="autoplay; encrypted-media"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      src={programs[selectedProgramIdx].video_url}
+                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      controls
+                    />
+                  )}
+                </div>
 
                 {/* Excerpt Details */}
                 <div className="space-y-4">
                   <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                    <span className="text-slate-400 font-extrabold">{new Date(analyses[selectedAnalysisIdx].created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                    <span className="text-slate-400 font-extrabold">{new Date(programs[selectedProgramIdx].created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                     <div className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                    <span>قراءة دقيقة 6</span>
+                    <span className="text-primary font-black uppercase text-[10px] tracking-widest">برنامج مرئي</span>
                   </div>
 
-                  <Link
-                    href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                    className="block hover:text-primary transition-colors duration-300 text-start"
-                  >
-                    <h4 className="text-xl md:text-2.5xl font-black leading-tight tracking-tighter text-white">
-                      {analyses[selectedAnalysisIdx].title}
-                    </h4>
-                  </Link>
-
-                  <p className="text-slate-300 font-medium text-xs md:text-sm leading-relaxed line-clamp-3 text-start">
-                    {analyses[selectedAnalysisIdx].subtitle || 'نظرة تحليلية معمقة تسلط الضوء على الأبعاد الخفية للأحداث وتأثيراتها الإقليمية الدولية بأقلام كبار الكتاب والمحللين في صحيفة المدى.'}
-                  </p>
-
-                  {/* Author & Read CTA */}
-                  <div className="flex items-center justify-between pt-6 border-t border-white/10 mt-2">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10 shadow-sm overflow-hidden">
-                        <User className="h-5 w-5 text-slate-300" />
-                      </div>
-                      <div className="text-start">
-                        <p className="text-xs font-black text-white leading-tight">إدارة التحرير</p>
-                        <p className="text-[10px] font-bold text-slate-400">كاتب ومحلل سياسي</p>
-                      </div>
-                    </div>
-
-                    <Link
-                      href={`/news/${analyses[selectedAnalysisIdx].slug || analyses[selectedAnalysisIdx].id}`}
-                      className="flex items-center gap-2 bg-primary hover:bg-primary/95 text-white font-black text-xs px-6 py-3 rounded-2xl shadow-md hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group/btn"
-                    >
-                      <span>اقرأ المقال كاملاً</span>
-                      <ChevronLeft className="w-4 h-4 transition-transform group-hover/btn:-translate-x-1" />
-                    </Link>
-                  </div>
+                  <h4 className="text-2xl md:text-3.5xl font-black leading-tight tracking-tighter text-white">
+                    {programs[selectedProgramIdx].title}
+                  </h4>
                 </div>
               </div>
             ) : (
-              <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden shadow-2xl">
-                <Image src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000" alt="Featured Article" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
-                <div className="absolute bottom-10 left-10 right-10 flex justify-between gap-4">
-                  <div className="bg-white/95 backdrop-blur-md px-8 py-3 rounded-2xl font-black text-sm shadow-xl">المشهد</div>
-                </div>
+              <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden bg-slate-900 border border-white/10 flex items-center justify-center">
+                <p className="text-slate-500 font-black text-lg">بانتظار إضافة البرامج...</p>
               </div>
             )}
           </section>
 
-          {/* Right Column: Analyses Selector & Secondary Feed (5 cols) */}
+          {/* Right Column: Programs Selector (5 cols) */}
           <section className="lg:col-span-5 space-y-8">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div className="flex items-center gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary" />
                 <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">
-                  أبعد مدى
+                  البرامج
                 </h3>
               </div>
             </div>
 
             <div className="flex flex-col gap-5 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
-              {analyses.length > 0 ? analyses.map((item, idx) => (
+              {programs.length > 0 ? programs.map((item, idx) => (
                 <div
                   key={item.id}
-                  onClick={() => setSelectedAnalysisIdx(idx)}
-                  className={`group rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-start relative overflow-hidden backdrop-blur-md
-                      ${selectedAnalysisIdx === idx
+                  onClick={() => setSelectedProgramIdx(idx)}
+                  className={`group rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-center relative overflow-hidden backdrop-blur-md
+                      ${selectedProgramIdx === idx
                       ? 'bg-slate-950/80 border-primary/30 shadow-[0_20px_40px_-15px_rgba(255,61,61,0.15)] ring-1 ring-primary/20 scale-[1.02]'
                       : 'bg-slate-950/40 border-white/10 hover:border-white/20 hover:scale-[1.01]'}`}
                 >
-                  <div className="flex-1 space-y-3">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                      <span className={`w-1.5 h-1.5 rounded-full ${selectedAnalysisIdx === idx ? 'bg-primary animate-pulse' : 'bg-white/20'}`} />
-                      <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
-                      <div className="w-1 h-1 rounded-full bg-white/10" />
-                      <span className="text-[9px] font-black tracking-widest text-primary uppercase">ANALYSIS</span>
-                    </div>
-
-                    <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedAnalysisIdx === idx ? 'text-primary' : 'text-white group-hover:text-primary'}`}>
-                      {item.title}
-                    </h4>
-
-                    <p className="text-slate-400 font-medium text-xs line-clamp-2 leading-relaxed pr-3">
-                      {item.subtitle || 'نظرة تحليلية معمقة في أبرز القضايا الراهنة بأقلام خبراء المدى.'}
-                    </p>
-
-                    <div className="flex items-center gap-2 pt-2 pr-3">
-                      <Link
-                        href={`/news/${item.slug || item.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-black text-primary hover:text-primary/80 hover:underline transition-all"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <span>تفاصيل التحليل</span>
-                        <ChevronLeft className="w-3.5 h-3.5" />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {item.image_url && (
-                    <Link
-                      href={`/news/${item.slug || item.id}`}
-                      className="relative w-20 md:w-24 aspect-[4/3] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-white/10 cursor-pointer"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                  {item.thumbnail ? (
+                    <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-white/10">
                       <Image
-                        src={item.image_url}
+                        src={item.thumbnail}
                         alt={item.title}
                         fill
-                        sizes="120px"
+                        sizes="150px"
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                       />
-                    </Link>
+                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                        <Play className="w-5 h-5 text-white fill-white drop-shadow-lg" />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 bg-slate-800 flex items-center justify-center border border-white/10">
+                      <Play className="w-6 h-6 text-slate-500 fill-slate-500" />
+                    </div>
                   )}
+
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                      <span className={`w-1.5 h-1.5 rounded-full ${selectedProgramIdx === idx ? 'bg-primary animate-pulse' : 'bg-white/20'}`} />
+                      <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
+                    </div>
+
+                    <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedProgramIdx === idx ? 'text-primary' : 'text-white group-hover:text-primary'}`}>
+                      {item.title}
+                    </h4>
+                  </div>
                 </div>
               )) : (
-                <p className="text-slate-400 font-bold italic">لا توجد مقالات معمقة حالياً</p>
+                <p className="text-slate-400 font-bold italic">لا توجد برامج مضافة حالياً</p>
               )}
             </div>
           </section>
