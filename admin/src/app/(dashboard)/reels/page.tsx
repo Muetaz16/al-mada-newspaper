@@ -55,9 +55,9 @@ export default function ReelsPage() {
         <div className="text-start">
           <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">
             <Film className="w-8 h-8 text-primary" />
-            بإيجاز (ريلز)
+            ريلز
           </h2>
-          <p className="text-muted-foreground text-sm font-bold mt-1">إدارة الفيديوهات القصيرة التي تفسر الخبر</p>
+          <p className="text-muted-foreground text-sm font-bold mt-1">إدارة الفيديوهات القصيرة (ريلز)</p>
         </div>
         <Button render={<Link href="/reels/create" />} className="font-black h-12 px-6 rounded-2xl shadow-lg shadow-primary/20">
           <Plus className="ml-2 h-5 w-5" />

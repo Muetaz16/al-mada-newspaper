@@ -228,7 +228,7 @@ export default function Home() {
                   onClick={() => setActiveMediaTab('REEL')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'REEL' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
-                  بإيجاز (ريلز)
+                  ريلز
                 </button>
               </div>
             </div>

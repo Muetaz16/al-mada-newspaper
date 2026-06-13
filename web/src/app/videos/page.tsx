@@ -163,7 +163,7 @@ export default function VideosPage() {
                 onClick={(e) => { e.stopPropagation(); setActiveMediaFilter('REEL'); }}
                 className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaFilter === 'REEL' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-slate-500 hover:text-slate-800'}`}
               >
-                بإيجاز (ريلز) ({videos.filter(v => v.type === 'REEL').length})
+                ريلز ({videos.filter(v => v.type === 'REEL').length})
               </button>
             </div>
           </div>

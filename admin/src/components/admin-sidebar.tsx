@@ -60,7 +60,7 @@ const menuItems = [
     icon: Heart,
   },
   {
-    title: 'بإيجاز (ريلز)',
+    title: 'ريلز',
     url: '/reels',
     icon: Film,
   },

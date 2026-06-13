@@ -74,7 +74,7 @@ export function Footer() {
                 <ArrowUpLeft className="w-3.5 h-3.5 opacity-0 hover:opacity-100 transition-opacity" />
               </Link>
               <Link href="/reels" className="text-slate-400 hover:text-white hover:translate-x-[-4px] transition-all flex items-center gap-1.5">
-                بإيجاز (ريلز)
+                ريلز
                 <ArrowUpLeft className="w-3.5 h-3.5 opacity-0 hover:opacity-100 transition-opacity" />
               </Link>
             </div>
