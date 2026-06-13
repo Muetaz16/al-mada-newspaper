@@ -146,7 +146,7 @@ export default function Home() {
                 <h3 className="text-2xl font-black text-white">آخر الأخبار</h3>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
               {Object.values(newsByCategory).flat().slice(0, 5).map((item: any) => (
                 <Link key={item.id} href={`/news/${item.slug}`} className="group relative bg-[#101828] rounded-xl overflow-hidden border border-white/5 shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 block">
@@ -449,7 +449,7 @@ export default function Home() {
                       </div>
                     </div>
                   ))}
-                  
+
                   <Link
                     href="/programs"
                     className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-black text-sm p-5 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-300 group mt-2"
@@ -475,7 +475,7 @@ export default function Home() {
                     <Vote className="w-5 h-5 text-red-500 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]" />
                     <span className="text-white font-black text-xs uppercase tracking-[0.5em]">استطلاع المدى</span>
                   </div>
-                  <h3 className="text-4xl md:text-6xl font-black tracking-tighter">شاركنا رأيك اليوم</h3>
+                  <h3 className="text-4xl md:text-6xl font-black tracking-tighter">شارك رأيك</h3>
                 </div>
 
                 {poll ? (

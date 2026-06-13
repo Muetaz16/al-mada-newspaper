@@ -55,9 +55,9 @@ export default function PulseOfLifePage() {
         <div className="text-start">
           <h2 className="text-3xl font-black tracking-tight flex items-center gap-3">
             <Heart className="w-8 h-8 text-primary fill-primary/10" />
-            نبض الحياة
+            منوعات
           </h2>
-          <p className="text-muted-foreground text-sm font-bold mt-1">إدارة قسم سؤال وجواب عن الصحة والجمال</p>
+          <p className="text-muted-foreground text-sm font-bold mt-1">إدارة قسم منوعات</p>
         </div>
         <Button render={<Link href="/pulse-of-life/create" />} className="font-black h-12 px-6 rounded-2xl shadow-lg shadow-primary/20">
           <Plus className="ml-2 h-5 w-5" />

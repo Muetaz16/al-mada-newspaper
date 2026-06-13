@@ -55,7 +55,7 @@ const menuItems = [
     icon: Tv,
   },
   {
-    title: 'نبض الحياة',
+    title: 'منوعات',
     url: '/pulse-of-life',
     icon: Heart,
   },
