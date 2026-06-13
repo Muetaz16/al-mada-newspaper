@@ -243,8 +243,8 @@ export default function PodcastsPage() {
             </div>
             <span className="text-primary font-black text-xs uppercase tracking-widest text-start">الوسائط المتقدمة</span>
           </div>
-          <h2 className="text-4xl font-black text-slate-900 tracking-tight">إدارة البث الصوتي والمرئي (Podcast)</h2>
-          <p className="text-slate-400 font-bold text-sm">ارفع ملفات البث الصوتي أو المرئي مضافاً إليها صور أغلفة احترافية لتظهر كعناوين سينمائية غاية في الأناقة.</p>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tight">إدارة البودكاست (Podcast)</h2>
+          <p className="text-slate-400 font-bold text-sm">ارفع ملفات البودكاست مضافاً إليها صور أغلفة احترافية لتظهر كعناوين سينمائية غاية في الأناقة.</p>
         </div>
       </div>
 
@@ -485,7 +485,7 @@ export default function PodcastsPage() {
           {loading && (
             <div className="py-20 text-center text-slate-400">
               <Loader2 className="animate-spin h-12 w-12 text-primary mx-auto mb-2" />
-              <span className="text-xs font-black">جاري تحميل البثوث الصوتية...</span>
+              <span className="text-xs font-black">جاري تحميل البودكاست...</span>
             </div>
           )}
         </div>

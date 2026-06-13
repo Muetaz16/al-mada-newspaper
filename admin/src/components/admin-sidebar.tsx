@@ -90,7 +90,7 @@ const menuItems = [
     icon: Layers,
   },
   {
-    title: 'البودكاست (الصوت)',
+    title: 'البودكاست',
     url: '/podcasts',
     icon: Mic,
   },

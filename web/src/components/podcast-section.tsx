@@ -219,7 +219,7 @@ export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-6 text-start">
           <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl flex items-center gap-3">
             <Mic className="w-8 h-8 text-primary animate-pulse" />
-            البودكاست (البث الصوتي)
+            البودكاست
           </h3>
           <Link 
             href="/podcasts" 
@@ -382,7 +382,7 @@ export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) 
             
             <div className="flex items-center gap-3 border-b border-white/10 pb-4 text-start">
               <Mic className="w-5 h-5 text-white/40" />
-              <h4 className="font-black text-white text-lg">الأرشيف الصوتي</h4>
+              <h4 className="font-black text-white text-lg">البودكاست</h4>
             </div>
 
             <div className="flex flex-col gap-4 overflow-y-auto max-h-[390px] pr-2 custom-scrollbar">
