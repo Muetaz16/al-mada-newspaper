@@ -407,46 +407,58 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col gap-5 max-h-[850px] overflow-y-auto pr-4 custom-scrollbar">
-              {programs.length > 0 ? programs.map((item, idx) => (
-                <div
-                  key={item.id}
-                  onClick={() => setSelectedProgramIdx(idx)}
-                  className={`group rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-center relative overflow-hidden backdrop-blur-md
-                      ${selectedProgramIdx === idx
-                      ? 'bg-slate-950/80 border-primary/30 shadow-[0_20px_40px_-15px_rgba(255,61,61,0.15)] ring-1 ring-primary/20 scale-[1.02]'
-                      : 'bg-slate-950/40 border-white/10 hover:border-white/20 hover:scale-[1.01]'}`}
-                >
-                  {item.thumbnail ? (
-                    <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-white/10">
-                      <Image
-                        src={item.thumbnail}
-                        alt={item.title}
-                        fill
-                        sizes="150px"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
-                        <Play className="w-5 h-5 text-white fill-white drop-shadow-lg" />
+              {programs.length > 0 ? (
+                <>
+                  {programs.slice(0, 5).map((item, idx) => (
+                    <div
+                      key={item.id}
+                      onClick={() => setSelectedProgramIdx(idx)}
+                      className={`group rounded-3xl p-6 border transition-all duration-500 cursor-pointer text-start flex gap-5 items-center relative overflow-hidden backdrop-blur-md
+                          ${selectedProgramIdx === idx
+                          ? 'bg-slate-950/80 border-primary/30 shadow-[0_20px_40px_-15px_rgba(255,61,61,0.15)] ring-1 ring-primary/20 scale-[1.02]'
+                          : 'bg-slate-950/40 border-white/10 hover:border-white/20 hover:scale-[1.01]'}`}
+                    >
+                      {item.thumbnail ? (
+                        <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 pointer-events-auto ring-1 ring-white/10">
+                          <Image
+                            src={item.thumbnail}
+                            alt={item.title}
+                            fill
+                            sizes="150px"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                          />
+                          <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
+                            <Play className="w-5 h-5 text-white fill-white drop-shadow-lg" />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 bg-slate-800 flex items-center justify-center border border-white/10">
+                          <Play className="w-6 h-6 text-slate-500 fill-slate-500" />
+                        </div>
+                      )}
+
+                      <div className="flex-1 space-y-2">
+                        <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
+                          <span className={`w-1.5 h-1.5 rounded-full ${selectedProgramIdx === idx ? 'bg-primary animate-pulse' : 'bg-white/20'}`} />
+                          <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
+                        </div>
+
+                        <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedProgramIdx === idx ? 'text-primary' : 'text-white group-hover:text-primary'}`}>
+                          {item.title}
+                        </h4>
                       </div>
                     </div>
-                  ) : (
-                    <div className="relative w-28 md:w-36 aspect-[16/10] rounded-2xl overflow-hidden shadow-md shrink-0 bg-slate-800 flex items-center justify-center border border-white/10">
-                      <Play className="w-6 h-6 text-slate-500 fill-slate-500" />
-                    </div>
-                  )}
-
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-400">
-                      <span className={`w-1.5 h-1.5 rounded-full ${selectedProgramIdx === idx ? 'bg-primary animate-pulse' : 'bg-white/20'}`} />
-                      <span>{new Date(item.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'numeric' })}</span>
-                    </div>
-
-                    <h4 className={`text-base md:text-lg font-black transition-colors leading-snug line-clamp-2 tracking-tighter ${selectedProgramIdx === idx ? 'text-primary' : 'text-white group-hover:text-primary'}`}>
-                      {item.title}
-                    </h4>
-                  </div>
-                </div>
-              )) : (
+                  ))}
+                  
+                  <Link
+                    href="/programs"
+                    className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 text-white font-black text-sm p-5 rounded-3xl border border-white/10 hover:border-white/20 transition-all duration-300 group mt-2"
+                  >
+                    <span>كل البرامج</span>
+                    <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+                  </Link>
+                </>
+              ) : (
                 <p className="text-slate-400 font-bold italic">لا توجد برامج مضافة حالياً</p>
               )}
             </div>
