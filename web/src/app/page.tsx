@@ -356,7 +356,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary" />
                 <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">
-                  برامج
+                  برامجنا
                 </h3>
               </div>
             </div>
@@ -407,7 +407,7 @@ export default function Home() {
               <div className="flex items-center gap-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-primary" />
                 <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter">
-                  البرامج
+                  برامج
                 </h3>
               </div>
             </div>
