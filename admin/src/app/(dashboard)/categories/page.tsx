@@ -263,11 +263,11 @@ export default function CategoriesPage() {
       </Card>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl sm:max-w-[450px] p-8 bg-white overflow-hidden" dir="rtl">
+        <DialogContent className="rounded-[2.5rem] border-none shadow-2xl sm:max-w-[450px] p-8 bg-white max-h-[90vh] flex flex-col overflow-hidden" dir="rtl">
           {/* Top Decorative bar */}
           <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-l from-primary to-primary/40" />
 
-          <DialogHeader className="text-start pb-4 border-b border-slate-100">
+          <DialogHeader className="text-start pb-4 border-b border-slate-100 shrink-0">
             <DialogTitle className="text-2xl font-black flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                 <Tag className="w-5 h-5" />
@@ -281,7 +281,7 @@ export default function CategoriesPage() {
             </DialogTitle>
           </DialogHeader>
 
-          <div className="space-y-6 py-6">
+          <div className="space-y-6 py-6 overflow-y-auto flex-1 pr-1 custom-scrollbar">
             <div className="space-y-2 text-start">
               <label className="text-xs font-black text-slate-500 uppercase tracking-wider">اسم القسم / القائمة (بالعربية)</label>
               <Input 
@@ -379,7 +379,7 @@ export default function CategoriesPage() {
             </div>
           </div>
 
-          <DialogFooter className="gap-2 pt-4 border-t border-slate-100 flex flex-row justify-end">
+          <DialogFooter className="gap-2 pt-4 border-t border-slate-100 flex flex-row justify-end shrink-0">
             <Button variant="ghost" onClick={() => setOpen(false)} className="rounded-xl font-bold h-11 px-6 text-slate-500 hover:bg-slate-50">إلغاء</Button>
             <Button onClick={saveCategory} disabled={saving} className="rounded-xl font-black h-11 px-8 shadow-lg shadow-primary/20 bg-primary hover:scale-[1.02] transition-transform">
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'حفظ التغييرات'}
