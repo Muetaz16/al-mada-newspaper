@@ -11,9 +11,10 @@ interface CategoryHeroSectionProps {
   title: string;
   slug: string;
   news: any[];
+  sideNews?: any[];
 }
 
-export function CategoryHeroSection({ title, slug, news }: CategoryHeroSectionProps) {
+export function CategoryHeroSection({ title, slug, news, sideNews }: CategoryHeroSectionProps) {
   const [currentIdx, setCurrentIdx] = useState(0);
 
   useEffect(() => {
@@ -94,7 +95,7 @@ export function CategoryHeroSection({ title, slug, news }: CategoryHeroSectionPr
         {/* Side/Sub Headlines */}
         <div className="lg:col-span-4 flex flex-col gap-4">
           <div className="flex flex-col gap-4 flex-1">
-            {news.slice(1, 5).map((item) => (
+            {(sideNews && sideNews.length > 0 ? sideNews : news.slice(1, 5)).map((item) => (
               <div 
                 key={item.id} 
                 className="group flex gap-4 p-4 bg-[#101828] rounded-xl border border-white/5 hover:border-primary/30 shadow-lg transition-all duration-300 cursor-pointer"

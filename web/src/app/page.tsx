@@ -40,7 +40,7 @@ const getEmbedUrl = (url: string) => {
 };
 
 export default function Home() {
-  const [newsByCategory, setNewsByCategory] = useState<Record<string, { slug: string; items: any[] }>>({});
+  const [newsByCategory, setNewsByCategory] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [videos, setVideos] = useState<any[]>([]);
   const [poll, setPoll] = useState<any>(null);
@@ -67,7 +67,7 @@ export default function Home() {
       // Fetch all published news
       const { data: news } = await supabase
         .from('news')
-        .select('*, category:categories(name_ar, slug)')
+        .select('*, category:categories(id, name_ar, slug, parent_id, sort_order)')
         .eq('status', 'PUBLISHED')
         .order('created_at', { ascending: false });
 
@@ -85,14 +85,39 @@ export default function Home() {
           }
           
           const catName = topCat?.name_ar || 'أخبار عامة';
+          const catId = topCat?.id;
           const catSlug = topCat?.slug || 'news';
+          const sortOrder = topCat?.sort_order || 0;
           
-          if (!acc[catName]) acc[catName] = { slug: catSlug, items: [] };
+          if (!acc[catName]) {
+             acc[catName] = { id: catId, slug: catSlug, sort_order: sortOrder, items: [], sideNews: [] };
+          }
           acc[catName].items.push(item);
           return acc;
         }, {});
         
-        setNewsByCategory(grouped);
+        // Compute sideNews: one latest news item per subcategory, ordered by subcategory sort_order
+        Object.values(grouped).forEach((group: any) => {
+           const subCats = cats
+             .filter((c: any) => c.parent_id === group.id)
+             .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+           
+           const sideNews: any[] = [];
+           subCats.forEach((sub: any) => {
+              const latestForSub = group.items.find((item: any) => item.category_id === sub.id);
+              if (latestForSub) {
+                 sideNews.push(latestForSub);
+              }
+           });
+           group.sideNews = sideNews;
+        });
+
+        // Sort the grouped object by the top-level category sort_order
+        const sortedGroups = Object.entries(grouped)
+           .map(([catName, data]) => ({ catName, ...(data as any) }))
+           .sort((a, b) => a.sort_order - b.sort_order);
+           
+        setNewsByCategory(sortedGroups);
       }
 
       // Fetch latest programs
@@ -148,12 +173,13 @@ export default function Home() {
 
       <div className="container mx-auto px-4 pt-6 pb-16 space-y-24">
         <div className="space-y-16">
-          {Object.entries(newsByCategory).map(([catName, data]) => (
+          {newsByCategory.map((data: any) => (
             <CategoryHeroSection
-              key={catName}
-              title={catName}
+              key={data.catName}
+              title={data.catName}
               slug={data.slug}
               news={data.items}
+              sideNews={data.sideNews}
             />
           ))}
         </div>
