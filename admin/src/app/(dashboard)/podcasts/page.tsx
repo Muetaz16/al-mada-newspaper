@@ -34,7 +34,7 @@ export default function PodcastsPage() {
   const [duration, setDuration] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const [sourceType, setSourceType] = useState<'UPLOAD' | 'URL'>('UPLOAD');
+  const [sourceType, setSourceType] = useState<'UPLOAD' | 'URL'>('URL');
   const [youtubeUrl, setYoutubeUrl] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -243,8 +243,8 @@ export default function PodcastsPage() {
             </div>
             <span className="text-primary font-black text-xs uppercase tracking-widest text-start">الوسائط المتقدمة</span>
           </div>
-          <h2 className="text-4xl font-black text-slate-900 tracking-tight">إدارة البودكاست (Podcast)</h2>
-          <p className="text-slate-400 font-bold text-sm">ارفع ملفات البودكاست مضافاً إليها صور أغلفة احترافية لتظهر كعناوين سينمائية غاية في الأناقة.</p>
+          <h2 className="text-4xl font-black text-slate-900 tracking-tight">إدارة البرودكاست (فيديو)</h2>
+          <p className="text-slate-400 font-bold text-sm">أدخل روابط اليوتيوب لحلقات البرودكاست لتظهر كعرض فيديو سينمائي غاية في الأناقة.</p>
         </div>
       </div>
 
@@ -256,13 +256,13 @@ export default function PodcastsPage() {
         <CardContent className="p-8 md:p-12 space-y-8 relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <UploadCloud className="text-primary w-6 h-6 animate-pulse" />
-            <h3 className="text-xl font-black text-white">نشر حلقة بودكاست سينمائية جديدة</h3>
+            <h3 className="text-xl font-black text-white">نشر حلقة برودكاست فيديو جديدة</h3>
           </div>
 
           <form onSubmit={handleUploadAndSave} className="space-y-6 text-start">
             
             <div className="space-y-2">
-              <label className="text-sm font-black text-slate-300">عنوان الحلقة الصخرية / بودكاست</label>
+              <label className="text-sm font-black text-slate-300">عنوان حلقة البرودكاست</label>
               <Input 
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -272,76 +272,27 @@ export default function PodcastsPage() {
               />
             </div>
 
-             <div className="space-y-2">
-                <label className="text-sm font-black text-slate-300">مصدر الوسائط</label>
-                <div className="flex gap-2 bg-white/5 p-1 rounded-2xl border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => { setSourceType('UPLOAD'); setYoutubeUrl(''); }}
-                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'UPLOAD' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
-                  >
-                    رفع ملف (MP3 / MP4)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setSourceType('URL'); setFile(null); }}
-                    className={`flex-1 py-3 rounded-xl text-xs font-black transition-all ${sourceType === 'URL' ? 'bg-primary text-white shadow-lg' : 'text-slate-400 hover:text-slate-200'}`}
-                  >
-                    رابط يوتيوب / خارجي
-                  </button>
+            {/* Twin Upload Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+              {/* YouTube URL Input */}
+              <div className="space-y-3">
+                <label className="text-sm font-black text-slate-300 block">رابط اليوتيوب (YouTube URL)</label>
+                <div className="h-48 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-center p-6 hover:bg-white/10 transition-all">
+                  <Input 
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    dir="ltr"
+                    required
+                    className="h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold px-6 text-base placeholder:text-white/20 focus:ring-2 focus:ring-primary/20 w-full"
+                  />
                 </div>
               </div>
 
-              {/* Twin Upload Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              
-              {/* Media Upload Box or YouTube Input */}
-              {sourceType === 'UPLOAD' ? (
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-slate-300 block">الملف الصوتي أو الفيديو (MP3 / MP4)</label>
-                  <div className="relative group h-48 bg-white/5 border-2 border-dashed border-white/10 hover:border-primary/40 rounded-[2rem] flex flex-col items-center justify-center p-6 text-center hover:bg-white/10 transition-all cursor-pointer">
-                    <input 
-                      type="file" 
-                      accept="audio/mp3, audio/mpeg, video/mp4, video/x-m4v"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      className="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-20"
-                    />
-                    <div className="flex flex-col items-center gap-3 text-slate-400 group-hover:text-slate-200">
-                      <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/5 group-hover:scale-105 transition-all">
-                        {file ? (
-                          file.type.startsWith('video') ? <FileVideo className="w-6 h-6 text-primary" /> : <FileAudio className="w-6 h-6 text-primary" />
-                        ) : (
-                          <UploadCloud className="w-6 h-6" />
-                        )}
-                      </div>
-                      <div>
-                        <span className="block text-xs font-black text-slate-200 truncate max-w-[200px]">
-                          {file ? file.name : 'اختر ملف الصوت أو الفيديو'}
-                        </span>
-                        {!file && <span className="text-[10px] text-slate-400 font-bold block mt-1">يدعم ملفات MP3 و MP4 فقط</span>}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <label className="text-sm font-black text-slate-300 block">رابط اليوتيوب أو الرابط الخارجي</label>
-                  <div className="h-48 bg-white/5 border border-white/10 rounded-[2rem] flex flex-col justify-center p-6 hover:bg-white/10 transition-all">
-                    <Input 
-                      value={youtubeUrl}
-                      onChange={(e) => setYoutubeUrl(e.target.value)}
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      dir="ltr"
-                      className="h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold px-6 text-base placeholder:text-white/20 focus:ring-2 focus:ring-primary/20 w-full"
-                    />
-                  </div>
-                </div>
-              )}
-
               {/* Cover Image Upload Box */}
               <div className="space-y-3">
-                <label className="text-sm font-black text-slate-300 block">صورة غلاف البودكاست (Cover Image)</label>
+                <label className="text-sm font-black text-slate-300 block">صورة غلاف البرودكاست (Cover Image)</label>
                 <div className="relative group h-48 bg-white/5 border-2 border-dashed border-white/10 hover:border-primary/40 rounded-[2rem] flex flex-col items-center justify-center p-6 text-center hover:bg-white/10 transition-all cursor-pointer overflow-hidden">
                   <input 
                     type="file" 
@@ -373,24 +324,6 @@ export default function PodcastsPage() {
 
             </div>
 
-            {/* Media stats & file details */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 flex items-center justify-between text-slate-300">
-                <span className="text-xs font-black text-slate-400">مدة التشغيل:</span>
-                <span className="font-mono text-base font-black flex items-center gap-2 text-primary">
-                  <Clock className="w-4 h-4" />
-                  {duration ? `${formatDuration(duration)} (${duration} ثانية)` : 'بانتظار قراءة الملف...'}
-                </span>
-              </div>
-
-              <div className="bg-white/5 border border-white/5 rounded-2xl px-6 py-4 flex items-center justify-between text-slate-300">
-                <span className="text-xs font-black text-slate-400">حجم الملف المرفوع:</span>
-                <span className="font-mono text-base font-black text-slate-200">
-                  {file ? `${(file.size / (1024 * 1024)).toFixed(2)} ميجابايت` : '-- MB'}
-                </span>
-              </div>
-            </div>
-
             {message && (
               <div className={`p-4 rounded-xl flex items-center gap-3 text-sm font-bold ${message.type === 'success' ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20' : 'bg-red-500/10 text-red-300 border border-red-500/20'}`}>
                 {message.type === 'success' ? <CheckCircle className="w-5 h-5 shrink-0" /> : <AlertCircle className="w-5 h-5 shrink-0" />}
@@ -407,12 +340,12 @@ export default function PodcastsPage() {
                 {uploading ? (
                   <>
                     <Loader2 className="animate-spin h-5 w-5" />
-                    جاري رفع الملفات وتوليد البودكاست...
+                    جاري نشر وتوليد البرودكاست...
                   </>
                 ) : (
                   <>
                     <Mic className="w-5 h-5" />
-                    نشر وتوليد البودكاست السينمائي
+                    نشر حلقة البرودكاست
                   </>
                 )}
               </Button>

@@ -25,11 +25,11 @@ export default function PodcastsPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/10 shadow-sm">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">صوت المدى</span>
+              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">مرئي المدى</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">المكتبة الصوتية</h1>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">مكتبة البرودكاست</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">
-              استمع إلى أعمق التحليلات، والحوارات الحصرية عبر سلسلة برامجنا الإذاعية المتنوعة (البودكاست).
+              شاهد واستمع إلى أعمق التحليلات، والحوارات الحصرية عبر سلسلة برامجنا المرئية المتنوعة (البرودكاست).
             </p>
           </div>
         </header>
