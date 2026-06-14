@@ -23,15 +23,20 @@ export default function AboutPage() {
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-8">
                 نبذة <span className="text-[#dfa928]">عنا</span>
               </h1>
-              <div className="space-y-6 text-gray-300 leading-relaxed text-lg md:text-xl">
+              <div className="space-y-6 text-gray-300 leading-relaxed text-lg md:text-xl font-almarai">
                 <p>
-                  صحيفة المدى هي منصة إخبارية متكاملة تأخذك إلى أبعد مدى في عالم الخبر والتحليل والمعرفة. نقدم تغطية شاملة وحصرية على مدار الساعة بأحدث التقنيات الرقمية.
+                  صحيفة المدى صحيفة ليبية إلكترونية مستقلة تُعنى بالشأن الليبي، وتلتزم بتقديم الخبر وتحليله ومتابعة امتداداته، انطلاقًا من إيمانها بأن الصحافة ليست مجرد نقلٍ للأحداث، بل أداة لفهمها واستجلاء أبعادها وتأثيراتها.
                 </p>
                 <p>
-                  نسعى دائمًا لتقديم المحتوى الأكثر دقة وموثوقية لقرائنا، معتمدين على فريق من أفضل الصحفيين والمحللين لتزويدكم بالصورة الكاملة لكل حدث.
+                  تتبنى «المدى» نهجًا مهنيًا يقوم على الدقة والموضوعية والعمق، وتسعى إلى تقديم محتوى صحفي موثوق يجمع بين الخبر والتحليل والتحقيق والمتابعة والتفسير، بما يمنح القارئ رؤيةً أشمل للواقع وتطوراته.
                 </p>
                 <p>
-                  تجمع منصتنا بين الأصالة في نقل الخبر والمعاصرة في التقديم التقني، لنوفر تجربة مستخدم استثنائية تواكب تطلعات القارئ العربي في كل مكان.
+                  وتستلهم الصحيفة رسالتها من شعارها: «المدى.. للخبر امتداد»، إيمانًا بأن وراء كل خبر قصة، وخلف كل حدث معنى، وأن الصحافة الجادة تبدأ من الخبر ولا تتوقف عنده.
+                </p>
+                <p className="font-semibold text-white pt-2">
+                  فمرحبًا بكم في فضاء «المدى»...
+                  <br />
+                  <span className="text-[#dfa928]">حيث يبدأ الخبر ولا تنتهي الحكاية.</span>
                 </p>
               </div>
             </div>
@@ -43,13 +48,18 @@ export default function AboutPage() {
               </h1>
               <div className="space-y-6 text-gray-300 leading-relaxed text-lg md:text-xl font-light">
                 <p>
-                  Al-Mada Newspaper is an integrated news platform that takes you further into the world of news, analysis, and knowledge. We provide comprehensive and exclusive coverage around the clock using the latest digital technologies.
+                  Al-Mada is an independent Libyan online newspaper dedicated to covering Libyan affairs. Guided by the principles of accuracy, objectivity, and depth, it is committed to delivering the news, analyzing developments, and following the stories beyond the headline.
                 </p>
                 <p>
-                  We always strive to provide the most accurate and reliable content to our readers, relying on a team of top journalists and analysts to give you the complete picture of every event.
+                  Al-Mada believes that journalism is more than reporting events; it is about understanding their context, exploring their implications, and helping readers make sense of a rapidly changing world. Through news reporting, analysis, investigative journalism, interpretation, and continuous coverage, the newspaper strives to provide reliable and meaningful journalism that offers a deeper perspective on Libya and its evolving realities.
                 </p>
                 <p>
-                  Our platform combines authenticity in reporting with modernity in technical presentation, providing an exceptional user experience that meets the aspirations of readers everywhere.
+                  Inspired by its motto, "Beyond the Headline," Al-Mada is founded on the belief that every news story has a wider context, every event carries a deeper meaning, and that serious journalism begins with the news but does not end there.
+                </p>
+                <p className="font-medium text-white pt-2">
+                  Welcome to Al-Mada.
+                  <br />
+                  <span className="text-[#dfa928]">Where the News Begins, and the Story Never Ends.</span>
                 </p>
               </div>
             </div>
