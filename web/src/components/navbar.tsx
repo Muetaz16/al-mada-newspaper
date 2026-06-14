@@ -144,7 +144,7 @@ export function Navbar() {
                 className="object-contain object-center scale-110 md:scale-125 origin-center"
               />
             </Link>
-            <div className="h-[1.5px] w-[75px] md:w-[100px] bg-primary rounded-full opacity-80 mt-6 md:mt-8 mb-1.5"></div>
+            <div className="h-[1.5px] w-[75px] md:w-[100px] bg-primary rounded-full opacity-80 mt-1 md:mt-2 mb-1.5"></div>
             <span className="text-slate-400 text-[8px] md:text-[9.5px] font-medium tracking-[0.2em] whitespace-nowrap">صحيفة إلكترونية مستقلة</span>
           </div>
 
