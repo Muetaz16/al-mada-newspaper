@@ -84,13 +84,27 @@ export default function Home() {
              if (parent) topCat = parent;
           }
           
-          const catName = topCat?.name_ar || 'أخبار عامة';
+          let catName = topCat?.name_ar || 'أخبار عامة';
+          const mergedCategories = ['تحليلات', 'اقتصاد', 'تحقيقات'];
+          const isMerged = mergedCategories.includes(catName);
+
+          if (isMerged) {
+             catName = 'تحليلات واقتصاد وتحقيقات';
+          }
+
           const catId = topCat?.id;
           const catSlug = topCat?.slug || 'news';
           const sortOrder = topCat?.sort_order || 0;
           
           if (!acc[catName]) {
-             acc[catName] = { id: catId, slug: catSlug, sort_order: sortOrder, items: [], sideNews: [] };
+             acc[catName] = { 
+               id: catId, 
+               slug: isMerged ? 'mixed' : catSlug, 
+               sort_order: isMerged ? 10 : sortOrder,
+               items: [], 
+               sideNews: [],
+               isMerged
+             };
           }
           acc[catName].items.push(item);
           return acc;
@@ -98,18 +112,28 @@ export default function Home() {
         
         // Compute sideNews: one latest news item per subcategory, ordered by subcategory sort_order
         Object.values(grouped).forEach((group: any) => {
-           const subCats = cats
-             .filter((c: any) => c.parent_id === group.id)
-             .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
-           
-           const sideNews: any[] = [];
-           subCats.forEach((sub: any) => {
-              const latestForSub = group.items.find((item: any) => item.category_id === sub.id);
-              if (latestForSub) {
-                 sideNews.push(latestForSub);
-              }
-           });
-           group.sideNews = sideNews;
+           if (group.isMerged) {
+              const mergedOrder = ['تحليلات', 'اقتصاد', 'تحقيقات'];
+              const sideNews: any[] = [];
+              mergedOrder.forEach(mCat => {
+                 const latest = group.items.find((item: any) => item.category?.name_ar === mCat);
+                 if (latest) sideNews.push(latest);
+              });
+              group.sideNews = sideNews;
+           } else {
+              const subCats = cats
+                .filter((c: any) => c.parent_id === group.id)
+                .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0));
+              
+              const sideNews: any[] = [];
+              subCats.forEach((sub: any) => {
+                 const latestForSub = group.items.find((item: any) => item.category_id === sub.id);
+                 if (latestForSub) {
+                    sideNews.push(latestForSub);
+                 }
+              });
+              group.sideNews = sideNews;
+           }
         });
 
         // Sort the grouped object by the top-level category sort_order
