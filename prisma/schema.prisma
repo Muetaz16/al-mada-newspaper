@@ -267,11 +267,14 @@ model PulseOfLife {
 }
 
 model Program {
-  id         String   @id @default(uuid())
+  id         String     @id @default(uuid())
   title      String
   video_url  String
   thumbnail  String?
-  created_at DateTime @default(now())
+  parent_id  String?
+  created_at DateTime   @default(now())
+  parent     Program?   @relation("ProgramEpisodes", fields: [parent_id], references: [id], onDelete: Cascade)
+  episodes   Program[]  @relation("ProgramEpisodes")
 
   @@map("programs")
 }

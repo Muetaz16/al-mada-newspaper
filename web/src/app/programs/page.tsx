@@ -64,6 +64,21 @@ function ProgramsContent() {
 
   const featuredProgram = programs.length > 0 ? programs[selectedProgramIdx] : null;
 
+  const getSameGroupEpisodes = () => {
+    if (!featuredProgram) return [];
+    const groupId = featuredProgram.parent_id || featuredProgram.id;
+    return programs
+      .filter((p: any) => p.parent_id === groupId || p.id === groupId)
+      .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+  };
+
+  const selectEpisodeById = (id: string) => {
+    const idx = programs.findIndex((p: any) => p.id === id);
+    if (idx !== -1) {
+      setSelectedProgramIdx(idx);
+    }
+  };
+
   if (loading) {
     return (
       <div className="h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-900">
@@ -157,14 +172,65 @@ function ProgramsContent() {
 
               {/* Sidebar playlist info */}
               <div className="lg:col-span-4 space-y-6 text-start">
-                <div className="bg-white/80 border border-slate-200/60 rounded-[2.5rem] p-8 space-y-6 shadow-xl shadow-slate-100/50">
-                  <div className="flex items-center gap-3">
-                    <Tv className="w-6 h-6 text-primary" />
-                    <h3 className="text-xl font-black text-slate-950">شرح الحلقة</h3>
+                <div className="bg-white/80 border border-slate-200/60 rounded-[2.5rem] p-6 space-y-6 shadow-xl shadow-slate-100/50">
+                  <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <div className="flex items-center gap-3">
+                      <Tv className="w-5 h-5 text-primary" />
+                      <h3 className="text-lg font-black text-slate-950">حلقات البرنامج</h3>
+                    </div>
+                    <span className="text-[10px] bg-primary/10 text-primary font-black px-2.5 py-1 rounded-md">
+                      {getSameGroupEpisodes().length} حلقات
+                    </span>
                   </div>
-                  <p className="text-slate-600 font-bold leading-relaxed text-sm">
-                    تابع الحوارات الحصرية واللقاءات الخاصة التي تجريها صحيفة المدى لمناقشة آخر التطورات والأخبار. اضغط على أي حلقة في القائمة أدناه لعرضها في المشغل الرئيسي.
-                  </p>
+
+                  <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar">
+                    {getSameGroupEpisodes().map((episode: any) => {
+                      const isCurrent = episode.id === featuredProgram.id;
+                      return (
+                        <div
+                          key={episode.id}
+                          onClick={() => selectEpisodeById(episode.id)}
+                          className={`flex gap-4 p-3 rounded-2xl border transition-all cursor-pointer items-center ${
+                            isCurrent
+                              ? 'bg-primary/5 border-primary/20 shadow-sm'
+                              : 'bg-transparent border-transparent hover:bg-slate-50'
+                          }`}
+                        >
+                          <div className="relative w-16 aspect-video rounded-xl overflow-hidden bg-slate-900 shrink-0 border border-slate-200">
+                            {episode.thumbnail ? (
+                              <Image
+                                src={episode.thumbnail}
+                                alt={episode.title}
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                              />
+                            ) : (
+                              <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">
+                                <Play className="w-4 h-4 text-slate-400 fill-slate-400" />
+                              </div>
+                            )}
+                            {isCurrent && (
+                              <div className="absolute inset-0 bg-primary/25 backdrop-blur-[1px] flex items-center justify-center">
+                                <span className="h-2 w-2 rounded-full bg-primary animate-ping" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0 space-y-1">
+                            <h4 className={`text-xs font-black leading-snug line-clamp-2 ${isCurrent ? 'text-primary' : 'text-slate-800'}`}>
+                              {episode.title}
+                            </h4>
+                            <span className="text-[9px] font-bold text-slate-400 block">
+                              {new Date(episode.created_at).toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' })}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {getSameGroupEpisodes().length === 0 && (
+                      <p className="text-xs text-slate-400 font-bold italic py-4 text-center">لا توجد حلقات أخرى لهذا البرنامج</p>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

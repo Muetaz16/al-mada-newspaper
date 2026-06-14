@@ -18,6 +18,13 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export default function ProgramsPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -28,6 +35,7 @@ export default function ProgramsPage() {
   const [videoUrl, setVideoUrl] = useState('');
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [parentId, setParentId] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
@@ -113,6 +121,7 @@ export default function ProgramsPage() {
         title,
         video_url: videoUrl,
         thumbnail: finalCoverUrl || null,
+        parent_id: parentId || null,
       };
 
       const { error } = await supabase.from('programs').insert([payload]);
@@ -127,6 +136,7 @@ export default function ProgramsPage() {
       setVideoUrl('');
       setCoverFile(null);
       setCoverPreview(null);
+      setParentId(null);
       
       if (coverInputRef.current) coverInputRef.current.value = '';
       
@@ -197,6 +207,32 @@ export default function ProgramsPage() {
                 required
                 className="h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold px-6 text-base placeholder:text-white/20 focus:ring-2 focus:ring-primary/20 w-full hover:bg-white/10 transition-colors"
               />
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-black text-slate-300">البرنامج الرئيسي (اختياري - حدده إذا كنت تضيف حلقة لبرنامج موجود مسبقاً)</label>
+              <Select 
+                onValueChange={(val) => setParentId(val === 'none' ? null : val)} 
+                value={parentId || 'none'}
+              >
+                <SelectTrigger className="h-14 rounded-2xl bg-white/5 border border-white/10 text-white font-bold px-6 text-base hover:bg-white/10 transition-colors focus:ring-2 focus:ring-primary/20">
+                  <SelectValue placeholder="اختر برنامجاً رئيسياً" />
+                </SelectTrigger>
+                <SelectContent className="rounded-2xl border-none shadow-2xl max-h-[250px] bg-slate-900 text-white border-white/10">
+                  <SelectItem value="none" className="font-bold rounded-xl py-3 cursor-pointer hover:bg-white/10">
+                    📂 بدون (إنشاء برنامج رئيسي جديد)
+                  </SelectItem>
+                  <div className="h-px bg-white/10 my-1" />
+                  {items
+                    .filter(c => !c.parent_id)
+                    .map(c => (
+                      <SelectItem key={c.id} value={c.id} className="font-bold rounded-xl py-3 cursor-pointer hover:bg-white/10">
+                        📄 {c.title}
+                      </SelectItem>
+                    ))
+                  }
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -303,6 +339,14 @@ export default function ProgramsPage() {
 
                 <div className="space-y-2 flex-1 min-w-0">
                   <h4 className="font-black text-slate-800 text-lg leading-tight truncate group-hover:text-primary transition-colors">{item.title}</h4>
+                  {item.parent_id && (
+                    <div className="pt-1">
+                      <span className="inline-flex items-center gap-1 bg-primary/10 text-primary font-black text-[10px] px-2.5 py-1 rounded-md">
+                        <span>تحت برنامج:</span>
+                        <span className="underline">{items.find(x => x.id === item.parent_id)?.title || 'برنامج رئيسي'}</span>
+                      </span>
+                    </div>
+                  )}
                   <div className="flex flex-wrap items-center gap-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     <span className="font-mono bg-slate-100 px-3 py-1 rounded-lg">{new Date(item.created_at).toLocaleDateString('ar-EG')}</span>
                     {item.video_url && (
