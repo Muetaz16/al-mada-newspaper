@@ -34,9 +34,9 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { table, action, data, filters, order, limit } = body;
+    const { table, action, data, filters, order, limit, orders } = body;
 
-    const result = await dispatchDbQuery(table, action, data, filters, order, limit);
+    const result = await dispatchDbQuery(table, action, data, filters, order, limit, orders);
     return NextResponse.json({ data: result, error: null });
   } catch (error: any) {
     console.error('Prisma Proxy API Error:', error);

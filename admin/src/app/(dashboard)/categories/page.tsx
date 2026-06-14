@@ -94,21 +94,32 @@ export default function CategoriesPage() {
       sort_order: Number(sortOrder) || 0
     };
 
+    let errorObj = null;
     if (editingCategory) {
-      await supabase.from('categories').update(payload).eq('id', editingCategory.id);
+      const { error } = await supabase.from('categories').update(payload).eq('id', editingCategory.id);
+      errorObj = error;
     } else {
-      await supabase.from('categories').insert(payload);
+      const { error } = await supabase.from('categories').insert(payload);
+      errorObj = error;
     }
 
-    setOpen(false);
     setSaving(false);
-    fetchCategories();
+    if (errorObj) {
+      alert('فشل حفظ القسم: ' + (errorObj.message || 'خطأ غير معروف'));
+    } else {
+      setOpen(false);
+      fetchCategories();
+    }
   };
 
   const deleteCategory = async (id: string) => {
     if (!confirm('هل أنت متأكد من حذف هذا القسم؟ قد يؤثر ذلك على الأخبار المرتبطة به.')) return;
-    await supabase.from('categories').delete().eq('id', id);
-    fetchCategories();
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    if (error) {
+      alert('فشل حذف القسم: ' + (error.message || 'خطأ غير معروف'));
+    } else {
+      fetchCategories();
+    }
   };
 
   // Build a visual hierarchy: place children categories directly beneath their parent category

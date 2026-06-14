@@ -35,7 +35,7 @@ function createMockClient(isServerSide: boolean) {
     },
     from(tableName: string) {
       let filters: any = {};
-      let order: any = null;
+      let orders: any[] = [];
 
       const chain = {
         select(columns: string = '*') {
@@ -46,10 +46,10 @@ function createMockClient(isServerSide: boolean) {
           return this;
         },
         order(field: string, options: { ascending?: boolean } = {}) {
-          order = {
+          orders.push({
             field,
             direction: options.ascending === false ? 'desc' : 'asc'
-          };
+          });
           return this;
         },
         single() {
@@ -68,7 +68,15 @@ function createMockClient(isServerSide: boolean) {
             let payload: any;
             if (isServerSide) {
               const { dispatchDbQuery } = require('@/utils/db-dispatcher');
-              const result = await dispatchDbQuery(tableName, 'select', undefined, filters, order);
+              const result = await dispatchDbQuery(
+                tableName, 
+                'select', 
+                undefined, 
+                filters, 
+                orders[0] || null, 
+                undefined, 
+                orders
+              );
               payload = { data: result, error: null };
             } else {
               const res = await fetch('/api/db', {
@@ -78,7 +86,8 @@ function createMockClient(isServerSide: boolean) {
                   table: tableName,
                   action: 'select',
                   filters,
-                  order
+                  order: orders[0] || null,
+                  orders
                 })
               });
               payload = await res.json();

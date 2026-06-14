@@ -24,7 +24,8 @@ export async function dispatchDbQuery(
   data?: any,
   filters?: any,
   order?: any,
-  limit?: number
+  limit?: number,
+  orders?: any[]
 ) {
   const model = getModel(table);
   if (!model) {
@@ -61,7 +62,9 @@ export async function dispatchDbQuery(
       }
 
       // Parse order
-      if (order) {
+      if (orders && Array.isArray(orders) && orders.length > 0) {
+        queryOptions.orderBy = orders.map((o: any) => ({ [o.field]: o.direction }));
+      } else if (order) {
         queryOptions.orderBy = { [order.field]: order.direction };
       }
 
@@ -81,7 +84,9 @@ export async function dispatchDbQuery(
       } else if (table === 'news') {
         queryOptions.include = { category: true };
       }
-      if (order) {
+      if (orders && Array.isArray(orders) && orders.length > 0) {
+        queryOptions.orderBy = orders.map((o: any) => ({ [o.field]: o.direction }));
+      } else if (order) {
         queryOptions.orderBy = { [order.field]: order.direction };
       }
       if (limit && limit > 0) {

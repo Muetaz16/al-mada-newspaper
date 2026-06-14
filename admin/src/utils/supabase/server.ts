@@ -10,7 +10,7 @@ export async function createClient() {
     },
     from(tableName: string) {
       let filters: any = {};
-      let order: any = null;
+      let orders: any[] = [];
 
       const chain = {
         select(columns: string = '*') {
@@ -21,10 +21,10 @@ export async function createClient() {
           return this;
         },
         order(field: string, options: { ascending?: boolean } = {}) {
-          order = {
+          orders.push({
             field,
             direction: options.ascending === false ? 'desc' : 'asc'
-          };
+          });
           return this;
         },
         single() {
@@ -41,7 +41,15 @@ export async function createClient() {
         async then(onfulfilled?: (value: any) => any) {
           try {
             const { dispatchDbQuery } = require('@/utils/db-dispatcher');
-            const result = await dispatchDbQuery(tableName, 'select', undefined, filters, order);
+            const result = await dispatchDbQuery(
+              tableName, 
+              'select', 
+              undefined, 
+              filters, 
+              orders[0] || null, 
+              undefined, 
+              orders
+            );
             const payload = { data: result, error: null };
             if (onfulfilled) return onfulfilled(payload);
             return payload;

@@ -24,7 +24,7 @@ function createMockClient(isServerSide: boolean) {
     },
     from(tableName: string) {
       let filters: any = {};
-      let order: any = null;
+      let orders: any[] = [];
       let limitVal: number | null = null;
 
       const chain = {
@@ -40,10 +40,10 @@ function createMockClient(isServerSide: boolean) {
           return this;
         },
         order(field: string, options: { ascending?: boolean } = {}) {
-          order = {
+          orders.push({
             field,
             direction: options.ascending === false ? 'desc' : 'asc'
-          };
+          });
           return this;
         },
         single() {
@@ -65,7 +65,8 @@ function createMockClient(isServerSide: boolean) {
               table: tableName,
               action: 'select',
               filters,
-              order,
+              order: orders[0] || null,
+              orders,
               limit: limitVal
             };
 
