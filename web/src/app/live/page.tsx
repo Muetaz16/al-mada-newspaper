@@ -63,7 +63,7 @@ export default function LiveStreamPage() {
   }
 
   const isOnline = stream && stream.status === 'ONLINE' && stream.stream_url;
-  
+
   // Try to parse YouTube Video ID or fallback to standard URL
   let youtubeId = null;
   if (isOnline) {
@@ -84,7 +84,7 @@ export default function LiveStreamPage() {
       </div>
 
       <div className="container mx-auto px-4 py-20 space-y-16 relative z-10">
-        
+
         {/* Page Header (Theater Edition) */}
         <header className="text-center space-y-4 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-3 bg-white/5 backdrop-blur-md px-6 py-2.5 rounded-full border border-white/10 shadow-sm">
@@ -153,7 +153,7 @@ export default function LiveStreamPage() {
                   <Link href="/videos">
                     <Button className="font-black bg-primary px-8 h-12 rounded-xl text-xs gap-2 shadow-lg shadow-primary/20">
                       <Film className="w-4 h-4" />
-                      زيارة المكتبة المرئية
+                      الوسائط
                     </Button>
                   </Link>
                 </div>
@@ -174,7 +174,7 @@ export default function LiveStreamPage() {
                 عرض الكل ←
               </Link>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {latestVideos.map((video) => (
                 <Link href={`/videos`} key={video.id} className="group space-y-4 text-start block">

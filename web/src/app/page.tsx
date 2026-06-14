@@ -20,7 +20,6 @@ import {
   User,
 } from 'lucide-react';
 import { CategorySection } from '@/components/category-section';
-import { InBriefSection } from '@/components/in-brief-section';
 import { PodcastSection } from '@/components/podcast-section';
 import { PulseOfLifeSection } from '@/components/pulse-of-life-section';
 import { VideoModal } from '@/components/video-modal';
@@ -50,7 +49,7 @@ export default function Home() {
   const [activeVideo, setActiveVideo] = useState<any | null>(null);
   const [voted, setVoted] = useState(false);
   const [programs, setPrograms] = useState<any[]>([]);
-  const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL'>('VIDEO');
+  const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL' | 'PODCAST'>('VIDEO');
 
   const [selectedProgramIdx, setSelectedProgramIdx] = useState(0);
   const supabase = createClient();
@@ -211,18 +210,24 @@ export default function Home() {
                       <span className="w-1 h-1 rounded-full bg-primary animate-ping" />
                       <span className="text-primary font-black text-[9px] uppercase tracking-[0.3em]">Al-Mada TV</span>
                     </div>
-                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-white">المكتبة المرئية</h3>
+                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-white">الوسائط</h3>
                   </div>
                 </div>
               </div>
 
-              {/* Dynamic Separate Tabs for Videos and Reels */}
+              {/* Dynamic Separate Tabs for Videos, Podcasts, and Reels */}
               <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
                 <button
                   onClick={() => setActiveMediaTab('VIDEO')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'VIDEO' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
-                  التقارير المرئية
+                  تقارير
+                </button>
+                <button
+                  onClick={() => setActiveMediaTab('PODCAST')}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'PODCAST' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                >
+                  برودكست
                 </button>
                 <button
                   onClick={() => setActiveMediaTab('REEL')}
@@ -234,7 +239,11 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-              {filteredVideos.length === 0 ? (
+              {activeMediaTab === 'PODCAST' ? (
+                <div className="col-span-full">
+                  <PodcastSection hideHeader={true} />
+                </div>
+              ) : filteredVideos.length === 0 ? (
                 <div className="col-span-full py-28 text-center bg-white/5 rounded-[2.5rem] border border-dashed border-white/10">
                   <div className="w-20 h-20 bg-white/5 rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <VideoIcon className="w-8 h-8 text-white/20" />
@@ -338,10 +347,7 @@ export default function Home() {
           </div>
         </section>
 
-        <PodcastSection />
-
         <PulseOfLifeSection />
-        <InBriefSection />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Featured Program Display (7 cols) */}

@@ -17,7 +17,7 @@ import {
   Calendar
 } from 'lucide-react';
 
-export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) {
+export function PodcastSection({ showAll = false, hideHeader = false }: { showAll?: boolean; hideHeader?: boolean } = {}) {
   const [podcasts, setPodcasts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -215,7 +215,7 @@ export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) 
       )}
 
       {/* Header Section */}
-      {!showAll && (
+      {!showAll && !hideHeader && (
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-6 text-start">
           <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter bg-[#1c2e4e] border border-white/5 px-6 py-2 rounded-2xl shadow-xl flex items-center gap-3">
             <Mic className="w-8 h-8 text-primary animate-pulse" />
@@ -242,138 +242,146 @@ export function PodcastSection({ showAll = false }: { showAll?: boolean } = {}) 
             <div className="absolute bottom-0 left-0 w-[350px] h-[350px] bg-red-500/5 rounded-full blur-[90px] -ml-32 -mb-32 opacity-40" />
           </div>
 
-          <div className="relative z-10 space-y-8">
-            
-            {/* Top controls row */}
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full backdrop-blur-md">
-                <span className="relative flex h-2 w-2">
-                  <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isPlaying ? 'bg-primary' : 'bg-slate-500'}`}></span>
-                  <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-primary' : 'bg-slate-500'}`}></span>
-                </span>
-                <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">
-                  {isPlaying ? 'يتم التشغيل الآن 🎧' : 'البث جاهز للاستماع'}
-                </span>
-              </div>
-            </div>
-
-            {/* Featured Track Info (Album Disc Grid) */}
-            <div className="flex flex-col md:flex-row gap-8 items-start md:items-center text-start">
-              
-              {/* GORGEOUS SQUARE COVER IMAGE (Not Rotating) */}
-              <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/10 shrink-0 group shadow-2xl flex items-center justify-center">
-                {activeTrack && isYoutube(activeTrack.audio_url) && isPlaying ? (
+          <div className="relative z-10 w-full h-full flex flex-col justify-between">
+            {activeTrack && isYoutube(activeTrack.audio_url) ? (
+              <div className="flex flex-col gap-6 w-full text-start justify-between h-full">
+                {/* Widescreen YouTube Player */}
+                <div className="relative w-full aspect-video rounded-[2rem] overflow-hidden bg-slate-900 border border-white/10 shadow-2xl">
                   <iframe
-                    src={getEmbedUrl(activeTrack.audio_url, true)}
-                    className="absolute inset-0 w-full h-full object-cover z-20 border-none"
-                    allow="autoplay; encrypted-media"
+                    src={getEmbedUrl(activeTrack.audio_url, false)}
+                    className="absolute inset-0 w-full h-full border-none"
+                    allow="autoplay; encrypted-media; picture-in-picture"
                     allowFullScreen
                   />
-                ) : (
-                  <>
-                    <img 
-                      src={activeTrack?.cover_url || defaultCover} 
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                      alt={activeTrack?.title || "Podcast cover"} 
-                    />
-                    
-                    {/* Elegant overlay gradient to make it blend into the background */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-85" />
-                  </>
-                )}
-                
-                {/* High-end mic indicator if playing */}
-                {isPlaying && (
-                  <div className="absolute top-4 right-4 bg-primary text-white p-2.5 rounded-2xl shadow-lg animate-bounce z-10">
-                    <Mic className="w-4 h-4 text-white" />
+                </div>
+
+                {/* Metadata & Title */}
+                <div className="space-y-4">
+                  <div className="flex flex-wrap items-center gap-4 text-slate-400 text-xs font-bold">
+                    <span className="flex items-center gap-1.5 bg-white/5 border border-white/5 px-3 py-1 rounded-lg">
+                      <Calendar className="w-3.5 h-3.5 text-primary" />
+                      {new Date(activeTrack.created_at).toLocaleDateString('en-GB')}
+                    </span>
+                    <span className="bg-primary/20 text-primary px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
+                      برودكست (فيديو)
+                    </span>
                   </div>
-                )}
-              </div>
-
-              {/* Episode Metadata */}
-              <div className="space-y-4 flex-1 min-w-0">
-                <div className="flex flex-wrap items-center gap-4 text-slate-400 text-xs font-bold">
-                  <span className="flex items-center gap-1.5 bg-white/5 border border-white/5 px-3 py-1 rounded-lg">
-                    <Clock className="w-3.5 h-3.5 text-primary" />
-                    المدة: {formatTime(duration || activeTrack?.duration || 0)}
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-white/5 border border-white/5 px-3 py-1 rounded-lg">
-                    <Calendar className="w-3.5 h-3.5 text-primary" />
-                    {new Date(activeTrack?.created_at || featuredTrack.created_at).toLocaleDateString('en-GB')}
-                  </span>
-                </div>
-                
-                <h4 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
-                  {activeTrack?.title || featuredTrack.title}
-                </h4>
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* ACTIVE INTERACTIVE WAVEFORM */}
-          <div className="relative z-10 pt-10 border-t border-white/5 space-y-6">
-            
-            {/* Visualizer bars */}
-            <div className="flex items-end gap-0.5 sm:gap-1.5 h-20 w-full px-1 overflow-hidden" dir="ltr">
-              {activePeaks.map((peak: number, idx: number) => {
-                const totalBars = activePeaks.length;
-                const currentRatio = currentTime / (duration || 1);
-                const barRatio = idx / totalBars;
-                const isPlayed = barRatio <= currentRatio;
-
-                return (
-                  <div
-                    key={idx}
-                    onClick={() => handleWaveformClick(idx, totalBars)}
-                    className={`w-full rounded-full cursor-pointer transition-all duration-300 hover:scale-y-110
-                      ${isPlayed 
-                        ? 'bg-primary hover:bg-primary shadow-[0_0_12px_rgba(255,61,61,0.5)]' 
-                        : 'bg-white/10 hover:bg-white/30'}`}
-                    style={{ 
-                      height: `${peak}%`,
-                    }}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Player Controls Panel */}
-            <div className="flex items-center justify-between gap-6">
-              
-              {/* Play / Status block */}
-              <div className="flex items-center gap-4">
-                <button 
-                  onClick={handlePlayPause}
-                  className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 hover:shadow-primary/20 transition-all shrink-0 group"
-                >
-                  {isPlaying ? (
-                    <Pause className="h-6 w-6 text-white fill-white" />
-                  ) : (
-                    <Play className="h-6 w-6 text-white fill-white ml-0.5" />
-                  )}
-                </button>
-
-                <div className="text-start font-mono">
-                  <span className="text-xl font-black text-white">{formatTime(currentTime)}</span>
-                  <span className="text-sm text-white/30 px-1.5">/</span>
-                  <span className="text-xs text-white/40">{formatTime(duration || activeTrack?.duration || 0)}</span>
+                  <h4 className="text-2xl md:text-4xl font-black text-white leading-tight tracking-tight drop-shadow-md">
+                    {activeTrack.title}
+                  </h4>
                 </div>
               </div>
+            ) : (
+              <div className="flex flex-col justify-between h-full gap-8">
+                <div className="space-y-8">
+                  {/* Top controls row */}
+                  <div className="flex justify-between items-center w-full">
+                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-2 rounded-full backdrop-blur-md">
+                      <span className="relative flex h-2 w-2">
+                        <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isPlaying ? 'bg-primary' : 'bg-slate-500'}`}></span>
+                        <span className={`relative inline-flex rounded-full h-2 w-2 ${isPlaying ? 'bg-primary' : 'bg-slate-500'}`}></span>
+                      </span>
+                      <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">
+                        {isPlaying ? 'يتم التشغيل الآن 🎧' : 'البث جاهز للاستماع'}
+                      </span>
+                    </div>
+                  </div>
 
-              {/* Mute and audio controls */}
-              <button 
-                onClick={toggleMute}
-                className="h-12 w-12 bg-white/5 border border-white/10 hover:bg-white/15 text-slate-300 hover:text-white rounded-xl flex items-center justify-center transition-all"
-              >
-                {isMuted ? <VolumeX className="w-5 h-5 text-red-500" /> : <Volume2 className="w-5 h-5" />}
-              </button>
+                  {/* Featured Track Info (Album Disc Grid) */}
+                  <div className="flex flex-col md:flex-row gap-8 items-start md:items-center text-start">
+                    {/* GORGEOUS SQUARE COVER IMAGE */}
+                    <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-[2.5rem] overflow-hidden bg-slate-900 border border-white/10 shrink-0 group shadow-2xl flex items-center justify-center">
+                      <img 
+                        src={activeTrack?.cover_url || defaultCover} 
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                        alt={activeTrack?.title || "Podcast cover"} 
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-85" />
+                      {isPlaying && (
+                        <div className="absolute top-4 right-4 bg-primary text-white p-2.5 rounded-2xl shadow-lg animate-bounce z-10">
+                          <Mic className="w-4 h-4 text-white" />
+                        </div>
+                      )}
+                    </div>
 
-            </div>
+                    {/* Episode Metadata */}
+                    <div className="space-y-4 flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-4 text-slate-400 text-xs font-bold">
+                        <span className="flex items-center gap-1.5 bg-white/5 border border-white/5 px-3 py-1 rounded-lg">
+                          <Clock className="w-3.5 h-3.5 text-primary" />
+                          المدة: {formatTime(duration || activeTrack?.duration || 0)}
+                        </span>
+                        <span className="flex items-center gap-1.5 bg-white/5 border border-white/5 px-3 py-1 rounded-lg">
+                          <Calendar className="w-3.5 h-3.5 text-primary" />
+                          {new Date(activeTrack?.created_at || featuredTrack.created_at).toLocaleDateString('en-GB')}
+                        </span>
+                      </div>
+                      <h4 className="text-3xl md:text-5xl font-black text-white leading-tight tracking-tight drop-shadow-md">
+                        {activeTrack?.title || featuredTrack.title}
+                      </h4>
+                    </div>
+                  </div>
+                </div>
 
+                {/* ACTIVE INTERACTIVE WAVEFORM */}
+                <div className="pt-6 border-t border-white/5 space-y-6">
+                  {/* Visualizer bars */}
+                  <div className="flex items-end gap-0.5 sm:gap-1.5 h-20 w-full px-1 overflow-hidden" dir="ltr">
+                    {activePeaks.map((peak: number, idx: number) => {
+                      const totalBars = activePeaks.length;
+                      const currentRatio = currentTime / (duration || 1);
+                      const barRatio = idx / totalBars;
+                      const isPlayed = barRatio <= currentRatio;
+
+                      return (
+                        <div
+                          key={idx}
+                          onClick={() => handleWaveformClick(idx, totalBars)}
+                          className={`w-full rounded-full cursor-pointer transition-all duration-300 hover:scale-y-110
+                            ${isPlayed 
+                              ? 'bg-primary hover:bg-primary shadow-[0_0_12px_rgba(255,61,61,0.5)]' 
+                              : 'bg-white/10 hover:bg-white/30'}`}
+                          style={{ 
+                            height: `${peak}%`,
+                          }}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* Player Controls Panel */}
+                  <div className="flex items-center justify-between gap-6">
+                    {/* Play / Status block */}
+                    <div className="flex items-center gap-4">
+                      <button 
+                        onClick={handlePlayPause}
+                        className="h-16 w-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg hover:scale-105 active:scale-95 hover:shadow-primary/20 transition-all shrink-0 group"
+                      >
+                        {isPlaying ? (
+                          <Pause className="h-6 w-6 text-white fill-white" />
+                        ) : (
+                          <Play className="h-6 w-6 text-white fill-white ml-0.5" />
+                        )}
+                      </button>
+                      <div className="text-start font-mono">
+                        <span className="text-xl font-black text-white">{formatTime(currentTime)}</span>
+                        <span className="text-sm text-white/30 px-1.5">/</span>
+                        <span className="text-xs text-white/40">{formatTime(duration || activeTrack?.duration || 0)}</span>
+                      </div>
+                    </div>
+
+                    {/* Mute and audio controls */}
+                    <button 
+                      onClick={toggleMute}
+                      className="h-12 w-12 bg-white/5 border border-white/10 hover:bg-white/15 text-slate-300 hover:text-white rounded-xl flex items-center justify-center transition-all"
+                    >
+                      {isMuted ? <VolumeX className="w-5 h-5 text-red-500" /> : <Volume2 className="w-5 h-5" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-
         </div>
 
         {/* Previous Tracks Feed (Right Sidebar) */}

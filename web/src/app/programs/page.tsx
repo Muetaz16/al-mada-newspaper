@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Navbar } from '@/components/navbar';
 import Image from 'next/image';
 import { Footer } from '@/components/footer';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 import { 
   Play, 
   Tv, 
@@ -31,11 +32,13 @@ const getEmbedUrl = (url: string) => {
   return id ? `https://www.youtube.com/embed/${id}` : url;
 };
 
-export default function ProgramsPage() {
+function ProgramsContent() {
   const [programs, setPrograms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedProgramIdx, setSelectedProgramIdx] = useState(0);
   const supabase = createClient();
+  const searchParams = useSearchParams();
+  const programId = searchParams.get('id');
 
   useEffect(() => {
     async function fetchPrograms() {
@@ -49,6 +52,15 @@ export default function ProgramsPage() {
     }
     fetchPrograms();
   }, [supabase]);
+
+  useEffect(() => {
+    if (programs.length > 0 && programId) {
+      const idx = programs.findIndex((p: any) => p.id === programId);
+      if (idx !== -1) {
+        setSelectedProgramIdx(idx);
+      }
+    }
+  }, [programs, programId]);
 
   const featuredProgram = programs.length > 0 ? programs[selectedProgramIdx] : null;
 
@@ -224,5 +236,18 @@ export default function ProgramsPage() {
       </div>
       <Footer />
     </main>
+  );
+}
+
+export default function ProgramsPage() {
+  return (
+    <Suspense fallback={
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-50 text-slate-900">
+        <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+        <p className="text-slate-400 font-black tracking-widest uppercase text-xs">جاري تحميل الصفحة...</p>
+      </div>
+    }>
+      <ProgramsContent />
+    </Suspense>
   );
 }

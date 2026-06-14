@@ -78,7 +78,7 @@ export default function VideosPage() {
               </div>
               <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">تلفزيون المدى</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">المكتبة المرئية</h1>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">الوسائط</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">
               تغطيات حصرية، تقارير استقصائية، ومقابلات من قلب الحدث. اختبر الخبر بصورة مغايرة تماماً.
             </p>

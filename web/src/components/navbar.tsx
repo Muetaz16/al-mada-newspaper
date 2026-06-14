@@ -15,6 +15,8 @@ export function Navbar() {
   const [dbCategories, setDbCategories] = useState<any[]>([]);
   const supabase = createClient();
 
+  const [dbPrograms, setDbPrograms] = useState<any[]>([]);
+
   useEffect(() => {
     async function fetchCategories() {
       const { data } = await supabase
@@ -23,10 +25,18 @@ export function Navbar() {
         .order('name_ar');
       if (data) setDbCategories(data);
     }
+    async function fetchPrograms() {
+      const { data } = await supabase
+        .from('programs')
+        .select('id, title')
+        .order('created_at', { ascending: false });
+      if (data) setDbPrograms(data);
+    }
     fetchCategories();
+    fetchPrograms();
   }, [supabase]);
 
-  const rootCategories = dbCategories.length > 0
+  const rootCategories = (dbCategories.length > 0
     ? dbCategories.filter(c => !c.parent_id)
     : [
       { name_ar: 'سياسة', slug: 'politics', id: 'politics' },
@@ -35,7 +45,7 @@ export function Navbar() {
       { name_ar: 'تكنولوجيا', slug: 'tech', id: 'tech' },
       { name_ar: 'ليبيا', slug: 'libya', id: 'libya' },
       { name_ar: 'منوعات', slug: 'miscellaneous', id: 'miscellaneous' },
-    ];
+    ]).filter(c => c.name_ar !== 'الوسائط' && c.name_ar !== 'وسائط' && c.slug !== 'media' && c.slug !== 'videos' && c.slug !== 'reels' && c.name_ar !== 'ريلز');
 
   const getSubcategories = (parentId: string) => {
     return dbCategories.filter(c => c.parent_id === parentId);
@@ -178,6 +188,73 @@ export function Navbar() {
                 </div>
               );
             })}
+
+            {/* Hardcoded Media (الوسائط) dropdown */}
+            <div className="relative group h-full flex items-center">
+              <button
+                className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${
+                  pathname.startsWith('/videos') || pathname.startsWith('/podcasts') || pathname.startsWith('/reels')
+                    ? 'text-primary border-primary'
+                    : 'text-white border-transparent hover:text-primary'
+                }`}
+              >
+                الوسائط
+                <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" />
+              </button>
+
+              <div className="absolute top-full right-0 min-w-[180px] bg-[#03060a] border border-white/5 border-t-0 rounded-b-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-2 z-50">
+                <Link
+                  href="/videos"
+                  className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
+                >
+                  تقارير
+                </Link>
+                <Link
+                  href="/podcasts"
+                  className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
+                >
+                  برودكست
+                </Link>
+                <Link
+                  href="/reels"
+                  className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
+                >
+                  ريلز
+                </Link>
+              </div>
+            </div>
+
+            {/* Hardcoded Programs (برامج) dropdown */}
+            <div className="relative group h-full flex items-center">
+              <Link
+                href="/programs"
+                className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${
+                  pathname.startsWith('/programs')
+                    ? 'text-primary border-primary'
+                    : 'text-white border-transparent hover:text-primary'
+                }`}
+              >
+                برامج
+                {dbPrograms.length > 0 && (
+                  <ChevronDown className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180" />
+                )}
+              </Link>
+
+              {dbPrograms.length > 0 && (
+                <div className="absolute top-full right-0 min-w-[200px] max-w-[300px] max-h-[300px] overflow-y-auto bg-[#03060a] border border-white/5 border-t-0 rounded-b-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-2 z-50 custom-scrollbar">
+                  {dbPrograms.map((prog: any) => (
+                    <Link
+                      key={prog.id}
+                      href={`/programs?id=${prog.id}`}
+                      className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold truncate text-right block"
+                      title={prog.title}
+                    >
+                      {prog.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Left: Empty for balance or mobile menu */}
@@ -231,6 +308,60 @@ export function Navbar() {
                   </div>
                 );
               })}
+
+              {/* Hardcoded Media (الوسائط) dropdown in Mobile Menu */}
+              <div className="flex flex-col pb-3 border-b border-white/5">
+                <span className="text-white font-black text-base text-right">الوسائط</span>
+                <div className="flex flex-col pt-3 pr-4 space-y-3">
+                  <Link
+                    href="/videos"
+                    className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    تقارير
+                  </Link>
+                  <Link
+                    href="/podcasts"
+                    className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    برودكست
+                  </Link>
+                  <Link
+                    href="/reels"
+                    className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    ريلز
+                  </Link>
+                </div>
+              </div>
+
+              {/* Hardcoded Programs (برامج) dropdown in Mobile Menu */}
+              <div className="flex flex-col pb-3 border-b border-white/5">
+                <Link
+                  href="/programs"
+                  className="text-white font-black text-base text-right"
+                  onClick={() => setIsOpen(false)}
+                >
+                  برامج
+                </Link>
+                {dbPrograms.length > 0 && (
+                  <div className="flex flex-col pt-3 pr-4 space-y-3 max-h-[200px] overflow-y-auto custom-scrollbar">
+                    {dbPrograms.map((prog: any) => (
+                      <Link
+                        key={prog.id}
+                        href={`/programs?id=${prog.id}`}
+                        className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right truncate"
+                        onClick={() => setIsOpen(false)}
+                        title={prog.title}
+                      >
+                        {prog.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
