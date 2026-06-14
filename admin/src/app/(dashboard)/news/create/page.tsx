@@ -63,7 +63,11 @@ export default function CreateNewsPage() {
 
   useEffect(() => {
     async function fetchCategories() {
-      const { data } = await supabase.from('categories').select('*');
+      const { data } = await supabase
+        .from('categories')
+        .select('*')
+        .order('sort_order', { ascending: true })
+        .order('name_ar');
       if (data) setCategories(data);
     }
     fetchCategories();

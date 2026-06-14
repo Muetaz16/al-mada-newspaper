@@ -76,7 +76,7 @@ export default function EditNewsPage({ params }: { params: Promise<{ id: string 
 
       const [newsResponse, categoriesResponse, profileResponse] = await Promise.all([
         supabase.from('news').select('*').eq('id', id).single(),
-        supabase.from('categories').select('*'),
+        supabase.from('categories').select('*').order('sort_order', { ascending: true }).order('name_ar'),
         supabase.from('users').select('*').eq('id', authUser.id).single(),
       ]);
 

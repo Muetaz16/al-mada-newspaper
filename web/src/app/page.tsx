@@ -60,6 +60,7 @@ export default function Home() {
       const { data: cats } = await supabase
         .from('categories')
         .select('*')
+        .order('sort_order', { ascending: true })
         .order('name_ar');
 
       if (cats) setCategories(cats);

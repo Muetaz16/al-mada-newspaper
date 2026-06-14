@@ -15,6 +15,7 @@ export function Footer() {
       const { data } = await supabase
         .from('categories')
         .select('*')
+        .order('sort_order', { ascending: true })
         .order('name_ar');
       if (data) setDbCategories(data);
     }

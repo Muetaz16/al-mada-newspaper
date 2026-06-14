@@ -47,6 +47,7 @@ export default function CategoriesPage() {
   const [slug, setSlug] = useState('');
   const [parentId, setParentId] = useState<string | null>(null);
   const [externalUrl, setExternalUrl] = useState('');
+  const [sortOrder, setSortOrder] = useState<number>(0);
   
   const supabase = createClient();
 
@@ -56,7 +57,7 @@ export default function CategoriesPage() {
 
   async function fetchCategories() {
     setLoading(true);
-    const { data } = await supabase.from('categories').select('*').order('name_ar');
+    const { data } = await supabase.from('categories').select('*').order('sort_order', { ascending: true }).order('name_ar');
     if (data) setCategories(data);
     setLoading(false);
   }
@@ -67,6 +68,7 @@ export default function CategoriesPage() {
     setSlug(category.slug);
     setParentId(category.parent_id || null);
     setExternalUrl(category.external_url || '');
+    setSortOrder(category.sort_order || 0);
     setOpen(true);
   };
 
@@ -76,6 +78,7 @@ export default function CategoriesPage() {
     setSlug('');
     setParentId(null);
     setExternalUrl('');
+    setSortOrder(0);
     setOpen(true);
   };
 
@@ -87,7 +90,8 @@ export default function CategoriesPage() {
       name_ar: nameAr,
       slug,
       parent_id: parentId || null,
-      external_url: externalUrl || null
+      external_url: externalUrl || null,
+      sort_order: Number(sortOrder) || 0
     };
 
     if (editingCategory) {
@@ -190,6 +194,7 @@ export default function CategoriesPage() {
                 <TableRow className="hover:bg-transparent border-b border-muted/30">
                   <TableHead className="text-right py-5 px-6 font-black text-slate-800">اسم القسم / القائمة</TableHead>
                   <TableHead className="text-right py-5 px-6 font-black text-slate-800">القسم الرئيسي</TableHead>
+                  <TableHead className="text-right py-5 px-6 font-black text-slate-800">الترتيب</TableHead>
                   <TableHead className="text-right py-5 px-6 font-black text-slate-800">الرابط (Slug)</TableHead>
                   <TableHead className="w-[120px]"></TableHead>
                 </TableRow>
@@ -197,13 +202,13 @@ export default function CategoriesPage() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="py-20 text-center">
+                    <TableCell colSpan={5} className="py-20 text-center">
                       <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
                     </TableCell>
                   </TableRow>
                 ) : filteredCategories.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="py-20 text-center text-muted-foreground font-bold">
+                    <TableCell colSpan={5} className="py-20 text-center text-muted-foreground font-bold">
                       لا توجد أقسام مطابقة للبحث
                     </TableCell>
                   </TableRow>
@@ -231,6 +236,9 @@ export default function CategoriesPage() {
                             قسم رئيسي (أب)
                           </span>
                         )}
+                      </TableCell>
+                      <TableCell className="py-5 px-6 text-start font-black text-slate-600">
+                        {cat.sort_order || 0}
                       </TableCell>
                       <TableCell className="py-5 px-6 text-start font-mono text-xs text-slate-500" dir="ltr">
                         {cat.slug}
@@ -325,6 +333,18 @@ export default function CategoriesPage() {
               <p className="text-[10px] text-slate-400 font-bold leading-normal">
                 اختر قسماً رئيسياً لكي يظهر هذا القسم كقائمة منسدلة تحته، أو اتركه كقسم رئيسي ليظهر مباشرة في شريط التنقل.
               </p>
+            </div>
+
+            <div className="space-y-2 text-start">
+              <label className="text-xs font-black text-slate-500 uppercase tracking-wider">ترتيب العرض (رقمي)</label>
+              <Input 
+                type="number"
+                value={sortOrder} 
+                onChange={(e) => setSortOrder(Number(e.target.value))}
+                placeholder="0" 
+                className="h-13 rounded-2xl bg-slate-50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 font-bold px-4 text-slate-800 text-base"
+              />
+              <p className="text-[10px] text-slate-400 font-bold">الأرقام الأصغر (مثل 1, 2, 3...) تظهر أولاً في الترتيب.</p>
             </div>
 
             <div className="space-y-2 text-start">
