@@ -91,11 +91,22 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
       if (catData) {
         setCategory(catData);
 
-        // Fetch news for this category using catData.id directly inside the block
+        // Fetch subcategories
+        const { data: subCats } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('parent_id', catData.id);
+
+        const categoryIds = [catData.id];
+        if (subCats) {
+          categoryIds.push(...subCats.map(c => c.id));
+        }
+
+        // Fetch news for this category and its subcategories
         const { data: newsData } = await supabase
           .from('news')
           .select('*, category:categories(name_ar)')
-          .eq('category_id', catData.id)
+          .in('category_id', categoryIds)
           .eq('status', 'PUBLISHED')
           .order('created_at', { ascending: false });
         

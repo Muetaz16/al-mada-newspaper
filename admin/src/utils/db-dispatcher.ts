@@ -43,11 +43,13 @@ export async function dispatchDbQuery(
       const isSingle = cleanFilters._single === true;
       delete cleanFilters._single;
 
-      // Handle neq (not-equal) filters - stored as { _neq: value }
+      // Handle neq (not-equal) and in filters
       const where: any = {};
       for (const [key, value] of Object.entries(cleanFilters)) {
         if (value && typeof value === 'object' && '_neq' in (value as any)) {
           where[key] = { not: (value as any)._neq };
+        } else if (value && typeof value === 'object' && '_in' in (value as any)) {
+          where[key] = { in: (value as any)._in };
         } else {
           where[key] = value;
         }

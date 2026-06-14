@@ -39,6 +39,10 @@ function createMockClient(isServerSide: boolean) {
           filters[column] = { _neq: value };
           return this;
         },
+        in(column: string, value: any[]) {
+          filters[column] = { _in: value };
+          return this;
+        },
         order(field: string, options: { ascending?: boolean } = {}) {
           orders.push({
             field,

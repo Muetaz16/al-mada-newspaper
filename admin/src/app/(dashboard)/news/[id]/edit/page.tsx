@@ -310,24 +310,7 @@ export default function EditNewsPage({ params }: { params: Promise<{ id: string 
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="is_breaking"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-xl border border-red-50 p-4 bg-red-50/20">
-                      <div className="text-start">
-                        <FormLabel className="text-sm font-black text-red-600">خبر عاجل</FormLabel>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className="data-[state=checked]:bg-red-500"
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+
 
                 <div className="pt-4 border-t border-slate-100">
                   <FormField
