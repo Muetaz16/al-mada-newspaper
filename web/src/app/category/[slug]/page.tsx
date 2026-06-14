@@ -99,7 +99,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
 
         const categoryIds = [catData.id];
         if (subCats) {
-          categoryIds.push(...subCats.map(c => c.id));
+          categoryIds.push(...subCats.map((c: any) => c.id));
         }
 
         // Fetch news for this category and its subcategories
