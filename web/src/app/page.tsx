@@ -49,7 +49,7 @@ export default function Home() {
   const [activeVideo, setActiveVideo] = useState<any | null>(null);
   const [voted, setVoted] = useState(false);
   const [programs, setPrograms] = useState<any[]>([]);
-  const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL' | 'PODCAST'>('VIDEO');
+  const [activeMediaTab, setActiveMediaTab] = useState<'VIDEO' | 'REEL' | 'PODCAST' | 'FOLLOWER'>('PODCAST');
 
   const [selectedProgramIdx, setSelectedProgramIdx] = useState(0);
   const supabase = createClient();
@@ -211,13 +211,18 @@ export default function Home() {
                       <span className="w-1 h-1 rounded-full bg-primary animate-ping" />
                       <span className="text-primary font-black text-[9px] uppercase tracking-[0.3em]">Al-Mada TV</span>
                     </div>
-                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-white">الوسائط</h3>
+                    <h3 className="text-3xl md:text-5xl font-black tracking-tighter leading-none text-white">وسائط المدى</h3>
                   </div>
                 </div>
               </div>
 
-              {/* Dynamic Separate Tabs for Videos, Podcasts, and Reels */}
               <div className="flex items-center gap-2 bg-white/5 p-1.5 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
+                <button
+                  onClick={() => setActiveMediaTab('PODCAST')}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'PODCAST' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                >
+                  بودكاست
+                </button>
                 <button
                   onClick={() => setActiveMediaTab('VIDEO')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'VIDEO' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
@@ -225,10 +230,10 @@ export default function Home() {
                   تقارير
                 </button>
                 <button
-                  onClick={() => setActiveMediaTab('PODCAST')}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'PODCAST' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
+                  onClick={() => setActiveMediaTab('FOLLOWER')}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'FOLLOWER' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
-                  برودكست
+                  تابعات
                 </button>
                 <button
                   onClick={() => setActiveMediaTab('REEL')}
@@ -282,7 +287,7 @@ export default function Home() {
                         <div className="absolute bottom-10 right-10 left-10 space-y-3 z-20">
                           <div className="flex items-center gap-2">
                             <span className="bg-primary px-3 py-1 rounded-lg text-[8px] font-black uppercase tracking-widest shadow-lg">
-                              {filteredVideos[0].type === 'REEL' ? 'REEL (ريلز)' : 'VIDEO'}
+                              {filteredVideos[0].type === 'REEL' ? 'REEL (ريلز)' : filteredVideos[0].type === 'FOLLOWER' ? 'متابعة' : 'VIDEO'}
                             </span>
                           </div>
                           <h4
@@ -329,7 +334,7 @@ export default function Home() {
                             <span className="text-primary font-black text-[8px]">0{idx + 1}</span>
                             <div className="w-1 h-1 rounded-full bg-white/10" />
                             <span className="text-white/20 font-bold text-[7px] uppercase tracking-widest">
-                              {v.type === 'REEL' ? 'REEL (ريلز)' : 'Al-Mada TV'}
+                              {v.type === 'REEL' ? 'REEL (ريلز)' : v.type === 'FOLLOWER' ? 'متابعة' : 'Al-Mada TV'}
                             </span>
                           </div>
                           <h5

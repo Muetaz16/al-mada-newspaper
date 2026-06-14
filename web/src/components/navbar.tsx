@@ -193,7 +193,7 @@ export function Navbar() {
             {/* Hardcoded Media (الوسائط) dropdown */}
             <div className="relative group h-full flex items-center">
               <button
-                className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${pathname.startsWith('/videos') || pathname.startsWith('/podcasts') || pathname.startsWith('/reels')
+                className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${pathname.startsWith('/videos') || pathname.startsWith('/podcasts') || pathname.startsWith('/reels') || pathname.startsWith('/followers')
                     ? 'text-primary border-primary'
                     : 'text-white border-transparent hover:text-primary'
                   }`}
@@ -204,16 +204,22 @@ export function Navbar() {
 
               <div className="absolute top-full right-0 min-w-[180px] bg-[#03060a] border border-white/5 border-t-0 rounded-b-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-2 z-50">
                 <Link
+                  href="/podcasts"
+                  className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
+                >
+                  بودكاست
+                </Link>
+                <Link
                   href="/videos"
                   className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
                 >
                   تقارير
                 </Link>
                 <Link
-                  href="/podcasts"
+                  href="/followers"
                   className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
                 >
-                  برودكست
+                  تابعات
                 </Link>
                 <Link
                   href="/reels"
@@ -313,6 +319,13 @@ export function Navbar() {
                 <span className="text-white font-black text-base text-right">الوسائط</span>
                 <div className="flex flex-col pt-3 pr-4 space-y-3">
                   <Link
+                    href="/podcasts"
+                    className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    بودكاست
+                  </Link>
+                  <Link
                     href="/videos"
                     className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
                     onClick={() => setIsOpen(false)}
@@ -320,11 +333,11 @@ export function Navbar() {
                     تقارير
                   </Link>
                   <Link
-                    href="/podcasts"
+                    href="/followers"
                     className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
                     onClick={() => setIsOpen(false)}
                   >
-                    برودكست
+                    تابعات
                   </Link>
                   <Link
                     href="/reels"

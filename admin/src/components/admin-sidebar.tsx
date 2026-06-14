@@ -75,6 +75,11 @@ const menuItems = [
     icon: Video,
   },
   {
+    title: 'تابعات',
+    url: '/followers',
+    icon: Video, // Reusing Video icon or similar
+  },
+  {
     title: 'الاستبيانات',
     url: '/polls',
     icon: PieChart,

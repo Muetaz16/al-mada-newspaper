@@ -41,7 +41,7 @@ export function Footer() {
 
       <div className="relative z-10 container mx-auto px-6 space-y-16">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-16 border-b border-white/5 text-start">
-          
+
           {/* Branding Column */}
           <div className="md:col-span-5 space-y-6">
             <div className="flex items-center gap-3">
@@ -49,7 +49,7 @@ export function Footer() {
               <h4 className="text-4xl md:text-5xl font-black tracking-tighter text-white">صحيفة المدى</h4>
             </div>
             <p className="text-slate-400 font-bold text-sm leading-relaxed max-w-sm">
-              أول منصة رقمية متكاملة تأخذك إلى أبعد مدى في عالم الخبر والتحليل والمعرفة. تغطية شاملة وحصرية على مدار الساعة بأحدث التقنيات الرقمية.
+              صحيفة متكاملة تأخذك إلى أبعد مدى في عالم الخبر والتحليل والمعرفة. تغطية شاملة وحصرية على مدار الساعة بأحدث التقنيات الرقمية.
             </p>
             <div className="flex items-center gap-4 text-xs font-black text-slate-500 uppercase tracking-widest pt-2">
               <span>العدد الرقمي: 2026</span>
