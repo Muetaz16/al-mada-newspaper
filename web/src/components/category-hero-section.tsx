@@ -86,8 +86,6 @@ export function CategoryHeroSection({ title, slug, news, sideNews }: CategoryHer
                   {current?.created_at ? new Date(current.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
                 </div>
                 <div className="w-px h-3 bg-slate-600" />
-                <span>5 دقائق قراءة</span>
-                <div className="w-px h-3 bg-slate-600" />
                 <span className="text-primary">{current?.category?.name_ar || title}</span>
               </div>
             </Link>
