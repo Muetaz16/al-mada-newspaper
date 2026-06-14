@@ -200,7 +200,7 @@ export default function Home() {
           {newsByCategory.map((data: any) => (
             <CategoryHeroSection
               key={data.catName}
-              title={data.catName}
+              title={data.isMerged ? '' : data.catName}
               slug={data.slug}
               news={data.items}
               sideNews={data.sideNews}

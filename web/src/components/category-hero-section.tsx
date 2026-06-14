@@ -34,10 +34,12 @@ export function CategoryHeroSection({ title, slug, news, sideNews }: CategoryHer
   return (
     <section className="space-y-6 pt-4 border-t border-white/5">
       {/* Section Header */}
-      <div className="flex items-center gap-3">
-        <span className="w-1.5 h-6 bg-primary rounded-full" />
-        <h3 className="text-2xl font-black text-white">{title}</h3>
-      </div>
+      {title && (
+        <div className="flex items-center gap-3">
+          <span className="w-1.5 h-6 bg-primary rounded-full" />
+          <h3 className="text-2xl font-black text-white">{title}</h3>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         {/* Main Featured Card */}
@@ -132,10 +134,12 @@ export function CategoryHeroSection({ title, slug, news, sideNews }: CategoryHer
             ))}
           </div>
           
-          <Link href={`/category/${slug}`} className="w-full flex items-center justify-between px-6 py-3 border border-primary/50 rounded-xl hover:bg-primary/10 transition-all group">
-             <span className="text-primary font-bold text-sm">عرض المزيد</span>
-             <span className="text-primary text-lg">←</span>
-          </Link>
+          {slug !== 'mixed' && (
+            <Link href={`/category/${slug}`} className="w-full flex items-center justify-between px-6 py-3 border border-primary/50 rounded-xl hover:bg-primary/10 transition-all group">
+               <span className="text-primary font-bold text-sm">عرض المزيد</span>
+               <span className="text-primary text-lg">←</span>
+            </Link>
+          )}
         </div>
       </div>
     </section>
