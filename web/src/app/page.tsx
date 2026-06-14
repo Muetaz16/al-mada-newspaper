@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Navbar } from '@/components/navbar';
 import { BreakingNewsTicker } from '@/components/breaking-news';
-import { HeroSection } from '@/components/hero-section';
+import { CategoryHeroSection } from '@/components/category-hero-section';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
@@ -19,7 +19,6 @@ import {
   ChevronRight,
   User,
 } from 'lucide-react';
-import { CategorySection } from '@/components/category-section';
 import { PodcastSection } from '@/components/podcast-section';
 import { PulseOfLifeSection } from '@/components/pulse-of-life-section';
 import { VideoModal } from '@/components/video-modal';
@@ -41,7 +40,7 @@ const getEmbedUrl = (url: string) => {
 };
 
 export default function Home() {
-  const [newsByCategory, setNewsByCategory] = useState<Record<string, any[]>>({});
+  const [newsByCategory, setNewsByCategory] = useState<Record<string, { slug: string; items: any[] }>>({});
   const [categories, setCategories] = useState<any[]>([]);
   const [videos, setVideos] = useState<any[]>([]);
   const [poll, setPoll] = useState<any>(null);
@@ -72,14 +71,27 @@ export default function Home() {
         .eq('status', 'PUBLISHED')
         .order('created_at', { ascending: false });
 
-      if (news) {
-        // Group by category name for sections
+      if (news && cats) {
+        // Build map for category lookup
+        const catMap = new Map(cats.map((c: any) => [c.id, c]));
+        
+        // Group by TOP LEVEL category name
         const grouped = news.reduce((acc: any, item: any) => {
-          const catName = item.category?.name_ar || 'أخبار عامة';
-          if (!acc[catName]) acc[catName] = [];
-          acc[catName].push(item);
+          let topCat = item.category;
+          
+          if (topCat && topCat.parent_id) {
+             const parent = catMap.get(topCat.parent_id);
+             if (parent) topCat = parent;
+          }
+          
+          const catName = topCat?.name_ar || 'أخبار عامة';
+          const catSlug = topCat?.slug || 'news';
+          
+          if (!acc[catName]) acc[catName] = { slug: catSlug, items: [] };
+          acc[catName].items.push(item);
           return acc;
         }, {});
+        
         setNewsByCategory(grouped);
       }
 
@@ -135,60 +147,16 @@ export default function Home() {
       <BreakingNewsTicker />
 
       <div className="container mx-auto px-4 pt-6 pb-16 space-y-24">
-        <div className="space-y-4">
-          <HeroSection />
-
-          {/* Latest News Section */}
-          <section className="space-y-4 pt-1 border-t border-white/5">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <span className="w-1.5 h-6 bg-primary rounded-full" />
-                <h3 className="text-2xl font-black text-white">آخر الأخبار</h3>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
-              {Object.values(newsByCategory).flat().slice(0, 5).map((item: any) => (
-                <Link key={item.id} href={`/news/${item.slug}`} className="group relative bg-[#101828] rounded-xl overflow-hidden border border-white/5 shadow-lg hover:shadow-primary/20 transition-all duration-300 hover:-translate-y-1 block">
-                  <div className="relative aspect-[16/10]">
-                    <Image
-                      src={item.image_url || 'https://images.unsplash.com/photo-1504711434969-e33886168f5c'}
-                      alt={item.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute top-3 right-3">
-                      <span className="bg-primary text-[#142038] px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-md">
-                        {item.category?.name_ar || 'أخبار'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4 space-y-3 bg-[#101828]">
-                    <h4 className="text-sm font-black text-white leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                      {item.title}
-                    </h4>
-                    <div className="flex items-center gap-1.5 text-slate-400 text-[10px] font-bold">
-                      <Calendar className="w-3.5 h-3.5 text-slate-500" />
-                      {new Date(item.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
+        <div className="space-y-16">
+          {Object.entries(newsByCategory).map(([catName, data]) => (
+            <CategoryHeroSection
+              key={catName}
+              title={catName}
+              slug={data.slug}
+              news={data.items}
+            />
+          ))}
         </div>
-
-        {/* Section: "الأولى" (Main Category News) */}
-        <CategorySection
-          title="الأولى"
-          items={Object.values(newsByCategory).flat()}
-          subCategories={
-            categories.length > 0
-              ? categories.filter((c: any) => !c.parent_id).map((c: any) => c.name_ar)
-              : ['سياسة', 'اقتصاد', 'رياضة', 'تكنولوجيا', 'ليبيا', 'منوعات']
-          }
-        />
 
         {/* Section: Al-Mada TV (Compact Visual Library) */}
         <section className="relative py-24 rounded-[3rem] bg-slate-950 overflow-hidden text-white shadow-[0_40px_80px_-20px_rgba(0,0,0,0.8)] border border-white/10 group/library">
@@ -233,7 +201,7 @@ export default function Home() {
                   onClick={() => setActiveMediaTab('FOLLOWER')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 ${activeMediaTab === 'FOLLOWER' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-white/40 hover:text-white'}`}
                 >
-                  تابعات
+                  متابعات
                 </button>
                 <button
                   onClick={() => setActiveMediaTab('REEL')}

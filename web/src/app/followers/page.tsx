@@ -74,7 +74,7 @@ export default function FollowersPage() {
               </div>
               <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">تلفزيون المدى</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">تابعات</h1>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">متابعات</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">
               تغطيات حصرية، ومتابعة مستمرة لأهم الأحداث.
             </p>
@@ -138,13 +138,13 @@ export default function FollowersPage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200/60 pb-8">
             <div className="flex items-center gap-4 text-start">
               <VideoIcon className="w-8 h-8 text-primary" />
-              <h3 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900">أرشيف التابعات</h3>
+              <h3 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900">أرشيف المتابعات</h3>
             </div>
             
               <button 
                 className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/20`}
               >
-                التابعات ({filteredVideos.length})
+                المتابعات ({filteredVideos.length})
               </button>
           </div>
 

@@ -219,7 +219,7 @@ export function Navbar() {
                   href="/followers"
                   className="px-5 py-2.5 text-sm text-slate-300 hover:text-primary hover:bg-white/5 transition-colors font-bold whitespace-nowrap text-right"
                 >
-                  تابعات
+                  متابعات
                 </Link>
                 <Link
                   href="/reels"
@@ -337,7 +337,7 @@ export function Navbar() {
                     className="text-slate-400 hover:text-primary font-bold text-sm transition-colors text-right"
                     onClick={() => setIsOpen(false)}
                   >
-                    تابعات
+                    متابعات
                   </Link>
                   <Link
                     href="/reels"
