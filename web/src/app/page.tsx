@@ -97,10 +97,17 @@ export default function Home() {
           const sortOrder = topCat?.sort_order || 0;
           
           if (!acc[catName]) {
+             // Find the minimum sort order of the merged categories to place the block correctly
+             const mergedSortOrder = Math.min(
+               ...cats
+                 .filter((c: any) => mergedCategories.includes(c.name_ar))
+                 .map((c: any) => c.sort_order || 999)
+             );
+
              acc[catName] = { 
                id: catId, 
                slug: isMerged ? 'mixed' : catSlug, 
-               sort_order: isMerged ? 10 : sortOrder,
+               sort_order: isMerged ? mergedSortOrder : sortOrder,
                items: [], 
                sideNews: [],
                isMerged
