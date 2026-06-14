@@ -144,7 +144,7 @@ export function Navbar() {
                 className="object-contain object-center scale-110 md:scale-125 origin-center"
               />
             </Link>
-            <div className="h-[1.5px] w-[75px] md:w-[100px] bg-primary rounded-full opacity-80 mt-1 md:mt-2 mb-1.5"></div>
+            <div className="h-[1.5px] w-[75px] md:w-[100px] bg-primary rounded-full opacity-80 mt-3 md:mt-4 mb-1.5"></div>
             <span className="text-slate-400 text-[8px] md:text-[9.5px] font-medium tracking-[0.2em] whitespace-nowrap">صحيفة إلكترونية مستقلة</span>
           </div>
 
@@ -194,8 +194,8 @@ export function Navbar() {
             <div className="relative group h-full flex items-center">
               <button
                 className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${pathname.startsWith('/videos') || pathname.startsWith('/podcasts') || pathname.startsWith('/reels') || pathname.startsWith('/followers')
-                    ? 'text-primary border-primary'
-                    : 'text-white border-transparent hover:text-primary'
+                  ? 'text-primary border-primary'
+                  : 'text-white border-transparent hover:text-primary'
                   }`}
               >
                 الوسائط
@@ -235,8 +235,8 @@ export function Navbar() {
               <Link
                 href="/programs"
                 className={`font-black text-sm pb-5 border-b-2 flex items-center gap-1.5 transition-colors ${pathname.startsWith('/programs')
-                    ? 'text-primary border-primary'
-                    : 'text-white border-transparent hover:text-primary'
+                  ? 'text-primary border-primary'
+                  : 'text-white border-transparent hover:text-primary'
                   }`}
               >
                 برامج
