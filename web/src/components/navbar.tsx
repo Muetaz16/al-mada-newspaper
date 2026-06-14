@@ -135,7 +135,7 @@ export function Navbar() {
 
           {/* Right: Logo */}
           <div className="flex flex-col items-center justify-center gap-1 md:gap-2 pb-5 pt-2 md:mr-2 xl:mr-2">
-            <Link href="/" className="relative h-24 w-[180px] md:h-32 md:w-[260px] flex items-center justify-center">
+            <Link href="/" className="relative h-24 w-[180px] md:h-[110px] md:w-[220px] flex items-center justify-center">
               <Image
                 src="/logo.png"
                 alt="صحيفة المدى"
