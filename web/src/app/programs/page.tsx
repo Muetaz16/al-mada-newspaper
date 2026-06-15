@@ -111,7 +111,7 @@ function ProgramsContent() {
             </div>
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">برامج المدى</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">
-              باقة متنوعة من البرامج الحوارية والسياسية والاجتماعية بأبعاد تحليلية ومحتوى تلفزيوني متميز.
+              باقة متنوعة من البرامج الحوارية والسياسية والاجتماعية بأبعاد تحليلية ومحتوى مرئي متميز.
             </p>
           </div>
           

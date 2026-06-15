@@ -76,7 +76,7 @@ export default function VideosPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/10 shadow-sm">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">تلفزيون المدى</span>
+              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]"> المدى</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">الوسائط</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">

@@ -97,7 +97,7 @@ export default function LiveStreamPage() {
             </span>
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight leading-none text-white drop-shadow-2xl">
-            {isOnline ? stream.title : 'تلفزيون المدى'}
+            {isOnline ? stream.title : 'المدى'}
           </h1>
           <p className="text-white/40 font-bold text-lg">تأخذك إلى أبعد مدى عبر الصورة والكلمة والحدث الحي.</p>
         </header>
@@ -147,7 +147,7 @@ export default function LiveStreamPage() {
                 </div>
                 <h2 className="text-3xl font-black text-white tracking-tight mb-4">البث المباشر غير نشط حالياً</h2>
                 <p className="text-slate-400 font-bold text-lg max-w-xl leading-relaxed mb-8 mx-auto">
-                  التغطية التلفزيونية الحية مغلقة حالياً. لا تفوتك متابعة أحدث تقاريرنا التحريرية والريلز المصورة أدناه.
+                  التغطية الحية مغلقة حالياً. لا تفوتك متابعة أحدث تقاريرنا التحريرية والريلز المصورة أدناه.
                 </p>
                 <div className="flex justify-center gap-4">
                   <Link href="/videos">
