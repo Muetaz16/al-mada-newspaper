@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { Footer } from '@/components/footer';
 import { createClient } from '@/utils/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Play, 
-  Video as VideoIcon, 
-  Calendar, 
+import {
+  Play,
+  Video as VideoIcon,
+  Calendar,
   ArrowLeft,
   Sparkles,
   LayoutGrid,
@@ -32,7 +32,7 @@ export default function FollowersPage() {
         .from('videos')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (data) setVideos(data);
       setLoading(false);
     }
@@ -56,7 +56,7 @@ export default function FollowersPage() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900 selection:bg-primary/20" dir="rtl">
       <Navbar />
-      
+
       {/* Editorial Light Accent Glows */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
@@ -64,7 +64,7 @@ export default function FollowersPage() {
       </div>
 
       <div className="container mx-auto px-4 py-20 space-y-24 relative z-10">
-        
+
         {/* Header Section */}
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-10 border-b border-slate-200/60 pb-16 text-start">
           <div className="space-y-6">
@@ -72,14 +72,14 @@ export default function FollowersPage() {
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center border border-primary/10 shadow-sm">
                 <Sparkles className="w-6 h-6 text-primary" />
               </div>
-              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]">تلفزيون المدى</span>
+              <span className="text-primary font-black text-sm uppercase tracking-[0.4em]"> المدى</span>
             </div>
             <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none text-slate-950">متابعات</h1>
             <p className="text-slate-600 font-bold text-xl max-w-3xl italic leading-relaxed">
               تغطيات حصرية، ومتابعة مستمرة لأهم الأحداث.
             </p>
           </div>
-          
+
           {/* Elegant Premium Glass Stat Pill */}
           <div className="flex items-center gap-6 bg-white/80 backdrop-blur-xl p-6 rounded-[2.5rem] border border-slate-200/60 shadow-xl shadow-slate-100/50">
             <div className="text-start">
@@ -100,7 +100,7 @@ export default function FollowersPage() {
               <TrendingUp className="w-5 h-5 text-primary" />
               <h2 className="text-sm font-black uppercase tracking-widest text-slate-500">أحدث تغطية مميزة</h2>
             </div>
-            
+
             <div className="relative aspect-video max-h-[520px] w-full rounded-[3rem] md:rounded-[4rem] overflow-hidden group shadow-2xl border border-slate-200/50">
               <Image
                 src={featuredVideo.thumbnail_url || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'}
@@ -109,10 +109,10 @@ export default function FollowersPage() {
                 priority
                 className="object-cover group-hover:scale-105 transition-all duration-[3000ms]"
               />
-              
+
               {/* Custom Gradient to ensure white title stands out beautifully */}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-90" />
-              
+
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="relative h-28 w-28 md:h-36 md:w-36 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-all duration-700">
                   <div className="h-20 w-20 md:h-26 md:w-26 bg-primary rounded-full flex items-center justify-center shadow-2xl">
@@ -140,12 +140,12 @@ export default function FollowersPage() {
               <VideoIcon className="w-8 h-8 text-primary" />
               <h3 className="text-3xl md:text-4xl font-black tracking-tight text-slate-900">أرشيف المتابعات</h3>
             </div>
-            
-              <button 
-                className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/20`}
-              >
-                المتابعات ({filteredVideos.length})
-              </button>
+
+            <button
+              className={`px-6 py-2.5 rounded-xl text-xs font-black transition-all duration-300 bg-primary text-white shadow-lg shadow-primary/20`}
+            >
+              المتابعات ({filteredVideos.length})
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
@@ -168,7 +168,7 @@ export default function FollowersPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Card Metadata & Title */}
                 <div className="space-y-3 px-4">
                   <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
