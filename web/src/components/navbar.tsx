@@ -76,7 +76,7 @@ export function Navbar() {
           alt="Menu Background"
           fill
           priority
-          className="object-cover object-center"
+          className="object-cover object-[center_35%]"
         />
       </div>
 
