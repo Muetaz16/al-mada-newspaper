@@ -112,7 +112,7 @@ export function HeroSection() {
                   fill
                   sizes="(max-width: 1024px) 100vw, 66vw"
                   priority
-                  className="object-cover transition-transform duration-[10000ms] group-hover:scale-105"
+                  className="object-contain bg-[#0c1220] transition-transform duration-[10000ms] group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0c1220] via-[#0c1220]/60 to-transparent" />
               </motion.div>
@@ -161,7 +161,7 @@ export function HeroSection() {
                     alt={item.title}
                     fill
                     sizes="120px"
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="object-contain bg-[#0c1220] group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 

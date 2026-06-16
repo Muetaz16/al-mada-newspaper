@@ -155,7 +155,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1200px"
                 priority
-                className="object-cover"
+                className="object-contain bg-[#0c1220]"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
@@ -188,7 +188,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                         alt={item.title}
                         fill
                         sizes="120px"
-                        className="object-cover group-hover:scale-110 transition-all duration-500"
+                        className="object-contain bg-[#0c1220] group-hover:scale-110 transition-all duration-500"
                       />
                     </div>
                     <div className="space-y-1">

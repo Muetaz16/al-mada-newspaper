@@ -111,7 +111,7 @@ export default function VideosPage() {
                 alt={featuredVideo.title}
                 fill
                 priority
-                className="object-cover group-hover:scale-105 transition-all duration-[3000ms]"
+                className="object-contain bg-[#0c1220] group-hover:scale-105 transition-all duration-[3000ms]"
               />
               
               {/* Custom Gradient to ensure white title stands out beautifully */}
@@ -178,7 +178,7 @@ export default function VideosPage() {
                     alt={video.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-all duration-700"
+                    className="object-contain bg-[#0c1220] group-hover:scale-105 transition-all duration-700"
                   />
                   <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-slate-950/40 flex items-center justify-center transition-all duration-500 backdrop-blur-[2px] group-hover:backdrop-blur-[4px]">
                     <div className="h-16 w-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 group-hover:scale-110 transition-all duration-300">

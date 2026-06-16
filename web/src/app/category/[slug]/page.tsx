@@ -224,7 +224,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
                     alt={item.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="object-contain bg-[#0c1220] group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute top-6 right-6">
                     <span className="bg-[#142038]/90 backdrop-blur-md text-white px-4 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-xl border border-white/10">

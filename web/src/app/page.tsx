@@ -294,7 +294,7 @@ export default function Home() {
                             fill
                             sizes="(max-width: 1024px) 100vw, 800px"
                             priority
-                            className="object-cover opacity-60 group-hover/main:scale-105 transition-all duration-[4000ms]"
+                            className="object-contain bg-[#0c1220] opacity-60 group-hover/main:scale-105 transition-all duration-[4000ms]"
                           />
                         </div>
 
@@ -342,7 +342,7 @@ export default function Home() {
                               alt={v.title}
                               fill
                               sizes="150px"
-                              className="object-cover opacity-40 group-hover/sub:scale-110 transition-all duration-700"
+                              className="object-contain bg-[#0c1220] opacity-40 group-hover/sub:scale-110 transition-all duration-700"
                             />
                           </div>
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/sub:opacity-100 transition-all duration-500 backdrop-blur-sm">
@@ -399,14 +399,14 @@ export default function Home() {
                   {isYoutube(programs[selectedProgramIdx].video_url) ? (
                     <iframe
                       src={getEmbedUrl(programs[selectedProgramIdx].video_url)}
-                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      className="absolute inset-0 w-full h-full object-contain bg-[#0c1220] z-20 border-none"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
                     />
                   ) : (
                     <video
                       src={programs[selectedProgramIdx].video_url}
-                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      className="absolute inset-0 w-full h-full object-contain bg-[#0c1220] z-20 border-none"
                       controls
                     />
                   )}
@@ -462,7 +462,7 @@ export default function Home() {
                             alt={item.title}
                             fill
                             sizes="150px"
-                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            className="object-contain bg-[#0c1220] transition-transform duration-700 group-hover:scale-105"
                           />
                           <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                             <Play className="w-5 h-5 text-white fill-white drop-shadow-lg" />
@@ -493,7 +493,7 @@ export default function Home() {
                   >
                     <span>كل البرامج</span>
                     <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                  </Link>
+                  </div>
                 </>
               ) : (
                 <p className="text-slate-400 font-bold italic">لا توجد برامج مضافة حالياً</p>

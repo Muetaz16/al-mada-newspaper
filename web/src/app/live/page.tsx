@@ -184,7 +184,7 @@ export default function LiveStreamPage() {
                       alt={video.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                      className="object-contain bg-[#0c1220] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40">

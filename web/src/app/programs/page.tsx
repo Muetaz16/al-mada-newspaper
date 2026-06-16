@@ -143,14 +143,14 @@ function ProgramsContent() {
                   {isYoutube(featuredProgram.video_url) ? (
                     <iframe
                       src={getEmbedUrl(featuredProgram.video_url)}
-                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      className="absolute inset-0 w-full h-full object-contain bg-[#0c1220] z-20 border-none"
                       allow="autoplay; encrypted-media"
                       allowFullScreen
                     />
                   ) : (
                     <video
                       src={featuredProgram.video_url}
-                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      className="absolute inset-0 w-full h-full object-contain bg-[#0c1220] z-20 border-none"
                       controls
                     />
                   )}
@@ -203,7 +203,7 @@ function ProgramsContent() {
                                 alt={episode.title}
                                 fill
                                 sizes="80px"
-                                className="object-cover"
+                                className="object-contain bg-[#0c1220]"
                               />
                             ) : (
                               <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">
@@ -261,7 +261,7 @@ function ProgramsContent() {
                       alt={item.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-all duration-700"
+                      className="object-contain bg-[#0c1220] group-hover:scale-105 transition-all duration-700"
                     />
                   ) : (
                     <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">

@@ -53,7 +53,7 @@ export function InBriefSection() {
               <img
                 src={reel.thumbnail || 'https://images.unsplash.com/photo-1485846234645-a62644f84728'}
                 alt={reel.title}
-                className="w-full h-full object-cover opacity-60 transition-transform duration-[4000ms] group-hover:scale-110"
+                className="w-full h-full object-contain bg-[#0c1220] opacity-60 transition-transform duration-[4000ms] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
             </div>

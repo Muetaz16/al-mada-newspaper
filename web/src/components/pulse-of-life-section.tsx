@@ -62,7 +62,7 @@ export function PulseOfLifeSection() {
                   <img
                     src={item.image_url || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b'}
                     alt={item.question}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain bg-[#0c1220]"
                   />
                   <div className="absolute top-6 right-6">
                      <div className="bg-[#142038]/95 backdrop-blur-xl p-3.5 rounded-2xl shadow-xl text-primary border border-white/10">
@@ -106,7 +106,7 @@ export function PulseOfLifeSection() {
                 <img
                   src={item.image_url || 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b'}
                   alt={item.question}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                  className="w-full h-full object-contain bg-[#0c1220] group-hover:scale-110 transition-transform duration-1000"
                 />
                 <div className="absolute top-8 right-8">
                    <div className="bg-[#142038]/95 backdrop-blur-xl p-4 rounded-[1.5rem] shadow-2xl text-primary border border-white/10">

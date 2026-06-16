@@ -206,7 +206,7 @@ export function CategorySection({ title, items, subCategories = [] }: CategorySe
                           alt={item.title}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover group-hover/card:scale-105 transition-transform duration-[8000ms] ease-out-sine"
+                          className="object-contain bg-[#0c1220] group-hover/card:scale-105 transition-transform duration-[8000ms] ease-out-sine"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80" />
                         

@@ -106,7 +106,7 @@ export default function ReelsPage() {
             {isYoutube(reels[currentIdx].url) ? (
               <iframe
                 src={getEmbedUrl(reels[currentIdx].url)}
-                className="w-full h-full object-cover border-none"
+                className="w-full h-full object-contain bg-[#0c1220] border-none"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
               />
@@ -117,7 +117,7 @@ export default function ReelsPage() {
                 loop
                 muted={muted}
                 playsInline
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain bg-[#0c1220]"
                 onClick={() => setMuted(!muted)}
               >
                 <source src={encodeURI(reels[currentIdx].url)} type="video/mp4" />

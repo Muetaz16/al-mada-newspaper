@@ -257,7 +257,7 @@ export function PodcastSection({ showAll = false, hideHeader = false }: { showAl
                   ) : (
                     <video
                       src={activeTrack.audio_url}
-                      className="absolute inset-0 w-full h-full object-cover z-20 border-none"
+                      className="absolute inset-0 w-full h-full object-contain bg-[#0c1220] z-20 border-none"
                       controls
                     />
                   )}
@@ -307,7 +307,7 @@ export function PodcastSection({ showAll = false, hideHeader = false }: { showAl
                     {/* Small cover image preview */}
                     <div className="h-14 w-14 rounded-xl overflow-hidden bg-slate-900 border border-white/10 shrink-0 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center relative">
                       {track.cover_url ? (
-                        <img src={track.cover_url} className="w-full h-full object-cover" alt="" />
+                        <img src={track.cover_url} className="w-full h-full object-contain bg-[#0c1220]" alt="" />
                       ) : (
                         <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-primary/30 flex items-center justify-center">
                           <Mic className="w-5 h-5 text-primary" />

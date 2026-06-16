@@ -115,7 +115,7 @@ export default function AllNewsPage() {
                     alt={item.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    className="object-contain bg-[#0c1220] group-hover:scale-105 transition-transform duration-700"
                   />
                   {item.category && (
                     <div className="absolute top-6 right-6">
