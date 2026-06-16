@@ -69,7 +69,7 @@ export function ImageUpload({ value, onChange }: ImageUploadProps) {
 
       {value ? (
         <>
-          <img src={value} alt="Cover" className="w-full h-full object-cover" />
+          <img src={value} alt="Cover" className="w-full h-full object-contain bg-black/5" />
           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             <Button 
               variant="destructive" 
