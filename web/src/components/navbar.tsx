@@ -145,7 +145,7 @@ export function Navbar() {
               />
             </Link>
             <div className="h-[1.5px] w-[75px] md:w-[100px] bg-primary rounded-full opacity-80 mt-3 md:mt-4 mb-1.5"></div>
-            <span className="text-slate-400 text-[8px] md:text-[9.5px] font-medium tracking-[0.2em] whitespace-nowrap">صحيفة إلكترونية مستقلة</span>
+            <span className="text-slate-400 text-[8px] md:text-[9.5px] font-medium tracking-[0.2em] whitespace-nowrap">صحيفة إلكترونية ليبية مستقلة</span>
           </div>
 
           {/* Center: Links */}
