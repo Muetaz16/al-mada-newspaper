@@ -272,7 +272,11 @@ model Program {
   title      String
   video_url  String
   thumbnail  String?
+  parent_id  String?
   created_at DateTime @default(now())
+
+  parent     Program?  @relation("ProgramToEpisodes", fields: [parent_id], references: [id])
+  episodes   Program[] @relation("ProgramToEpisodes")
 
   @@map("programs")
 }
