@@ -493,7 +493,7 @@ export default function Home() {
                   >
                     <span>كل البرامج</span>
                     <ChevronLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                  </div>
+                  </Link>
                 </>
               ) : (
                 <p className="text-slate-400 font-bold italic">لا توجد برامج مضافة حالياً</p>
