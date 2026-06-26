@@ -15,7 +15,8 @@ import {
   Pencil, 
   Trash2, 
   Eye,
-  Loader2
+  Loader2,
+  Copy
 } from 'lucide-react';
 import Link from 'next/link';
 import { useUser } from '@/hooks/use-user';
@@ -60,6 +61,13 @@ export function NewsActions({ newsId, authorId }: { newsId: string; authorId?: s
         </Button>
       } />
       <DropdownMenuContent align="end" className="rounded-2xl border-none shadow-2xl p-2 min-w-[160px]">
+        <DropdownMenuItem className="rounded-xl py-2.5 font-bold gap-3 text-start" onClick={() => {
+          navigator.clipboard.writeText(`https://almadanews.ly/news/${newsId}`);
+          alert('تم نسخ الرابط بنجاح');
+        }}>
+          <Copy className="h-4 w-4 text-slate-400" />
+          نسخ الرابط
+        </DropdownMenuItem>
         <DropdownMenuItem className="rounded-xl py-2.5 font-bold gap-3 text-start">
           <Eye className="h-4 w-4 text-slate-400" />
           عرض الخبر

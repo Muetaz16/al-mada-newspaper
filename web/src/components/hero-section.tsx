@@ -125,7 +125,7 @@ export function HeroSection() {
             </div>
 
             <Link href={`/news/${current.slug}`} className="absolute bottom-8 right-8 left-8 space-y-4 text-start z-20 cursor-pointer block group/link">
-              <h2 className="text-2xl md:text-5xl font-black text-white leading-tight tracking-tighter drop-shadow-2xl group-hover/link:text-primary transition-colors">
+              <h2 className="text-xl md:text-3xl font-black text-white leading-tight tracking-tighter drop-shadow-2xl group-hover/link:text-primary transition-colors">
                 {current.title}
               </h2>
               <p className="text-slate-300 font-medium text-sm md:text-base line-clamp-2 max-w-3xl leading-relaxed">

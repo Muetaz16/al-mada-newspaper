@@ -14,11 +14,14 @@ import {
   Redo, 
   Link as LinkIcon, 
   Heading1, 
-  Heading2 
+  Heading2,
+  ImageIcon,
+  Loader2
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import { Separator } from '@/components/ui/separator';
+import { useState } from 'react';
 
 interface EditorProps {
   content: any;
@@ -26,6 +29,7 @@ interface EditorProps {
 }
 
 export default function Editor({ content, onChange }: EditorProps) {
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -48,6 +52,45 @@ export default function Editor({ content, onChange }: EditorProps) {
   if (!editor) {
     return null;
   }
+
+  const addImage = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert('حجم الصورة كبير جداً (الحد الأقصى 5 ميجابايت)');
+        return;
+      }
+
+      try {
+        setIsUploadingImage(true);
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', 'news-content');
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('فشل رفع الصورة');
+        }
+
+        const data = await response.json();
+        editor.chain().focus().setImage({ src: data.url }).run();
+      } catch (error: any) {
+        alert('خطأ في رفع الصورة: ' + error.message);
+      } finally {
+        setIsUploadingImage(false);
+      }
+    };
+    input.click();
+  };
 
   return (
     <div className="border rounded-md overflow-hidden bg-white">
@@ -103,6 +146,16 @@ export default function Editor({ content, onChange }: EditorProps) {
         >
           <Quote className="h-4 w-4" />
         </Toggle>
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Button
+          size="sm"
+          variant="ghost"
+          type="button"
+          onClick={addImage}
+          disabled={isUploadingImage}
+        >
+          {isUploadingImage ? <Loader2 className="h-4 w-4 animate-spin" /> : <ImageIcon className="h-4 w-4" />}
+        </Button>
         <Separator orientation="vertical" className="h-6 mx-1" />
         <Button
           size="sm"

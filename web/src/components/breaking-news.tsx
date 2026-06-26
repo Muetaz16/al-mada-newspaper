@@ -42,7 +42,7 @@ export function BreakingNewsTicker() {
       </div>
       <div className="flex-1 whitespace-nowrap h-full flex items-center pl-4">
         <motion.div
-          animate={{ x: ['100%', '-100%'] }}
+          animate={{ x: ['-100%', '100%'] }}
           transition={{
             repeat: Infinity,
             duration: 60,

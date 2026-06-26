@@ -5,6 +5,61 @@ import Link from 'next/link';
 import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import { Footer } from '@/components/footer';
+import { ShareButtons } from '@/components/share-buttons';
+
+function renderTextNode(n: any) {
+  let text = n.text || '';
+  if (n.marks) {
+    n.marks.forEach((mark: any) => {
+      if (mark.type === 'bold') text = `<strong>${text}</strong>`;
+      if (mark.type === 'italic') text = `<em>${text}</em>`;
+      if (mark.type === 'strike') text = `<del>${text}</del>`;
+      if (mark.type === 'underline') text = `<u>${text}</u>`;
+      if (mark.type === 'link') text = `<a href="${mark.attrs?.href || '#'}">${text}</a>`;
+    });
+  }
+  return text;
+}
+
+function renderNode(node: any): string {
+  if (node.type === 'text') return renderTextNode(node);
+  if (node.type === 'paragraph') {
+    const text = (node.content || []).map(renderNode).join('');
+    return text ? `<p>${text}</p>` : '<br/>';
+  }
+  if (node.type === 'heading') {
+    const text = (node.content || []).map(renderNode).join('');
+    const level = node.attrs?.level || 2;
+    return `<h${level}>${text}</h${level}>`;
+  }
+  if (node.type === 'bulletList') {
+    const items = (node.content || []).map(renderNode).join('');
+    return `<ul>${items}</ul>`;
+  }
+  if (node.type === 'orderedList') {
+    const items = (node.content || []).map(renderNode).join('');
+    return `<ol>${items}</ol>`;
+  }
+  if (node.type === 'listItem') {
+    const text = (node.content || []).map(renderNode).join('');
+    return `<li>${text}</li>`;
+  }
+  if (node.type === 'image') {
+    const src = node.attrs?.src || '';
+    const alt = node.attrs?.alt || '';
+    const title = node.attrs?.title || '';
+    return src ? `<img src="${src}" alt="${alt}" title="${title}" class="rounded-2xl my-6 mx-auto object-contain shadow-md border border-white/10" style="max-height: 250px; max-width: 100%;" />` : '';
+  }
+  if (node.type === 'blockquote') {
+    const text = (node.content || []).map(renderNode).join('');
+    return `<blockquote class="border-r-4 border-primary pr-4 my-6 bg-white/5 py-3 rounded-l-lg">${text}</blockquote>`;
+  }
+  // Fallback for unknown nodes
+  if (node.content) {
+    return node.content.map(renderNode).join('');
+  }
+  return '';
+}
 
 function parseContent(raw: any, subtitle: string | null): string {
   const fallback = subtitle
@@ -30,32 +85,7 @@ function parseContent(raw: any, subtitle: string | null): string {
 
   // Handle TipTap / ProseMirror JSON doc
   if (doc?.type === 'doc' && Array.isArray(doc?.content)) {
-    const html = doc.content.map((node: any) => {
-      if (node.type === 'paragraph') {
-        const text = (node.content || []).map((n: any) => n.text || '').join('');
-        return text ? `<p>${text}</p>` : '<br/>';
-      }
-      if (node.type === 'heading') {
-        const text = (node.content || []).map((n: any) => n.text || '').join('');
-        const level = node.attrs?.level || 2;
-        return `<h${level}>${text}</h${level}>`;
-      }
-      if (node.type === 'bulletList') {
-        const items = (node.content || []).map((li: any) => {
-          const text = (li.content?.[0]?.content || []).map((n: any) => n.text || '').join('');
-          return `<li>${text}</li>`;
-        }).join('');
-        return `<ul>${items}</ul>`;
-      }
-      if (node.type === 'orderedList') {
-        const items = (node.content || []).map((li: any) => {
-          const text = (li.content?.[0]?.content || []).map((n: any) => n.text || '').join('');
-          return `<li>${text}</li>`;
-        }).join('');
-        return `<ol>${items}</ol>`;
-      }
-      return '';
-    }).join('');
+    const html = doc.content.map(renderNode).join('');
     return html.trim() || fallback;
   }
 
@@ -140,10 +170,6 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                   <Calendar className="h-4 w-4 text-primary" />
                   <span>{new Date(news.created_at).toLocaleDateString('en-GB')}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-white/40" />
-                  <span>5 دقائق قراءة</span>
-                </div>
               </div>
             </header>
 
@@ -165,6 +191,11 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
               <div
                 className="prose prose-xl prose-invert max-w-none text-start font-medium leading-[2.2] text-white/80 prose-headings:text-white prose-p:mb-8"
                 dangerouslySetInnerHTML={{ __html: contentHtml }}
+              />
+              
+              <ShareButtons 
+                url={`https://almadanews.ly/news/${news.id}`} 
+                title={news.title} 
               />
             </div>
 
