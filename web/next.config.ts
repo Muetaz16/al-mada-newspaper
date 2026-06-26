@@ -25,7 +25,7 @@ const nextConfig: any = {
     return [
       {
         source: '/uploads/:path*',
-        destination: `${process.env.ADMIN_API_URL || 'https://al-mada-newspaper-production.up.railway.app'}/uploads/:path*`,
+        destination: `${process.env.ADMIN_API_URL || 'http://localhost:3001'}/uploads/:path*`,
       },
     ];
   },
