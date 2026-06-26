@@ -68,12 +68,12 @@ export function NewsActions({ newsId, authorId }: { newsId: string; authorId?: s
           <Copy className="h-4 w-4 text-slate-400" />
           نسخ الرابط
         </DropdownMenuItem>
-        <DropdownMenuItem className="rounded-xl py-2.5 font-bold gap-3 text-start">
+        <DropdownMenuItem onClick={() => window.open(`https://almadanews.ly/news/${newsId}`, '_blank')} className="rounded-xl py-2.5 font-bold gap-3 text-start cursor-pointer">
           <Eye className="h-4 w-4 text-slate-400" />
           عرض الخبر
         </DropdownMenuItem>
         {showEdit && (
-          <DropdownMenuItem render={<Link href={`/news/${newsId}/edit`} />} className="rounded-xl py-2.5 font-bold gap-3 text-start">
+          <DropdownMenuItem onClick={() => router.push(`/news/${newsId}/edit`)} className="rounded-xl py-2.5 font-bold gap-3 text-start cursor-pointer">
             <Pencil className="h-4 w-4 text-slate-400" />
             تعديل الخبر
           </DropdownMenuItem>

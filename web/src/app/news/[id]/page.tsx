@@ -25,12 +25,14 @@ function renderNode(node: any): string {
   if (node.type === 'text') return renderTextNode(node);
   if (node.type === 'paragraph') {
     const text = (node.content || []).map(renderNode).join('');
-    return text ? `<p>${text}</p>` : '<br/>';
+    const align = node.attrs?.textAlign ? ` style="text-align: ${node.attrs.textAlign}"` : '';
+    return text ? `<p${align}>${text}</p>` : '<br/>';
   }
   if (node.type === 'heading') {
     const text = (node.content || []).map(renderNode).join('');
     const level = node.attrs?.level || 2;
-    return `<h${level}>${text}</h${level}>`;
+    const align = node.attrs?.textAlign ? ` style="text-align: ${node.attrs.textAlign}"` : '';
+    return `<h${level}${align}>${text}</h${level}>`;
   }
   if (node.type === 'bulletList') {
     const items = (node.content || []).map(renderNode).join('');

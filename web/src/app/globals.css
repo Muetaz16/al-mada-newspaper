@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -253,6 +254,45 @@
   
   .glass-card {
     @apply bg-white/80 backdrop-blur-xl border border-white/20 shadow-2xl;
+  }
+
+  .prose h1 {
+    font-size: 2.25rem !important;
+    line-height: 2.5rem !important;
+    font-weight: 900 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .prose h2 {
+    font-size: 1.875rem !important;
+    line-height: 2.25rem !important;
+    font-weight: 800 !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  .prose blockquote {
+    border-right-width: 4px;
+    border-right-color: var(--primary);
+    padding-right: 1rem;
+    font-style: italic;
+    color: var(--muted-foreground);
+    background-color: var(--muted);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+  .prose ul {
+    list-style-type: disc;
+    padding-right: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .prose ol {
+    list-style-type: decimal;
+    padding-right: 1.5rem;
+    margin-bottom: 1rem;
   }
 }
 

@@ -4,6 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
+import TextAlign from '@tiptap/extension-text-align';
 import { 
   Bold, 
   Italic, 
@@ -16,7 +17,11 @@ import {
   Heading1, 
   Heading2,
   ImageIcon,
-  Loader2
+  Loader2,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
@@ -37,6 +42,9 @@ export default function Editor({ content, onChange }: EditorProps) {
         openOnClick: false,
       }),
       Image,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
     ],
     content: content,
     onUpdate: ({ editor }) => {
@@ -145,6 +153,35 @@ export default function Editor({ content, onChange }: EditorProps) {
           onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
         >
           <Quote className="h-4 w-4" />
+        </Toggle>
+        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'right' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('right').run()}
+        >
+          <AlignRight className="h-4 w-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'center' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('center').run()}
+        >
+          <AlignCenter className="h-4 w-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'left' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('left').run()}
+        >
+          <AlignLeft className="h-4 w-4" />
+        </Toggle>
+        <Toggle
+          size="sm"
+          pressed={editor.isActive({ textAlign: 'justify' })}
+          onPressedChange={() => editor.chain().focus().setTextAlign('justify').run()}
+        >
+          <AlignJustify className="h-4 w-4" />
         </Toggle>
         <Separator orientation="vertical" className="h-6 mx-1" />
         <Button
