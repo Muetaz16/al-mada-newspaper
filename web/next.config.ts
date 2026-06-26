@@ -26,7 +26,7 @@ const nextConfig: any = {
     return [
       {
         source: '/uploads/:path*',
-        destination: `${process.env.ADMIN_API_URL || 'http://localhost:3001'}/uploads/:path*`,
+        destination: `${process.env.ADMIN_API_URL || 'http://almada-admin:3000'}/uploads/:path*`,
       },
     ];
   },
