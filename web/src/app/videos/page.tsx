@@ -250,7 +250,7 @@ export default function VideosPage() {
                     if (url.includes('shorts/')) {
                       id = url.split('shorts/')[1]?.split(/[?&]/)[0];
                     } else {
-                      const regExp = /^.*(youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=|&v=)([^#&?]*).*/;
+                      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
                       const match = url.match(regExp);
                       id = (match && match[2].length === 11) ? match[2] : '';
                     }
