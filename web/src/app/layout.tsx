@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const cairo = Cairo({ subsets: ["arabic"], variable: "--font-cairo" });
 
 export const metadata: Metadata = {
-  title: "صحيفة المدى الرقمية | Al-Mada Digital Newspaper",
-  description: "منصة إخبارية عربية متكاملة تقدم أحدث الأخبار والتقارير.",
+  title: "صحيفة المدى الليبية | Al-Mada Newspaper",
+  description: "المدى صحيفة إلكترونيه ليبية مستقلة تُعنى بالشأن الليبي",
 };
 
 export default function RootLayout({
