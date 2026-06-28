@@ -242,15 +242,35 @@ export default function VideosPage() {
               }
               onClick={(e) => e.stopPropagation()}
             >
-              <video
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-              >
-                <source src={encodeURI(activeVideo.url)} type="video/mp4" />
-                <source src={encodeURI(activeVideo.url)} type="video/webm" />
-                Your browser does not support the video tag.
-              </video>
+              {activeVideo.url?.includes('youtube.com') || activeVideo.url?.includes('youtu.be') ? (
+                <iframe
+                  src={(() => {
+                    const url = activeVideo.url;
+                    let id = '';
+                    if (url.includes('shorts/')) {
+                      id = url.split('shorts/')[1]?.split(/[?&]/)[0];
+                    } else {
+                      const regExp = /^.*(youtu.be\\/|v\\/|u\\/\\w\\/|embed\\/|watch\\?v=|&v=)([^#&?]*).*/;
+                      const match = url.match(regExp);
+                      id = (match && match[2].length === 11) ? match[2] : '';
+                    }
+                    return id ? `https://www.youtube.com/embed/${id}?autoplay=1` : url;
+                  })()}
+                  className="w-full h-full border-none"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <video
+                  controls
+                  autoPlay
+                  className="w-full h-full object-contain"
+                >
+                  <source src={encodeURI(activeVideo.url)} type="video/mp4" />
+                  <source src={encodeURI(activeVideo.url)} type="video/webm" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
             </motion.div>
           </motion.div>
         )}
