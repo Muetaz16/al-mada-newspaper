@@ -42,10 +42,11 @@ export function BreakingNewsTicker() {
       </div>
       <div className="flex-1 whitespace-nowrap h-full flex items-center pl-4">
         <motion.div
+          key={news.join('-')}
           animate={{ x: ['-100%', '100%'] }}
           transition={{
             repeat: Infinity,
-            duration: Math.max(40, news.reduce((acc, item) => acc + item.length, 0) * 0.2), // Adjust duration based on total text length so it doesn't get too fast
+            duration: Math.max(60, news.reduce((acc, item) => acc + item.length, 0) * 0.5),
             ease: 'linear',
           }}
           className="flex gap-12 items-center"
