@@ -124,7 +124,13 @@ export async function generateMetadata(
   }
 
   const previousImages = (await parent).openGraph?.images || []
-  const imageUrl = news.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995';
+  
+  let imageUrl = news.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995';
+  
+  // Facebook REQUIRES absolute URLs. If the image is stored locally (starts with '/'), we must prepend the domain.
+  if (imageUrl.startsWith('/')) {
+    imageUrl = `https://almadanews.ly${imageUrl}`;
+  }
 
   return {
     title: `${news.title} | صحيفة المدى`,
