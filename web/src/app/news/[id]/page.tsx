@@ -6,6 +6,11 @@ import { createClient } from '@/utils/supabase/server';
 import { notFound } from 'next/navigation';
 import { Footer } from '@/components/footer';
 import { ShareButtons } from '@/components/share-buttons';
+import { Metadata, ResolvingMetadata } from 'next';
+
+type Props = {
+  params: Promise<{ id: string }>
+}
 
 function renderTextNode(n: any) {
   let text = n.text || '';
@@ -94,7 +99,64 @@ function parseContent(raw: any, subtitle: string | null): string {
   return fallback;
 }
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { id } = await params;
+  const supabase = await createClient();
+  const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+  
+  let news: any = null;
+  if (isUUID) {
+    const { data } = await supabase.from('news').select('*').eq('id', id).maybeSingle();
+    news = data;
+  }
+  if (!news) {
+    const { data } = await supabase.from('news').select('*').eq('slug', decodeURIComponent(id)).maybeSingle();
+    news = data;
+  }
+
+  if (!news) {
+    return {
+      title: 'خبر غير موجود - المدى',
+    }
+  }
+
+  const previousImages = (await parent).openGraph?.images || []
+  const imageUrl = news.image_url || 'https://images.unsplash.com/photo-1677442136019-21780ecad995';
+
+  return {
+    title: `${news.title} | صحيفة المدى`,
+    description: news.subtitle || "صحيفة المدى الليبية",
+    openGraph: {
+      title: news.title,
+      description: news.subtitle || "صحيفة المدى الليبية",
+      url: `https://almadanews.ly/news/${news.slug || news.id}`,
+      siteName: 'صحيفة المدى | Al-Mada',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: news.title,
+        },
+        ...previousImages,
+      ],
+      locale: 'ar_AR',
+      type: 'article',
+      publishedTime: new Date(news.created_at).toISOString(),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: news.title,
+      description: news.subtitle || "صحيفة المدى الليبية",
+      images: [imageUrl],
+    },
+  }
+}
+
+export default async function NewsDetailPage({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
 
