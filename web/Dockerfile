@@ -31,9 +31,11 @@ ENV NEXT_TELEMETRY_DISABLED 1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Set the correct permission for prerender cache
+# Set the correct permission for prerender cache and uploads
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
+RUN mkdir -p /app/public/uploads
+RUN chown -R nextjs:nodejs /app/public
 
 # IMPORTANT: This assumes next.config.js has output: 'standalone'
 # If it fails, fallback to standard start
