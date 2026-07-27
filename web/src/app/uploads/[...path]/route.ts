@@ -2,10 +2,14 @@ import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
-export async function GET(request: Request, { params }: { params: { path: string[] } }) {
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ path: string[] }> }
+) {
   try {
+    const resolvedParams = await params;
     // Construct the absolute path to the uploaded file
-    const filePath = path.join(process.cwd(), 'public', 'uploads', ...params.path);
+    const filePath = path.join(process.cwd(), 'public', 'uploads', ...resolvedParams.path);
 
     // Check if the file exists
     if (!fs.existsSync(filePath)) {
