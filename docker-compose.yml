@@ -31,6 +31,7 @@ services:
       - DATABASE_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
       - DIRECT_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
       - API_SECRET_TOKEN=7f1a8e9b6c0d4e3f2a1b9c8d7e6f5a4b
+      - ADMIN_API_URL=http://admin:3001
     volumes:
       - uploads_data:/app/public/uploads
     depends_on:
