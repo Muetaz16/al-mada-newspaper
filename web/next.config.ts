@@ -22,14 +22,7 @@ const nextConfig: any = {
   },
   devIndicators: false,
   allowedDevOrigins: ['192.168.1.30', 'localhost:3000', 'localhost:3001'],
-  async rewrites() {
-    return [
-      {
-        source: '/uploads/:path*',
-        destination: `${process.env.ADMIN_API_URL || 'http://almada-admin:3000'}/uploads/:path*`,
-      },
-    ];
-  },
+
 };
 
 export default nextConfig;
