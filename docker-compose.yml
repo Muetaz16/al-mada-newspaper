@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: al-mada-db
+    restart: always
+    environment:
+      POSTGRES_USER: almada_user
+      POSTGRES_PASSWORD: almada_pass
+      POSTGRES_DB: almada_news
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U almada_user -d almada_news"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: al-mada-web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
+      - DIRECT_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
+      - API_SECRET_TOKEN=7f1a8e9b6c0d4e3f2a1b9c8d7e6f5a4b
+    depends_on:
+      db:
+        condition: service_healthy
+
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: al-mada-admin
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - DATABASE_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
+      - DIRECT_URL=postgresql://almada_user:almada_pass@db:5432/almada_news?schema=public
+      - API_SECRET_TOKEN=7f1a8e9b6c0d4e3f2a1b9c8d7e6f5a4b
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
